@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
 
 @Component({
-  imports: [NxWelcome, RouterModule],
+  imports: [RouterModule],
   selector: 'wm-root',
-  templateUrl: './app.html',
-  styleUrl: './app.css',
+  template: `<router-outlet />`,
 })
 export class App {
   protected title = 'whiskmate';

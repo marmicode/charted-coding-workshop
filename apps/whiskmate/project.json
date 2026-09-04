@@ -8,7 +8,9 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/whiskmate",
@@ -20,7 +22,10 @@
             "input": "apps/whiskmate/public"
           }
         ],
-        "styles": ["apps/whiskmate/src/styles.css"]
+        "styles": [
+          "apps/whiskmate/src/material-theme.scss",
+          "apps/whiskmate/src/styles.css"
+        ]
       },
       "configurations": {
         "production": {
