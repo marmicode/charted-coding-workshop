@@ -47,3 +47,5 @@ Thumbs.db
 .angular
 
 vitest.config.*.timestamp*
+
+.specify/workflows/runs
