@@ -2,6 +2,7 @@ export interface RecipeFilterCriteria {
   keywords: string;
   maxIngredientCount: number | null;
   maxStepCount: number | null;
+  favoritesOnly: boolean;
 }
 
 export function createDefaultRecipeFilterCriteria(): RecipeFilterCriteria {
@@ -9,6 +10,7 @@ export function createDefaultRecipeFilterCriteria(): RecipeFilterCriteria {
     keywords: '',
     maxIngredientCount: null,
     maxStepCount: null,
+    favoritesOnly: false,
   };
 }
 
