@@ -64,7 +64,7 @@ A user changes their mind about a meal or needs to free up a day. They remove a 
 - What happens when a previously assigned recipe is no longer available in the recipe collection? The plan should indicate the assignment is broken and allow the user to clear or replace it.
 - What happens at the start of a new calendar week? The plan resets to a new empty week for the current calendar week; assignments do not carry over automatically.
 - What happens when the user assigns the same recipe to multiple days? The system allows it, since households often repeat favorite meals.
-- What happens when the user opens the plan mid-week? The plan shows the current calendar week with today and remaining days available for planning.
+- What happens when the user opens the plan mid-week? The plan shows today plus the next six days.
 
 ## Requirements *(mandatory)*
 
@@ -82,6 +82,7 @@ A user changes their mind about a meal or needs to free up a day. They remove a 
 - **FR-010**: System MUST provide enough recipe detail on the plan (at minimum recipe name) for the user to identify what to cook.
 - **FR-011**: System MUST prevent assignment of recipes that do not exist in the user's recipe collection.
 - **FR-012**: System MUST handle unavailable assigned recipes gracefully by flagging the broken assignment and allowing the user to clear or replace it.
+- **FR-013**: System MUST allow users to assign a recipe to a day from the recipe collection view.
 
 ### Key Entities
 
@@ -104,6 +105,7 @@ A user changes their mind about a meal or needs to free up a day. They remove a 
 
 - Users already have access to a recipe collection within Whiskmate; creating new recipes is out of scope for this feature.
 - Each day has one meal slot (one assigned recipe per day). Breakfast, lunch, and dinner slots are out of scope for this version.
+- Assigning to a day that already has a recipe is rejected. The user must remove the existing meal before assigning a different recipe.
 - The meal plan covers only the current calendar week (Monday–Sunday). Navigating to past or future weeks is out of scope for this version.
 - Assignments do not roll over automatically when a new week begins; each week starts with a fresh plan.
 - The feature serves a single user on a single device or account; shared household plans are out of scope.

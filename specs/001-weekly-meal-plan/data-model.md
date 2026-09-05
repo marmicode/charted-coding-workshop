@@ -23,7 +23,7 @@ Represents one of the seven days in a weekly plan (Monday-first).
 | `saturday` | Saturday |
 | `sunday` | Sunday |
 
-**Ordering**: Fixed array `[monday, tuesday, wednesday, thursday, friday, saturday, sunday]` used for rendering and iteration.
+**Ordering**: Fixed array `[sunday, monday, tuesday, wednesday, thursday, friday, saturday]` used for rendering and iteration.
 
 ### Recipe (existing)
 
@@ -80,7 +80,7 @@ The persisted plan for one calendar week.
 
 - Every `Weekday` key is always present in `assignments`.
 - At most one recipe ID per day (enforced by map structure).
-- The same `recipeId` may appear on multiple days (FR-009).
+- A `recipeId` may appear on at most one day in the week. `assignRecipe` is a no-op if that recipe is already assigned to another day.
 - When `weekKey` ≠ current ISO week, the plan is discarded and a new empty plan is created.
 
 ## Storage schema
@@ -108,6 +108,7 @@ The persisted plan for one calendar week.
 | Rule | Source | Enforcement |
 |------|--------|-------------|
 | Assign only existing recipes | FR-011 | `MealPlan.assignRecipe` checks `RecipeRepository` before persisting |
+| Recipe unique in week | Data model | `assignRecipe` no-ops when `recipeId` is already used on another day |
 | One recipe per day | Spec assumption | `assignRecipe` overwrites existing ID for that day (FR-004) |
 | Current week only | Spec assumption | `weekKey` checked on service init and before reads |
 | Persist on mutation | FR-007 | Every assign/remove/move writes to `localStorage` |
