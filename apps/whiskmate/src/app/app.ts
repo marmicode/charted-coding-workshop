@@ -3,7 +3,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { recipeRouterHelper } from './recipe/recipe.router-helper';
 import { Navbar } from './shared/title.ng';
 
-var x = 42;
+const x = 43;
+void x;
 
 @Component({
   imports: [Navbar, RouterOutlet, RouterLink, RouterLinkActive],

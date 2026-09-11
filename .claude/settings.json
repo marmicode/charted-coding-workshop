@@ -2,11 +2,11 @@
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Write",
+        "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": ".agents/hooks/eslint-on-write.mts",
+            "command": ".claude/hooks/eslint-on-write.mts",
             "timeout": 30
           }
         ]
