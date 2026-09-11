@@ -3,7 +3,7 @@
   "hooks": {
     "postToolUse": [
       {
-        "command": ".cursor/hooks/eslint-on-write.sh",
+        "command": ".agents/hooks/eslint-on-write.mts",
         "matcher": "Write",
         "timeout": 30
       }
