@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": ".cursor/hooks/eslint-on-write.sh",
+        "matcher": "Write",
+        "timeout": 30
+      }
+    ]
+  }
+}
