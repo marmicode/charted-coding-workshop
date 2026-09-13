@@ -3,9 +3,6 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { recipeRouterHelper } from './recipe/recipe.router-helper';
 import { Navbar } from './shared/title.ng';
 
-const x = 43;
-void x;
-
 @Component({
   imports: [Navbar, RouterOutlet, RouterLink, RouterLinkActive],
   selector: 'wm-root',
