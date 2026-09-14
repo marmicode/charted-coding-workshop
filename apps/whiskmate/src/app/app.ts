@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { mealPlanRouterHelper } from './meal-plan/meal-plan.router-helper';
 import { recipeRouterHelper } from './recipe/recipe.router-helper';
 import { Navbar } from './shared/title.ng';
 
@@ -44,6 +45,10 @@ export class App {
     {
       label: 'SEARCH',
       route: recipeRouterHelper.search(),
+    },
+    {
+      label: 'MEAL PLAN',
+      route: mealPlanRouterHelper.mealPlan(),
     },
   ];
 }

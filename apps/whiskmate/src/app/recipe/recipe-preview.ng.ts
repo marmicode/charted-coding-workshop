@@ -1,33 +1,62 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Card } from '../shared/card.ng';
 import type { Recipe } from './recipe';
+import { MealPlanStore } from '../meal-plan/meal-plan-store';
+import { WeekdayPicker } from '../meal-plan/weekday-picker.ng';
+import type { Weekday } from '../meal-plan/weekday';
 import { UserFavorites } from './user-favorites';
 
 @Component({
   selector: 'wm-recipe-preview',
-  imports: [Card, MatIcon, MatIconButton],
-  template: `<wm-card
-    [pictureUri]="recipe().pictureUri"
-    [pictureAlt]="recipe().name"
-  >
-    <div class="recipe-header">
-      <h2 data-testid="recipe-name">{{ recipe().name }}</h2>
-      <button
-        type="button"
-        mat-icon-button
-        data-testid="recipe-like-button"
-        [attr.aria-pressed]="isFavorite()"
-        [attr.aria-label]="
-          isFavorite() ? 'Remove from favorites' : 'Add to favorites'
-        "
-        (click)="onLikeClick()"
+  imports: [Card, MatButton, MatIcon, MatIconButton, WeekdayPicker],
+  template: `@if (pickMode()) {
+      <wm-card
+        [pictureUri]="recipe().pictureUri"
+        [pictureAlt]="recipe().name"
       >
-        <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
-      </button>
-    </div>
-  </wm-card>`,
+        <div class="recipe-header">
+          <h2 data-testid="recipe-name">{{ recipe().name }}</h2>
+        </div>
+        <button
+          type="button"
+          mat-button
+          class="select-recipe"
+          data-testid="recipe-pick-button"
+          (click)="recipePicked.emit(recipe())"
+        >
+          Select
+        </button>
+      </wm-card>
+    } @else {
+      <wm-card
+        [pictureUri]="recipe().pictureUri"
+        [pictureAlt]="recipe().name"
+      >
+        <div class="recipe-header">
+          <h2 data-testid="recipe-name">{{ recipe().name }}</h2>
+          <button
+            type="button"
+            mat-icon-button
+            data-testid="recipe-like-button"
+            [attr.aria-pressed]="isFavorite()"
+            [attr.aria-label]="
+              isFavorite() ? 'Remove from favorites' : 'Add to favorites'
+            "
+            (click)="onLikeClick()"
+          >
+            <mat-icon>{{
+              isFavorite() ? 'favorite' : 'favorite_border'
+            }}</mat-icon>
+          </button>
+        </div>
+        <wm-weekday-picker (weekdaySelected)="onAddToMealPlan($event)">
+          <span data-testid="add-to-meal-plan">Add to meal plan</span>
+        </wm-weekday-picker>
+      </wm-card>
+    }`,
   styles: `
     .recipe-header {
       display: flex;
@@ -48,12 +77,21 @@ import { UserFavorites } from './user-favorites';
     button[aria-pressed='true'] mat-icon {
       color: #c2185b;
     }
+
+    .select-recipe {
+      display: block;
+      margin: 0.5rem auto 0;
+    }
   `,
 })
 export class RecipePreview {
   recipe = input.required<Recipe>();
+  pickMode = input(false);
+
+  recipePicked = output<Recipe>();
 
   private _userFavorites = inject(UserFavorites);
+  private _mealPlanStore = inject(MealPlanStore);
 
   isFavorite = computed(() =>
     this._userFavorites.favoriteIds().has(this.recipe().id),
@@ -65,5 +103,9 @@ export class RecipePreview {
     } else {
       this._userFavorites.addFavorite(this.recipe().id);
     }
+  }
+
+  onAddToMealPlan(weekday: Weekday): void {
+    this._mealPlanStore.assign({ weekday, recipeId: this.recipe().id });
   }
 }

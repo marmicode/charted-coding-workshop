@@ -9,6 +9,7 @@ import {
 
 export interface RecipeRepositoryDef {
   search(filter: RecipeFilterCriteria): Observable<Recipe[]>;
+  getById(params: { id: string }): Observable<Recipe | undefined>;
 }
 
 @Service()
@@ -40,5 +41,9 @@ export class RecipeRepository implements RecipeRepositoryDef {
 
       return of(recipes);
     });
+  }
+
+  getById(params: { id: string }): Observable<Recipe | undefined> {
+    return of(RECIPES.find((recipe) => recipe.id === params.id));
   }
 }
