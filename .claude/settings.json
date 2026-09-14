@@ -11,6 +11,19 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "Stop hook. Read and follow every step in `.claude/hooks/stop-learn-skills.md` using the project `cwd` from the hook input. Do not block the stop. Hook JSON: $ARGUMENTS",
+            "timeout": 600,
+            "statusMessage": "Learning from session steering messages…",
+            "model": "claude-sonnet-5"
+          }
+        ]
+      }
     ]
   }
 }
