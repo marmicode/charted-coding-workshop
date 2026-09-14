@@ -49,3 +49,5 @@ Thumbs.db
 vitest.config.*.timestamp*
 
 .specify/workflows/runs
+
+.claude/hooks/learn-skills/.cache/
