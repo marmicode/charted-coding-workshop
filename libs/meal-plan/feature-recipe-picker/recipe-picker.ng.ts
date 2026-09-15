@@ -15,7 +15,7 @@ import {
   type Recipe,
   type RecipeFilterCriteria,
 } from '@whiskmate/recipe/model';
-import { RecipePreview } from '@whiskmate/recipe/search-feature';
+import { RecipePreview } from '@whiskmate/recipe/feature-search';
 import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/search-ui';
 import { Catalog } from '@whiskmate/shared/ui';
 

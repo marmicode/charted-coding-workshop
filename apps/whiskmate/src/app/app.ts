@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { mealPlanRouterHelper } from '@whiskmate/meal-plan/feature';
-import { recipeRouterHelper } from '@whiskmate/recipe/search-feature';
+import { mealPlanRouterHelper } from '@whiskmate/meal-plan/feature-meal-plan';
+import { recipeRouterHelper } from '@whiskmate/recipe/feature-search';
 import { Navbar } from '@whiskmate/shared/ui';
 
 @Component({

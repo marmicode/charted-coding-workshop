@@ -3,8 +3,8 @@
  * @see https://cookbook.marmicode.io/nx/organize-libs#modular-layered-architecture
  * @see https://cookbook.marmicode.io/nx/boundaries
  *
- * Libraries live under `libs/{scope}/{name}` with `type` inferred from the last
- * segment of the folder name (e.g. `search-feature` → type:feature).
+ * Libraries live under `libs/{scope}/{name}` with `type` inferred from the
+ * folder name (`feature-search` → type:feature; `search-ui` → type:ui).
  */
 
 const scope = (key: 'meal-plan' | 'recipe' | 'shared') => `scope:${key}`;
