@@ -1,4 +1,5 @@
 import nx from '@nx/eslint-plugin';
+import { modularLayeredDepConstraints } from './tools/eslint/modular-layered-dep-constraints.mjs';
 
 export default [
   ...nx.configs['flat/base'],
@@ -15,28 +16,20 @@ export default [
         {
           enforceBuildableLibDependency: true,
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
-          depConstraints: [
-            {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
-            },
-          ],
+          depConstraints: modularLayeredDepConstraints,
         },
       ],
     },
   },
   {
     files: [
-      '**/*.ts',
-      '**/*.tsx',
-      '**/*.cts',
-      '**/*.mts',
-      '**/*.js',
-      '**/*.jsx',
-      '**/*.cjs',
-      '**/*.mjs',
+      '**/*.spec.ts',
+      '**/*.spec.tsx',
+      '**/test-setup.ts',
+      '**/vitest.config.*',
     ],
-    // Override or add rules here
-    rules: {},
+    rules: {
+      '@nx/enforce-module-boundaries': 'off',
+    },
   },
 ];

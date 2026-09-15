@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "strict": false,
     "paths": {
-      "@whiskmate/shared/util": ["./libs/shared/util/index.ts"]
+      "@whiskmate/shared/infra": ["./libs/shared/infra/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
