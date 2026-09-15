@@ -11,7 +11,7 @@ import {
   createDefaultRecipeFilterCriteria,
   type Recipe,
   type RecipeFilterCriteria,
-} from '@whiskmate/recipe/model';
+} from '@whiskmate/shared-recipe/model';
 import { RecipePreview } from './recipe-preview.ng';
 import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/search-ui';
 import { Catalog } from '@whiskmate/shared/ui';

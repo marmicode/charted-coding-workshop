@@ -2,11 +2,9 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import {
-  MEAL_PLAN_COMMANDS,
-  UserFavorites,
-} from '@whiskmate/recipe/domain';
-import type { Recipe } from '@whiskmate/recipe/model';
+import { UserFavorites } from '@whiskmate/recipe/domain';
+import { MEAL_PLAN_COMMANDS } from '@whiskmate/shared-meal-plan/domain';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
 import { Card, WeekdayPicker } from '@whiskmate/shared/ui';
 import type { Weekday } from '@whiskmate/shared/model';
 

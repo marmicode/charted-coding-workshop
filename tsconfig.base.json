@@ -15,22 +15,28 @@
     "skipDefaultLibCheck": true,
     "strict": false,
     "paths": {
-      "@whiskmate/meal-plan/domain": ["./libs/meal-plan/domain/index.ts"],
       "@whiskmate/meal-plan/feature-meal-plan": [
         "./libs/meal-plan/feature-meal-plan/index.ts"
       ],
       "@whiskmate/meal-plan/feature-recipe-picker": [
         "./libs/meal-plan/feature-recipe-picker/index.ts"
       ],
-      "@whiskmate/meal-plan/infra": ["./libs/meal-plan/infra/index.ts"],
-      "@whiskmate/meal-plan/model": ["./libs/meal-plan/model/index.ts"],
       "@whiskmate/meal-plan/ui": ["./libs/meal-plan/ui/index.ts"],
       "@whiskmate/recipe/domain": ["./libs/recipe/domain/index.ts"],
       "@whiskmate/recipe/infra": ["./libs/recipe/infra/index.ts"],
       "@whiskmate/recipe/feature-search": [
         "./libs/recipe/feature-search/index.ts"
       ],
-      "@whiskmate/recipe/model": ["./libs/recipe/model/index.ts"],
+      "@whiskmate/shared-meal-plan/domain": [
+        "./libs/shared-meal-plan/domain/index.ts"
+      ],
+      "@whiskmate/shared-meal-plan/infra": [
+        "./libs/shared-meal-plan/infra/index.ts"
+      ],
+      "@whiskmate/shared-meal-plan/model": [
+        "./libs/shared-meal-plan/model/index.ts"
+      ],
+      "@whiskmate/shared-recipe/model": ["./libs/shared-recipe/model/index.ts"],
       "@whiskmate/recipe/search-ui": ["./libs/recipe/search-ui/index.ts"],
       "@whiskmate/shared/infra": ["./libs/shared/infra/index.ts"],
       "@whiskmate/shared/model": ["./libs/shared/model/index.ts"],

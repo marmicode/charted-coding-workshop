@@ -7,7 +7,14 @@
  * folder name (`feature-search` → type:feature; `search-ui` → type:ui).
  */
 
-const scope = (key: 'meal-plan' | 'recipe' | 'shared') => `scope:${key}`;
+const scope = (
+  key:
+    | 'meal-plan'
+    | 'recipe'
+    | 'shared'
+    | 'shared-meal-plan'
+    | 'shared-recipe',
+) => `scope:${key}`;
 const type = (
   key: 'app' | 'feature' | 'ui' | 'domain' | 'infra' | 'model' | 'util',
 ) => `type:${key}`;
@@ -22,15 +29,33 @@ export const modularLayeredDepConstraints: Array<{
     onlyDependOnLibsWithTags: [scope('shared')],
   },
   {
+    sourceTag: scope('shared-recipe'),
+    onlyDependOnLibsWithTags: [scope('shared-recipe'), scope('shared')],
+  },
+  {
+    sourceTag: scope('shared-meal-plan'),
+    onlyDependOnLibsWithTags: [
+      scope('shared-meal-plan'),
+      scope('shared-recipe'),
+      scope('shared'),
+    ],
+  },
+  {
     sourceTag: scope('recipe'),
-    onlyDependOnLibsWithTags: [scope('recipe'), scope('shared')],
+    onlyDependOnLibsWithTags: [
+      scope('recipe'),
+      scope('shared'),
+      scope('shared-recipe'),
+      scope('shared-meal-plan'),
+    ],
   },
   {
     sourceTag: scope('meal-plan'),
     onlyDependOnLibsWithTags: [
       scope('meal-plan'),
-      scope('recipe'),
       scope('shared'),
+      scope('shared-recipe'),
+      scope('shared-meal-plan'),
     ],
   },
   {

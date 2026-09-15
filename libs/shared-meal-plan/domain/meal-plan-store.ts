@@ -1,11 +1,11 @@
 import { computed, inject, Service, signal } from '@angular/core';
-import type { MealPlanCommands } from '@whiskmate/recipe/domain';
-import { MealPlanRepository } from '@whiskmate/meal-plan/infra';
+import { MealPlanRepository } from '@whiskmate/shared-meal-plan/infra';
 import {
   createEmptyMealPlanSlots,
   type MealPlanSlots,
-} from '@whiskmate/meal-plan/model';
+} from '@whiskmate/shared-meal-plan/model';
 import type { Weekday } from '@whiskmate/shared/model';
+import type { MealPlanCommands } from './meal-plan-commands';
 
 @Service()
 export class MealPlanStore implements MealPlanCommands {

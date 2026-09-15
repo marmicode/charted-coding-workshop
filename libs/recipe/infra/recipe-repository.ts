@@ -4,7 +4,7 @@ import {
   createDefaultRecipeFilterCriteria,
   type RecipeFilterCriteria,
   type Recipe,
-} from '@whiskmate/recipe/model';
+} from '@whiskmate/shared-recipe/model';
 import { RECIPES } from './recipe-data';
 
 export interface RecipeRepositoryDef {

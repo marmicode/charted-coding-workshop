@@ -1,6 +1,6 @@
 import { Component, computed, input, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import type { Recipe } from '@whiskmate/recipe/model';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
 import type { Weekday } from '@whiskmate/shared/model';
 import { weekdayLabel } from '@whiskmate/shared/model';
 import { Card, WeekdayPicker } from '@whiskmate/shared/ui';

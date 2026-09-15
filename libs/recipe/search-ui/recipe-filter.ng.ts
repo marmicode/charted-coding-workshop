@@ -6,7 +6,7 @@ import { MatInput } from '@angular/material/input';
 import {
   createDefaultRecipeFilterCriteria,
   type RecipeFilterCriteria,
-} from '@whiskmate/recipe/model';
+} from '@whiskmate/shared-recipe/model';
 
 @Component({
   selector: 'wm-recipe-filter',

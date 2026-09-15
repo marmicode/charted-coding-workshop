@@ -3,8 +3,10 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { MealPlanStore } from '@whiskmate/meal-plan/domain';
-import { MEAL_PLAN_COMMANDS } from '@whiskmate/recipe/domain';
+import {
+  MEAL_PLAN_COMMANDS,
+  MealPlanStore,
+} from '@whiskmate/shared-meal-plan/domain';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {

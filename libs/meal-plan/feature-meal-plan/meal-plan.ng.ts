@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RECIPES } from '@whiskmate/recipe/infra';
-import type { Recipe } from '@whiskmate/recipe/model';
-import { MealPlanStore } from '@whiskmate/meal-plan/domain';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
 import { RecipePicker } from '@whiskmate/meal-plan/feature-recipe-picker';
 import { MealPlanDay } from '@whiskmate/meal-plan/ui';
 import type { Weekday } from '@whiskmate/shared/model';
