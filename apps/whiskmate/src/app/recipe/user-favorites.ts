@@ -1,5 +1,5 @@
 import { computed, inject, Service, signal } from '@angular/core';
-import { LocalStorage } from '../shared/local-storage';
+import { LocalStorage } from '@whiskmate/shared/util';
 
 const FAVORITES_STORAGE_KEY = 'whiskmate:favorites';
 

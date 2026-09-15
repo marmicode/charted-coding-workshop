@@ -1,5 +1,5 @@
 import { inject, Service } from '@angular/core';
-import { LocalStorage } from '../shared/local-storage';
+import { LocalStorage } from '@whiskmate/shared/util';
 import {
   createEmptyMealPlanSlots,
   mealPlanSlotsToStored,

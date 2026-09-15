@@ -69,6 +69,9 @@ importers:
       '@nx/angular':
         specifier: 23.2.0
         version: 23.2.0(0032e022282bc822cc64d072cb32529f)
+      '@nx/devkit':
+        specifier: 23.2.0
+        version: 23.2.0(nx@23.2.0)
       '@nx/eslint':
         specifier: 23.2.0
         version: 23.2.0(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@9.39.5(supports-color@7.2.0))(nx@23.2.0)(supports-color@7.2.0)
