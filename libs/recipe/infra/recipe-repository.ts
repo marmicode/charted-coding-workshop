@@ -5,12 +5,10 @@ import {
   type RecipeFilterCriteria,
   type Recipe,
 } from '@whiskmate/shared-recipe/model';
+import type { RecipeRepositoryDef } from '@whiskmate/shared-recipe/infra';
 import { RECIPES } from './recipe-data';
 
-export interface RecipeRepositoryDef {
-  search(filter: RecipeFilterCriteria): Observable<Recipe[]>;
-  getById(params: { id: string }): Observable<Recipe | undefined>;
-}
+export type { RecipeRepositoryDef } from '@whiskmate/shared-recipe/infra';
 
 @Service()
 export class RecipeRepository implements RecipeRepositoryDef {

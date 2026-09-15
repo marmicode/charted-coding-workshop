@@ -1,11 +1,22 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RECIPES } from '@whiskmate/recipe/infra';
+import { rxResource } from '@angular/core/rxjs-interop';
 import type { Recipe } from '@whiskmate/shared-recipe/model';
+import { RecipeRepository } from '@whiskmate/recipe/infra';
 import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
-import { RecipePicker } from '@whiskmate/meal-plan/feature-recipe-picker';
+import { RecipePicker } from '@whiskmate/recipe/feature-recipe-picker';
 import { MealPlanDay } from '@whiskmate/meal-plan/ui';
 import type { Weekday } from '@whiskmate/shared/model';
 import { WEEKDAYS_MONDAY_THROUGH_SUNDAY } from '@whiskmate/shared/model';
+import { forkJoin, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+type MealPlanDayView = { weekday: Weekday; recipe: Recipe | null };
+
+const emptyPlanDays = (): MealPlanDayView[] =>
+  WEEKDAYS_MONDAY_THROUGH_SUNDAY.map((weekday) => ({
+    weekday,
+    recipe: null,
+  }));
 
 @Component({
   selector: 'wm-meal-plan',
@@ -93,14 +104,35 @@ export class MealPlan {
   pickerWeekday = signal<Weekday | null>(null);
 
   private _mealPlanStore = inject(MealPlanStore);
+  private _recipeRepository = inject(RecipeRepository);
 
-  planDays = computed(() => {
-    const slots = this._mealPlanStore.slots();
-    return WEEKDAYS_MONDAY_THROUGH_SUNDAY.map((weekday) => ({
-      weekday,
-      recipe: this._recipeForSlot(slots.get(weekday) ?? null),
-    }));
+  private _planDaysResource = rxResource({
+    params: () => this._mealPlanStore.slots(),
+    stream: ({ params: slots }) =>
+      forkJoin(
+        WEEKDAYS_MONDAY_THROUGH_SUNDAY.map((weekday) => {
+          const recipeId = slots.get(weekday) ?? null;
+          if (recipeId == null) {
+            return of({ weekday, recipe: null } satisfies MealPlanDayView);
+          }
+
+          return this._recipeRepository
+            .getById({ id: recipeId })
+            .pipe(
+              map(
+                (recipe) =>
+                  ({
+                    weekday,
+                    recipe: recipe ?? null,
+                  }) satisfies MealPlanDayView,
+              ),
+            );
+        }),
+      ),
+    defaultValue: emptyPlanDays(),
   });
+
+  planDays = computed(() => this._planDaysResource.value());
 
   openPickerFor(weekday: Weekday): void {
     this.pickerWeekday.set(weekday);
@@ -137,13 +169,5 @@ export class MealPlan {
 
     event.preventDefault();
     this.closePicker();
-  }
-
-  private _recipeForSlot(recipeId: string | null): Recipe | null {
-    if (recipeId == null) {
-      return null;
-    }
-
-    return RECIPES.find((recipe) => recipe.id === recipeId) ?? null;
   }
 }

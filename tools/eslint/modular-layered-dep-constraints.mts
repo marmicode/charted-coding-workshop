@@ -4,7 +4,7 @@
  * @see https://cookbook.marmicode.io/nx/boundaries
  *
  * Libraries live under `libs/{scope}/{name}` with `type` inferred from the
- * folder name (`feature-search` → type:feature; `search-ui` → type:ui).
+ * folder name (`feature-search` → type:feature; `ui-search` → type:ui).
  */
 
 const scope = (
@@ -53,6 +53,7 @@ export const modularLayeredDepConstraints: Array<{
     sourceTag: scope('meal-plan'),
     onlyDependOnLibsWithTags: [
       scope('meal-plan'),
+      scope('recipe'),
       scope('shared'),
       scope('shared-recipe'),
       scope('shared-meal-plan'),

@@ -3,7 +3,7 @@ import { MatButton } from '@angular/material/button';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { UserFavorites } from '@whiskmate/recipe/domain';
-import { MEAL_PLAN_COMMANDS } from '@whiskmate/shared-meal-plan/domain';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
 import type { Recipe } from '@whiskmate/shared-recipe/model';
 import { Card, WeekdayPicker } from '@whiskmate/shared/ui';
 import type { Weekday } from '@whiskmate/shared/model';
@@ -90,7 +90,7 @@ export class RecipePreview {
   recipePicked = output<Recipe>();
 
   private _userFavorites = inject(UserFavorites);
-  private _mealPlanCommands = inject(MEAL_PLAN_COMMANDS);
+  private _mealPlanStore = inject(MealPlanStore);
 
   isFavorite = computed(() =>
     this._userFavorites.favoriteIds().has(this.recipe().id),
@@ -105,6 +105,6 @@ export class RecipePreview {
   }
 
   onAddToMealPlan(weekday: Weekday): void {
-    this._mealPlanCommands.assign({ weekday, recipeId: this.recipe().id });
+    this._mealPlanStore.assign({ weekday, recipeId: this.recipe().id });
   }
 }

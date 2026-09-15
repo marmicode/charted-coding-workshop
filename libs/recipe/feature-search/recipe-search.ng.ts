@@ -13,7 +13,7 @@ import {
   type RecipeFilterCriteria,
 } from '@whiskmate/shared-recipe/model';
 import { RecipePreview } from './recipe-preview.ng';
-import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/search-ui';
+import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/ui-search';
 import { Catalog } from '@whiskmate/shared/ui';
 
 @Component({
