@@ -1,5 +1,5 @@
 import nx from '@nx/eslint-plugin';
-import { modularLayeredDepConstraints } from './tools/eslint/modular-layered-dep-constraints.mjs';
+import { modularLayeredDepConstraints } from './tools/eslint/modular-layered-dep-constraints.mts';
 
 export default [
   ...nx.configs['flat/base'],
