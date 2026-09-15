@@ -6,8 +6,8 @@ import {
   storedToMealPlanSlots,
   type MealPlanSlots,
   type StoredMealPlanSlots,
-} from './meal-plan-slots';
-import { WEEKDAYS_MONDAY_THROUGH_SUNDAY } from './weekday';
+} from '@whiskmate/meal-plan/model';
+import { WEEKDAYS_MONDAY_THROUGH_SUNDAY } from '@whiskmate/shared/model';
 
 const MEAL_PLAN_STORAGE_KEY = 'whiskmate:meal-plan';
 

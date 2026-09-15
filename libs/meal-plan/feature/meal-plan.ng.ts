@@ -1,11 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RECIPES } from '../recipe/recipe-data';
-import type { Recipe } from '../recipe/recipe';
-import { MealPlanDay } from './meal-plan-day.ng';
-import { MealPlanStore } from './meal-plan-store';
-import { RecipePicker } from './recipe-picker.ng';
-import type { Weekday } from './weekday';
-import { WEEKDAYS_MONDAY_THROUGH_SUNDAY } from './weekday';
+import { RECIPES } from '@whiskmate/recipe/infra';
+import type { Recipe } from '@whiskmate/recipe/model';
+import { MealPlanStore } from '@whiskmate/meal-plan/domain';
+import { RecipePicker } from '@whiskmate/meal-plan/recipe-picker-feature';
+import { MealPlanDay } from '@whiskmate/meal-plan/ui';
+import type { Weekday } from '@whiskmate/shared/model';
+import { WEEKDAYS_MONDAY_THROUGH_SUNDAY } from '@whiskmate/shared/model';
 
 @Component({
   selector: 'wm-meal-plan',

@@ -1,5 +1,5 @@
-import type { Weekday } from './weekday';
-import { WEEKDAYS_MONDAY_THROUGH_SUNDAY } from './weekday';
+import type { Weekday } from '@whiskmate/shared/model';
+import { WEEKDAYS_MONDAY_THROUGH_SUNDAY } from '@whiskmate/shared/model';
 
 /** Recipe ids per weekday, not recipe snapshots. */
 export type MealPlanSlots = Map<Weekday, string | null>;

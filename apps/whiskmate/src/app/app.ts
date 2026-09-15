@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { mealPlanRouterHelper } from './meal-plan/meal-plan.router-helper';
-import { recipeRouterHelper } from './recipe/recipe.router-helper';
-import { Navbar } from './shared/title.ng';
+import { mealPlanRouterHelper } from '@whiskmate/meal-plan/feature';
+import { recipeRouterHelper } from '@whiskmate/recipe/search-feature';
+import { Navbar } from '@whiskmate/shared/ui';
 
 @Component({
   imports: [Navbar, RouterOutlet, RouterLink, RouterLinkActive],

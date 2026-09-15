@@ -1,10 +1,9 @@
 import { Component, computed, input, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { Card } from '../shared/card.ng';
-import type { Recipe } from '../recipe/recipe';
-import { WeekdayPicker } from './weekday-picker.ng';
-import type { Weekday } from './weekday';
-import { weekdayLabel } from './weekday';
+import type { Recipe } from '@whiskmate/recipe/model';
+import type { Weekday } from '@whiskmate/shared/model';
+import { weekdayLabel } from '@whiskmate/shared/model';
+import { Card, WeekdayPicker } from '@whiskmate/shared/ui';
 
 export type MealPlanDayMove = { from: Weekday; to: Weekday };
 

@@ -1,8 +1,7 @@
 import { Route } from '@angular/router';
-import { MealPlan } from './meal-plan/meal-plan.ng';
-import { mealPlanRouterHelper } from './meal-plan/meal-plan.router-helper';
-import { RecipeSearch } from './recipe/recipe-search.ng';
-import { recipeRouterHelper } from './recipe/recipe.router-helper';
+import { MealPlan, mealPlanRouterHelper } from '@whiskmate/meal-plan/feature';
+import { RecipeSearch } from '@whiskmate/recipe/search-feature';
+import { recipeRouterHelper } from '@whiskmate/recipe/search-feature';
 
 export const appRoutes: Route[] = [
   {

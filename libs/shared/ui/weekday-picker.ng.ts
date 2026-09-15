@@ -1,8 +1,11 @@
 import { Component, computed, input, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import type { Weekday } from './weekday';
-import { WEEKDAYS_MONDAY_THROUGH_SUNDAY, weekdayLabel } from './weekday';
+import type { Weekday } from '@whiskmate/shared/model';
+import {
+  WEEKDAYS_MONDAY_THROUGH_SUNDAY,
+  weekdayLabel,
+} from '@whiskmate/shared/model';
 
 @Component({
   selector: 'wm-weekday-picker',

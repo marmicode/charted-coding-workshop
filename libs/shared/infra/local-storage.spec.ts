@@ -1,4 +1,4 @@
-import { LocalStorage } from './local-storage';
+import { LocalStorage } from '@whiskmate/shared/infra';
 
 describe('LocalStorage', () => {
   it('is provided via factory', () => {

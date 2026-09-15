@@ -8,17 +8,16 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
-import { Catalog } from '../shared/catalog.ng';
-import { NoRecipes } from '../recipe/no-recipes.ng';
-import type { Recipe } from '../recipe/recipe';
+import { UserFavorites } from '@whiskmate/recipe/domain';
+import { RecipeRepository } from '@whiskmate/recipe/infra';
 import {
   createDefaultRecipeFilterCriteria,
-  RecipeFilterCriteria,
-} from '../recipe/recipe-filter-criteria';
-import { RecipeFilter } from '../recipe/recipe-filter.ng';
-import { RecipePreview } from '../recipe/recipe-preview.ng';
-import { RecipeRepository } from '../recipe/recipe-repository';
-import { UserFavorites } from '../recipe/user-favorites';
+  type Recipe,
+  type RecipeFilterCriteria,
+} from '@whiskmate/recipe/model';
+import { RecipePreview } from '@whiskmate/recipe/search-feature';
+import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/search-ui';
+import { Catalog } from '@whiskmate/shared/ui';
 
 @Component({
   selector: 'wm-recipe-picker',

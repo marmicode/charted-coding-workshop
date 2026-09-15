@@ -7,7 +7,7 @@
  * segment of the folder name (e.g. `search-feature` → type:feature).
  */
 
-const scope = (key: 'recipe' | 'shared') => `scope:${key}`;
+const scope = (key: 'meal-plan' | 'recipe' | 'shared') => `scope:${key}`;
 const type = (
   key: 'app' | 'feature' | 'ui' | 'domain' | 'infra' | 'model' | 'util',
 ) => `type:${key}`;
@@ -20,6 +20,18 @@ export const modularLayeredDepConstraints: Array<{
   {
     sourceTag: scope('shared'),
     onlyDependOnLibsWithTags: [scope('shared')],
+  },
+  {
+    sourceTag: scope('recipe'),
+    onlyDependOnLibsWithTags: [scope('recipe'), scope('shared')],
+  },
+  {
+    sourceTag: scope('meal-plan'),
+    onlyDependOnLibsWithTags: [
+      scope('meal-plan'),
+      scope('recipe'),
+      scope('shared'),
+    ],
   },
   {
     sourceTag: type('app'),
@@ -43,7 +55,12 @@ export const modularLayeredDepConstraints: Array<{
       type('model'),
       type('util'),
     ],
-    allowedExternalImports: ['@angular/*', 'rxjs', 'rxjs/*'],
+    allowedExternalImports: [
+      '@angular/*',
+      '@angular/core/rxjs-interop',
+      'rxjs',
+      'rxjs/*',
+    ],
   },
   {
     sourceTag: type('ui'),
@@ -51,8 +68,12 @@ export const modularLayeredDepConstraints: Array<{
     allowedExternalImports: [
       '@angular/core',
       '@angular/common',
+      '@angular/forms',
+      '@angular/forms/*',
       '@angular/material',
+      '@angular/material/*',
       '@angular/cdk',
+      '@angular/cdk/*',
     ],
   },
   {
@@ -68,7 +89,12 @@ export const modularLayeredDepConstraints: Array<{
   {
     sourceTag: type('infra'),
     onlyDependOnLibsWithTags: [type('infra'), type('model'), type('util')],
-    allowedExternalImports: ['@angular/core', '@angular/common/http'],
+    allowedExternalImports: [
+      '@angular/core',
+      '@angular/common/http',
+      'rxjs',
+      'rxjs/*',
+    ],
   },
   {
     sourceTag: type('model'),
