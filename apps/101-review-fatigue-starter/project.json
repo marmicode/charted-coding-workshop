@@ -20,7 +20,10 @@
             "input": "apps/101-review-fatigue-starter/public"
           }
         ],
-        "styles": ["apps/101-review-fatigue-starter/src/styles.css"]
+        "styles": [
+          "apps/101-review-fatigue-starter/src/material-theme.scss",
+          "apps/101-review-fatigue-starter/src/styles.css"
+        ]
       },
       "configurations": {
         "production": {
