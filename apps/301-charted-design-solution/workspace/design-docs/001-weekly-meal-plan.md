@@ -233,3 +233,44 @@ export interface WeekdayPicker {
 - Mount `WeekdayPicker`.
 - Dismiss it without choosing a day.
 - Assert `weekdaySelected` did not emit.
+
+# PR Plan
+
+```mermaid
+flowchart LR
+  PR1["PR#1<br>Scaffold"]
+  PR2["PR#2<br>getById"]
+  PR3["PR#3<br>Store behavior"]
+  PR4["PR#4<br>Persist store"]
+  PR5["PR#5<br>Empty week behind wip"]
+  PR6["PR#6<br>Show recipe"]
+  PR7["PR#7<br>Remove day"]
+  PR8["PR#8<br>Assign from Search behind wip"]
+  PR9["PR#9<br>Disable add"]
+  PR10["PR#10<br>Remove wip flag"]
+
+  PR1 --> PR3
+  PR1 --> PR5
+  PR1 --> PR8
+  PR3 --> PR4
+  PR3 --> PR5
+  PR2 --> PR6
+  PR5 --> PR6
+  PR3 --> PR7
+  PR6 --> PR7
+  PR3 --> PR8
+  PR8 --> PR9
+  PR5 --> PR10
+  PR9 --> PR10
+```
+
+- [ ] PR#1 — Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
+- [ ] PR#2 — Add `RecipeRepository.getById`. Search stays unchanged.
+- [ ] PR#3 — `MealPlanStore` assign, replace, clear, and `canAdd`.
+- [ ] PR#4 — Persist assignments in `LocalStorage` and restore them on load.
+- [ ] PR#5 — Seven empty weekday slots. The Meal Plan link renders only when the `wip` flag is set.
+- [ ] PR#6 — Show a planned recipe's name and picture. A missing id stays an empty day.
+- [ ] PR#7 — Remove a recipe from a day.
+- [ ] PR#8 — `WeekdayPicker` confirms a day or dismisses without emitting. Add to meal plan assigns the chosen weekday, and that button renders only when the `wip` flag is set. Dismiss leaves the plan unchanged.
+- [ ] PR#9 — Disable Add to meal plan when `canAdd` is false.
+- [ ] PR#10 — Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
