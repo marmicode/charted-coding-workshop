@@ -36,7 +36,7 @@
 - Add a `MealPlan` page at `/meal-plan`, wired like `RecipeSearch` via a router helper and a navbar link.
 - Persist weekday assignments in `MealPlanStore` with `LocalStorage`, same pattern as `UserFavorites`.
 - Store recipe ids per weekday, not recipe snapshots, so the name and picture stay in sync with the catalog.
-- Resolve each id through `RecipeRepository.getById({id: string})`. A missing id renders as empty.
+- Resolve each id through `RecipeRepository.findById({id: string})`. A missing id renders as empty.
 - `MealPlanDay` shows the weekday label, the recipe name and picture or the empty state, and emits remove.
 - Search keeps the user on the page. `WeekdayPicker` on `RecipePreview` confirms a weekday and calls `MealPlanStore.assign`.
 - `RecipePreview` disables "Add to meal plan" when `MealPlanStore.canAdd` is false for that recipe id.
@@ -52,7 +52,7 @@ flowchart TD
   MealPlanDay -->|"(remove: void)"| MealPlan
   MealPlan -->|"assignments(): WeekdayAssignments"| MealPlanStore
   MealPlan -->|"clear({weekday: Weekday}): void"| MealPlanStore
-  MealPlan -->|"getById({id: string}): Recipe | undefined"| RecipeRepository
+  MealPlan -->|"findById({id: string}): Recipe | undefined"| RecipeRepository
 
   RecipePreview -->|"canAdd({recipeId: string}): boolean"| MealPlanStore
   WeekdayPicker -->|"(select: Weekday)"| RecipePreview
@@ -92,7 +92,7 @@ export interface RecipeRepositoryDef {
    * Undefined when the id is not in the catalog.
    * Meal Plan renders that day as empty. The weekday slot stays.
    */
-  getById(params: { id: string }): Observable<Recipe | undefined>;
+  findById(params: { id: string }): Observable<Recipe | undefined>;
 }
 
 export interface WeekdayPicker {
@@ -100,7 +100,7 @@ export interface WeekdayPicker {
    * Emitted only when the user confirms a weekday.
    * Dismissing the picker does not emit and does not call `assign`.
    */
-  weekdaySelected: Weekday;
+  select: Weekday;
 }
 ```
 
@@ -140,12 +140,12 @@ export interface WeekdayPicker {
 ### Returns a recipe by id
 
 - Arrange the catalog to include Shakshuka.
-- Call `getById({ id: shakshukaId })`.
+- Call `findById({ id: shakshukaId })`.
 - Assert the result is Shakshuka.
 
 ### Returns undefined for an unknown id
 
-- Call `getById({ id: 'missing' })`.
+- Call `findById({ id: 'missing' })`.
 - Assert the result is undefined.
 
 ## MealPlan
@@ -159,14 +159,14 @@ export interface WeekdayPicker {
 
 ### Shows the name and picture of a planned recipe
 
-- Arrange Monday as Shakshuka's id. `getById` returns Shakshuka.
+- Arrange Monday as Shakshuka's id. `findById` returns Shakshuka.
 - Mount `MealPlan`.
 - Assert Monday shows "Shakshuka" and Shakshuka's picture.
 - Assert the other days say no recipe is planned.
 
 ### Renders a missing recipe as an empty day
 
-- Arrange Monday as `'missing'`. `getById` returns undefined.
+- Arrange Monday as `'missing'`. `findById` returns undefined.
 - Mount `MealPlan`.
 - Assert Monday says no recipe is planned.
 - Assert the Monday slot is still shown.
@@ -226,20 +226,20 @@ export interface WeekdayPicker {
 
 - Mount `WeekdayPicker`.
 - Confirm Friday.
-- Assert `weekdaySelected` emitted `'friday'`.
+- Assert `select` emitted `'friday'`.
 
 ### Does not emit when dismissed
 
 - Mount `WeekdayPicker`.
 - Dismiss it without choosing a day.
-- Assert `weekdaySelected` did not emit.
+- Assert `select` did not emit.
 
 # PR Plan
 
 ```mermaid
 flowchart LR
   PR1["PR#1<br>Scaffold"]
-  PR2["PR#2<br>getById"]
+  PR2["PR#2<br>findById"]
   PR3["PR#3<br>Store behavior"]
   PR4["PR#4<br>Persist store"]
   PR5["PR#5<br>Empty week behind wip"]
@@ -265,7 +265,7 @@ flowchart LR
 ```
 
 - [ ] PR#1 — Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
-- [ ] PR#2 — Add `RecipeRepository.getById`. Search stays unchanged.
+- [ ] PR#2 — Add `RecipeRepository.findById`. Search stays unchanged.
 - [ ] PR#3 — `MealPlanStore` assign, replace, clear, and `canAdd`.
 - [ ] PR#4 — Persist assignments in `LocalStorage` and restore them on load.
 - [ ] PR#5 — Seven empty weekday slots. The Meal Plan link renders only when the `wip` flag is set.
