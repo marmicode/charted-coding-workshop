@@ -27,3 +27,79 @@
 - [ ] Each filled day has a control to remove the recipe from that day.
 - [ ] Removing a recipe from a day returns that day to the empty state.
 - [ ] Reloading the app restores the same weekday assignments.
+- [ ] "Add to meal plan" is disabled when that recipe is already assigned to a day.
+- [ ] Closing the weekday picker without choosing a day leaves the plan unchanged.
+- [ ] A saved recipe id missing from the catalog shows that day as empty. The weekday slot stays.
+
+# Design
+
+- Add a `MealPlan` page at `/meal-plan`, wired like `RecipeSearch` via a router helper and a navbar link.
+- Persist weekday assignments in `UserMealPlan` with `LocalStorage`, same pattern as `UserFavorites`.
+- Store recipe ids per weekday, not recipe snapshots, so the name and picture stay in sync with the catalog.
+- Resolve each id through `RecipeRepository.getById({id: string})`. A missing id renders as empty.
+- `MealPlanDay` shows the weekday label, the recipe name and picture or the empty state, and emits remove.
+- Search keeps the user on the page. `WeekdayPicker` on `RecipePreview` confirms a weekday and calls `UserMealPlan.assign`.
+- `RecipePreview` disables "Add to meal plan" when `UserMealPlan` already holds that recipe id.
+
+## Diagram
+
+```mermaid
+flowchart TD
+  RecipeRepository(["RecipeRepository"])
+  UserMealPlan(["UserMealPlan"])
+
+  MealPlan -->|"[weekday: Weekday]<br>[recipe: Recipe]"| MealPlanDay
+  MealPlanDay -->|"(remove: void)"| MealPlan
+  MealPlan -->|"assignments(): WeekdayAssignments"| UserMealPlan
+  MealPlan -->|"clear({weekday: Weekday}): void"| UserMealPlan
+  MealPlan -->|"getById({id: string}): Recipe | undefined"| RecipeRepository
+
+  RecipePreview -->|"contains({recipeId: string}): boolean"| UserMealPlan
+  WeekdayPicker -->|"(select: Weekday)"| RecipePreview
+  RecipePreview -->|"assign({weekday: Weekday, recipeId: string}): void"| UserMealPlan
+```
+
+## Implementation Details
+
+```ts
+export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+/**
+ * Recipe ids per weekday, not recipe snapshots.
+ * All seven days are present, including empty ones.
+ * Not a calendar week tied to dates.
+ */
+export type WeekdayAssignments = Record<Weekday, string | null>;
+
+export interface UserMealPlan {
+  assignments(): WeekdayAssignments;
+
+  /**
+   * Stores the recipe id on that weekday and replaces any id already there.
+   * No confirmation.
+   * Callers disable the action when `contains` is true, so the same id is not assigned twice.
+   */
+  assign(params: { weekday: Weekday; recipeId: string }): void;
+
+  clear(params: { weekday: Weekday }): void;
+
+  /** True when that recipe id is already on a weekday. */
+  contains(params: { recipeId: string }): boolean;
+}
+
+export interface RecipeRepositoryDef {
+  /**
+   * Undefined when the id is not in the catalog.
+   * Meal Plan renders that day as empty. The weekday slot stays.
+   */
+  getById(params: { id: string }): Observable<Recipe | undefined>;
+}
+
+export interface WeekdayPicker {
+  /**
+   * Emitted only when the user confirms a weekday.
+   * Dismissing the picker does not emit and does not call `assign`.
+   */
+  weekdaySelected: Weekday;
+}
+```
