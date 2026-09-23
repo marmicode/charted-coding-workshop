@@ -16,8 +16,8 @@
 # Desired Behavior
 
 - [ ] Navbar includes a Meal Plan link next to Search.
-- [ ] Meal Plan page shows seven weekday slots: Monday through Sunday.
-- [ ] An empty day shows that no recipe is planned for that day.
+- [ ] Meal Plan page shows seven weekday slots: Monday through Sunday, not a calendar week tied to dates.
+- [ ] An empty day shows that no recipe is planned for that day, even if the whole week is empty.
 - [ ] Each recipe card on Search has an "Add to meal plan" action.
 - [ ] Choosing "Add to meal plan" asks which weekday to assign.
 - [ ] Confirming a weekday stores that recipe on that day and shows it on Meal Plan.
@@ -42,19 +42,14 @@
 - `MealPlanDay` is presentational: weekday label, optional recipe preview, add/remove actions.
 - `RecipePicker` embeds `RecipeFilter` + `Catalog` + `RecipePreview` and emits the chosen recipe.
 - Search-side add uses a `WeekdayPicker` menu on `RecipePreview`; it does not navigate away from Search.
-- Weekdays are a fixed Monday–Sunday template, not a calendar week tied to dates. Render them Sunday through Saturday.
-- Opening the plan mid-week shows today plus the next six days.
-- When nothing is assigned yet, show an empty message instead of the seven slots. The slots appear after the first assignment.
-- The same recipe id may appear on at most one day. `assign` does nothing if that recipe is already planned on another day.
-- Assigning to an occupied day is rejected. The cook must remove the existing meal before assigning a different recipe.
-- Moving a recipe onto a day that already has one swaps the two recipes.
 
 ## Diagram
 
 ```mermaid
 flowchart TD
-  RecipeRepository(("RecipeRepository"))
-  MealPlanRepository(("MealPlanRepository"))
+  RecipeRepository(["RecipeRepository"])
+  MealPlanRepository(["MealPlanRepository"])
+  MealPlanStore(["MealPlanStore"])
 
   App -->|"routerLink"| MealPlan
   MealPlan -->|"[weekday: Weekday]<br>[recipe: Recipe | null]"| MealPlanDay
@@ -62,16 +57,18 @@ flowchart TD
   MealPlanDay -->|"(removeRequested: Weekday)"| MealPlan
   MealPlan -->|"[open: boolean]"| RecipePicker
   RecipePicker -->|"(recipeSelected: Recipe)"| MealPlan
-  RecipePicker -->|"search({filter: RecipeFilterCriteria}): Observable<Recipe[]>"| RecipeRepository
+  RecipePicker -->|"search(filter: RecipeFilterCriteria): Observable<Recipe[]>"| RecipeRepository
   MealPlan -->|"getById({id: string}): Observable<Recipe | undefined>"| RecipeRepository
-  MealPlan -->|"assign({weekday: Weekday, recipeId: string}): void"| MealPlanRepository
-  MealPlan -->|"clear({weekday: Weekday}): void"| MealPlanRepository
-  MealPlan -->|"slots(): MealPlanSlots"| MealPlanRepository
+  MealPlan -->|"assign({weekday: Weekday, recipeId: string}): void"| MealPlanStore
+  MealPlan -->|"clear({weekday: Weekday}): void"| MealPlanStore
+  MealPlan -->|"slots(): MealPlanSlots"| MealPlanStore
+  MealPlanStore -->|"load(): Promise<MealPlanSlots>"| MealPlanRepository
+  MealPlanStore -->|"save(slots: MealPlanSlots): Promise<void>"| MealPlanRepository
 
   RecipeSearch -->|"[recipe: Recipe]"| RecipePreview
   RecipePreview -->|"[recipe: Recipe]"| WeekdayPicker
   WeekdayPicker -->|"(weekdaySelected: Weekday)"| RecipePreview
-  RecipePreview -->|"assign({weekday: Weekday, recipeId: string}): void"| MealPlanRepository
+  RecipePreview -->|"assign({weekday: Weekday, recipeId: string}): void"| MealPlanStore
 ```
 
 ## Implementation Details
@@ -79,21 +76,13 @@ flowchart TD
 ### MealPlan
 
 - If there are no recipes, hide the seven days and show only an empty message.
-- The seven days appear after the first `assign(...)`.
 - If the cook opens the plan in the middle of the week, show only today and the next 6 days. Past days are hidden.
 - Moving a recipe onto a day that already has one swaps the two recipes.
 
 ### MealPlanRepository / MealPlanStore
 
 ```ts
-export type Weekday =
-  | 'sunday'
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday';
+export type Weekday = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 
 /** Recipe ids per weekday, not recipe snapshots. */
 export type MealPlanSlots = Map<Weekday, string | null>;
@@ -112,7 +101,6 @@ export class MealPlanStore {
   /**
    * Stores the recipe id on that weekday.
    * Does nothing if that recipe is already planned on another day.
-   * A recipe can be on only one day.
    * Does nothing if that day already has a recipe. The cook must clear it first.
    */
   assign(params: { weekday: Weekday; recipeId: string }): void;
