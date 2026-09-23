@@ -59,181 +59,6 @@ flowchart TD
   RecipePreview -->|"assign({weekday: Weekday, recipeId: string}): void"| MealPlanStore
 ```
 
-## Implementation Details
-
-```ts
-export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
-
-/**
- * Recipe ids per weekday, not recipe snapshots.
- * All seven days are present, including empty ones.
- * Not a calendar week tied to dates.
- */
-export type WeekdayAssignments = Record<Weekday, string | null>;
-
-export interface MealPlanStore {
-  assignments(): WeekdayAssignments;
-
-  /**
-   * Stores the recipe id on that weekday and replaces any id already there.
-   * No confirmation.
-   * Callers disable the action when `canAdd` is false, so the same id is not assigned twice.
-   */
-  assign(params: { weekday: Weekday; recipeId: string }): void;
-
-  clear(params: { weekday: Weekday }): void;
-
-  /** False when that recipe id is already on a weekday. */
-  canAdd(params: { recipeId: string }): boolean;
-}
-
-export interface RecipeRepositoryDef {
-  /**
-   * Undefined when the id is not in the catalog.
-   * Meal Plan renders that day as empty. The weekday slot stays.
-   */
-  findById(params: { id: string }): Observable<Recipe | undefined>;
-}
-
-export interface WeekdayPicker {
-  /**
-   * Emitted only when the user confirms a weekday.
-   * Dismissing the picker does not emit and does not call `assign`.
-   */
-  select: Weekday;
-}
-```
-
-# Testing Strategy
-
-## MealPlanStore
-
-### Replaces the recipe on a weekday
-
-- Arrange an empty `MealPlanStore`.
-- `assign({ weekday: 'monday', recipeId: 'shakshuka' })`.
-- `assign({ weekday: 'monday', recipeId: 'hummus' })`.
-- Assert Monday is `'hummus'` and the other six days are null.
-
-### Clears a weekday
-
-- Arrange Monday as `'shakshuka'`.
-- `clear({ weekday: 'monday' })`.
-- Assert Monday is null and the other days are unchanged.
-
-### Allows add only when the recipe is not already planned
-
-- Arrange Wednesday as `'shakshuka'`.
-- Assert `canAdd({ recipeId: 'shakshuka' })` is false.
-- Assert `canAdd({ recipeId: 'hummus' })` is true.
-
-### Restores assignments after reload
-
-- Arrange `LocalStorage` with Monday `'shakshuka'` and the other days null.
-- Construct `MealPlanStore`.
-- Assert `assignments()` matches that stored week.
-- `assign({ weekday: 'tuesday', recipeId: 'hummus' })`.
-- Assert `LocalStorage` now has Tuesday `'hummus'`.
-
-## RecipeRepository
-
-### Returns a recipe by id
-
-- Arrange the catalog to include Shakshuka.
-- Call `findById({ id: shakshukaId })`.
-- Assert the result is Shakshuka.
-
-### Returns undefined for an unknown id
-
-- Call `findById({ id: 'missing' })`.
-- Assert the result is undefined.
-
-## MealPlan
-
-### Shows seven empty weekdays
-
-- Arrange `MealPlanStore` with every day null.
-- Mount `MealPlan`.
-- Assert Monday through Sunday are shown, in that order.
-- Assert each day says no recipe is planned.
-
-### Shows the name and picture of a planned recipe
-
-- Arrange Monday as Shakshuka's id. `findById` returns Shakshuka.
-- Mount `MealPlan`.
-- Assert Monday shows "Shakshuka" and Shakshuka's picture.
-- Assert the other days say no recipe is planned.
-
-### Renders a missing recipe as an empty day
-
-- Arrange Monday as `'missing'`. `findById` returns undefined.
-- Mount `MealPlan`.
-- Assert Monday says no recipe is planned.
-- Assert the Monday slot is still shown.
-
-### Clears a day
-
-- Arrange Monday as Shakshuka.
-- Mount `MealPlan`.
-- Remove Monday's recipe.
-- Assert `clear({ weekday: 'monday' })` ran.
-- Assert Monday says no recipe is planned.
-
-## MealPlanDay
-
-### Shows the empty state
-
-- Mount `MealPlanDay` with `weekday` `'monday'` and `recipe` null.
-- Assert the label is Monday.
-- Assert it says no recipe is planned.
-- Assert there is no remove control.
-
-### Shows the recipe and emits remove
-
-- Mount `MealPlanDay` with Shakshuka.
-- Assert the name "Shakshuka" and Shakshuka's picture.
-- Trigger remove.
-- Assert `remove` emitted.
-
-## RecipePreview
-
-### Asks which weekday, then assigns it
-
-- Arrange `canAdd` true for Shakshuka.
-- Mount `RecipePreview` with Shakshuka.
-- Choose "Add to meal plan".
-- Assert the weekday picker is open.
-- Confirm Wednesday.
-- Assert `assign({ weekday: 'wednesday', recipeId: shakshukaId })` ran.
-
-### Disables add when the recipe is already planned
-
-- Arrange `canAdd({ recipeId: shakshukaId })` false.
-- Mount `RecipePreview` with Shakshuka.
-- Assert "Add to meal plan" is disabled.
-- Assert the weekday picker does not open.
-
-### Leaves the plan unchanged when the picker is dismissed
-
-- Arrange `canAdd` true.
-- Mount `RecipePreview` with Shakshuka.
-- Open "Add to meal plan", then dismiss the picker.
-- Assert `assign` was not called.
-
-## WeekdayPicker
-
-### Emits the confirmed weekday
-
-- Mount `WeekdayPicker`.
-- Confirm Friday.
-- Assert `select` emitted `'friday'`.
-
-### Does not emit when dismissed
-
-- Mount `WeekdayPicker`.
-- Dismiss it without choosing a day.
-- Assert `select` did not emit.
-
 # PR Plan
 
 ```mermaid
@@ -264,13 +89,339 @@ flowchart LR
   PR9 --> PR10
 ```
 
-- [ ] PR#1 — Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
-- [ ] PR#2 — Add `RecipeRepository.findById`. Search stays unchanged.
-- [ ] PR#3 — `MealPlanStore` assign, replace, clear, and `canAdd`.
-- [ ] PR#4 — Persist assignments in `LocalStorage` and restore them on load.
-- [ ] PR#5 — Seven empty weekday slots. The Meal Plan link renders only when the `wip` flag is set.
-- [ ] PR#6 — Show a planned recipe's name and picture. A missing id stays an empty day.
-- [ ] PR#7 — Remove a recipe from a day.
-- [ ] PR#8 — `WeekdayPicker` confirms a day or dismisses without emitting. Add to meal plan assigns the chosen weekday, and that button renders only when the `wip` flag is set. Dismiss leaves the plan unchanged.
-- [ ] PR#9 — Disable Add to meal plan when `canAdd` is false.
-- [ ] PR#10 — Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
+<details>
+<summary>🚧 PR#1 — Scaffold</summary>
+
+## Tasks
+
+- [ ] Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
+
+</details>
+
+<details>
+<summary>🚧 PR#2 — findById</summary>
+
+## Tasks
+
+```ts
+export interface RecipeRepositoryDef {
+  /**
+   * Undefined when the id is not in the catalog.
+   * Meal Plan renders that day as empty. The weekday slot stays.
+   */
+  findById(params: { id: string }): Observable<Recipe | undefined>;
+}
+```
+
+- [ ] Add `RecipeRepository.findById`. Search stays unchanged.
+
+## Testing Strategy
+
+### 🚧 Returns a recipe by id
+
+- Arrange the catalog to include Shakshuka.
+- Call `findById({ id: shakshukaId })`.
+- Assert the result is Shakshuka.
+
+### 🚧 Returns undefined for an unknown id
+
+- Call `findById({ id: 'missing' })`.
+- Assert the result is undefined.
+
+</details>
+
+<details>
+<summary>🚧 PR#3 — Store behavior</summary>
+
+## Tasks
+
+```ts
+export type Weekday =
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday'
+  | 'sunday';
+
+/**
+ * Recipe ids per weekday, not recipe snapshots.
+ * All seven days are present, including empty ones.
+ * Not a calendar week tied to dates.
+ */
+export type WeekdayAssignments = Record<Weekday, string | null>;
+
+export interface MealPlanStore {
+  assignments(): WeekdayAssignments;
+
+  /**
+   * Stores the recipe id on that weekday and replaces any id already there.
+   * No confirmation.
+   * Callers disable the action when `canAdd` is false, so the same id is not assigned twice.
+   */
+  assign(params: { weekday: Weekday; recipeId: string }): void;
+
+  clear(params: { weekday: Weekday }): void;
+
+  /** False when that recipe id is already on a weekday. */
+  canAdd(params: { recipeId: string }): boolean;
+}
+```
+
+- [ ] `assign` stores the recipe id and replaces any id already on that day. No confirmation.
+- [ ] `clear` removes the id for that weekday.
+- [ ] `canAdd` is false when that recipe id is already on a weekday.
+
+## Testing Strategy
+
+### 🚧 Replaces the recipe on a weekday
+
+- Arrange an empty `MealPlanStore`.
+- `assign({ weekday: 'monday', recipeId: 'shakshuka' })`.
+- `assign({ weekday: 'monday', recipeId: 'hummus' })`.
+- Assert Monday is `'hummus'` and the other six days are null.
+
+### 🚧 Clears a weekday
+
+- Arrange Monday as `'shakshuka'`.
+- `clear({ weekday: 'monday' })`.
+- Assert Monday is null and the other days are unchanged.
+
+### 🚧 Allows add only when the recipe is not already planned
+
+- Arrange Wednesday as `'shakshuka'`.
+- Assert `canAdd({ recipeId: 'shakshuka' })` is false.
+- Assert `canAdd({ recipeId: 'hummus' })` is true.
+
+</details>
+
+<details>
+<summary>🚧 PR#4 — Persist store</summary>
+
+## Tasks
+
+- [ ] Persist assignments in `LocalStorage` and restore them on load.
+
+## Testing Strategy
+
+### 🚧 Restores assignments after reload
+
+- Arrange `LocalStorage` with Monday `'shakshuka'` and the other days null.
+- Construct `MealPlanStore`.
+- Assert `assignments()` matches that stored week.
+- `assign({ weekday: 'tuesday', recipeId: 'hummus' })`.
+- Assert `LocalStorage` now has Tuesday `'hummus'`.
+
+</details>
+
+<details>
+<summary>🚧 PR#5 — Empty week behind wip</summary>
+
+## Tasks
+
+- [ ] Show Monday through Sunday, including when every day is empty.
+- [ ] `MealPlanDay` shows the empty state and no remove control.
+- [ ] Render the Meal Plan link only when the `wip` flag is set.
+
+## Testing Strategy
+
+### 🚧 Shows seven empty weekdays
+
+- Arrange `MealPlanStore` with every day null.
+- Mount `MealPlan`.
+- Assert Monday through Sunday are shown, in that order.
+- Assert each day says no recipe is planned.
+
+### 🚧 Shows the empty state
+
+- Mount `MealPlanDay` with `weekday` `'monday'` and `recipe` null.
+- Assert the label is Monday.
+- Assert it says no recipe is planned.
+- Assert there is no remove control.
+
+### 🚧 Hides the Meal Plan link unless wip is set
+
+- Mount `App` with the `wip` flag unset.
+- Assert the navbar has no Meal Plan link.
+- Set the `wip` flag.
+- Assert the navbar shows Meal Plan next to Search, targeting `/meal-plan`.
+
+</details>
+
+<details>
+<summary>🚧 PR#6 — Show recipe</summary>
+
+## Tasks
+
+- [ ] Show the planned recipe's name and picture from `findById`.
+- [ ] Render a missing id as an empty day. The weekday slot stays.
+
+## Testing Strategy
+
+### 🚧 Shows the name and picture of a planned recipe
+
+- Arrange Monday as Shakshuka's id. `findById` returns Shakshuka.
+- Mount `MealPlan`.
+- Assert Monday shows "Shakshuka" and Shakshuka's picture.
+- Assert the other days say no recipe is planned.
+
+### 🚧 Renders a missing recipe as an empty day
+
+- Arrange Monday as `'missing'`. `findById` returns undefined.
+- Mount `MealPlan`.
+- Assert Monday says no recipe is planned.
+- Assert the Monday slot is still shown.
+
+### 🚧 Shows the recipe
+
+- Mount `MealPlanDay` with Shakshuka.
+- Assert the name "Shakshuka" and Shakshuka's picture.
+
+</details>
+
+<details>
+<summary>🚧 PR#7 — Remove day</summary>
+
+## Tasks
+
+- [ ] Remove a recipe from a day and return that day to empty.
+- [ ] `MealPlanDay` emits `remove`.
+
+## Testing Strategy
+
+### 🚧 Clears a day
+
+- Arrange Monday as Shakshuka.
+- Mount `MealPlan`.
+- Remove Monday's recipe.
+- Assert `clear({ weekday: 'monday' })` ran.
+- Assert Monday says no recipe is planned.
+
+### 🚧 Emits remove
+
+- Mount `MealPlanDay` with Shakshuka.
+- Trigger remove.
+- Assert `remove` emitted.
+
+</details>
+
+<details>
+<summary>🚧 PR#8 — Assign from Search behind wip</summary>
+
+## Tasks
+
+```ts
+export interface WeekdayPicker {
+  /**
+   * Emitted only when the user confirms a weekday.
+   * Dismissing the picker does not emit and does not call `assign`.
+   */
+  select: Weekday;
+}
+```
+
+- [ ] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
+- [ ] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
+- [ ] Render Add to meal plan only when the `wip` flag is set.
+
+## Testing Strategy
+
+### 🚧 Emits the confirmed weekday
+
+- Mount `WeekdayPicker`.
+- Confirm Friday.
+- Assert `select` emitted `'friday'`.
+
+### 🚧 Does not emit when dismissed
+
+- Mount `WeekdayPicker`.
+- Dismiss it without choosing a day.
+- Assert `select` did not emit.
+
+### 🚧 Asks which weekday, then assigns it
+
+- Arrange `canAdd` true for Shakshuka.
+- Mount `RecipePreview` with Shakshuka.
+- Choose "Add to meal plan".
+- Assert the weekday picker is open.
+- Confirm Wednesday.
+- Assert `assign({ weekday: 'wednesday', recipeId: shakshukaId })` ran.
+
+### 🚧 Leaves the plan unchanged when the picker is dismissed
+
+- Arrange `canAdd` true.
+- Mount `RecipePreview` with Shakshuka.
+- Open "Add to meal plan", then dismiss the picker.
+- Assert `assign` was not called.
+
+### 🚧 Hides Add to meal plan unless wip is set
+
+- Arrange `canAdd` true and the `wip` flag unset.
+- Mount `RecipePreview` with Shakshuka.
+- Assert "Add to meal plan" is not shown.
+- Set the `wip` flag.
+- Assert "Add to meal plan" is shown.
+
+</details>
+
+<details>
+<summary>🚧 PR#9 — Disable add</summary>
+
+## Tasks
+
+- [ ] Disable Add to meal plan when `canAdd` is false.
+
+## Testing Strategy
+
+### 🚧 Disables add when the recipe is already planned
+
+- Arrange `canAdd({ recipeId: shakshukaId })` false.
+- Mount `RecipePreview` with Shakshuka.
+- Assert "Add to meal plan" is disabled.
+- Assert the weekday picker does not open.
+
+</details>
+
+<details>
+<summary>🚧 PR#10 — Remove wip flag</summary>
+
+## Tasks
+
+- [ ] Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
+
+## Testing Strategy
+
+### 🚧 Shows the Meal Plan link with the wip flag removed
+
+- Mount `App` with the `wip` flag unset.
+- Assert the navbar shows Meal Plan next to Search, targeting `/meal-plan`.
+
+### 🚧 Shows Add to meal plan with the wip flag removed
+
+- Arrange `canAdd` true and the `wip` flag unset.
+- Mount `RecipePreview` with Shakshuka.
+- Assert "Add to meal plan" is shown.
+
+</details>
+
+# Alternatives Considered
+
+- **Store full recipe snapshots in local storage.** Rejected. Ids stay aligned with the catalog, so names and pictures do not go stale.
+- **Ask before replacing a day's recipe.** Rejected. One slot per day, and overwrite needs no confirmation.
+- **Allow the same recipe on more than one day.** Rejected. `canAdd` is false, and Add to meal plan stays disabled.
+- **Add a recipe from an empty day with a catalog picker.** Rejected. Assignment starts from Search.
+- **Use a dated calendar week.** Rejected. Monday through Sunday is a reusable week, not dates.
+- **Breakfast, lunch, and dinner slots.** Rejected. One recipe per day.
+
+# Kitchen Sink
+
+## Risks
+
+- The `wip` flag could ship still hiding the Meal Plan link and Add to meal plan if PR#10 is skipped.
+
+## Future Plans
+
+- Breakfast, lunch, and dinner, once one recipe per day is in place.
+- Dated weeks, after the reusable Monday through Sunday plan.
+- A grocery list from the week's recipes.
