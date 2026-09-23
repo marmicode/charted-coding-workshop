@@ -1,6 +1,6 @@
-import { Service } from '@angular/core';
+import { Injectable } from '@angular/core';
 
-@Service({ factory: () => localStorage })
+@Injectable({ providedIn: 'root', useFactory: () => localStorage })
 export abstract class LocalStorage {
   abstract setItem(key: string, value: string): void;
   abstract getItem(key: string): string | null;

@@ -1,4 +1,4 @@
-import { Service } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { defer, Observable, of } from 'rxjs';
 import { Recipe } from './recipe';
 import { RECIPES } from './recipe-data';
@@ -11,7 +11,7 @@ export interface RecipeRepositoryDef {
   search(filter: RecipeFilterCriteria): Observable<Recipe[]>;
 }
 
-@Service()
+@Injectable({ providedIn: 'root' })
 export class RecipeRepository implements RecipeRepositoryDef {
   search(
     {
