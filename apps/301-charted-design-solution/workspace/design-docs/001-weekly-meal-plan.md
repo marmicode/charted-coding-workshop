@@ -67,26 +67,19 @@ flowchart LR
   PR2["PR#2<br>findById"]
   PR3["PR#3<br>Store behavior"]
   PR4["PR#4<br>Persist store"]
-  PR5["PR#5<br>Empty week behind wip"]
-  PR6["PR#6<br>Show recipe"]
-  PR7["PR#7<br>Remove day"]
-  PR8["PR#8<br>Assign from Search behind wip"]
-  PR9["PR#9<br>Disable add"]
-  PR10["PR#10<br>Remove wip flag"]
+  PR5["PR#5<br>Meal Plan UI behind wip"]
+  PR6["PR#6<br>Assign from Search behind wip"]
+  PR7["PR#7<br>Remove wip flag"]
 
   PR1 --> PR3
   PR1 --> PR5
-  PR1 --> PR8
+  PR1 --> PR6
   PR3 --> PR4
   PR3 --> PR5
-  PR2 --> PR6
-  PR5 --> PR6
-  PR3 --> PR7
+  PR2 --> PR5
+  PR3 --> PR6
+  PR5 --> PR7
   PR6 --> PR7
-  PR3 --> PR8
-  PR8 --> PR9
-  PR5 --> PR10
-  PR9 --> PR10
 ```
 
 <details>
@@ -216,12 +209,16 @@ export interface MealPlanStore {
 </details>
 
 <details>
-<summary>🚧 PR#5 — Empty week behind wip</summary>
+<summary>🚧 PR#5 — Meal Plan UI behind wip</summary>
 
 ## Tasks
 
 - [ ] Show Monday through Sunday, including when every day is empty.
 - [ ] `MealPlanDay` shows the empty state and no remove control.
+- [ ] Show the planned recipe's name and picture from `findById`.
+- [ ] Render a missing id as an empty day. The weekday slot stays.
+- [ ] Remove a recipe from a day and return that day to empty.
+- [ ] `MealPlanDay` emits `remove`.
 - [ ] Render the Meal Plan link only when the `wip` flag is set.
 
 ## Testing Strategy
@@ -247,18 +244,6 @@ export interface MealPlanStore {
 - Set the `wip` flag.
 - Assert the navbar shows Meal Plan next to Search, targeting `/meal-plan`.
 
-</details>
-
-<details>
-<summary>🚧 PR#6 — Show recipe</summary>
-
-## Tasks
-
-- [ ] Show the planned recipe's name and picture from `findById`.
-- [ ] Render a missing id as an empty day. The weekday slot stays.
-
-## Testing Strategy
-
 ### 🚧 Shows the name and picture of a planned recipe
 
 - Arrange Monday as Shakshuka's id. `findById` returns Shakshuka.
@@ -278,18 +263,6 @@ export interface MealPlanStore {
 - Mount `MealPlanDay` with Shakshuka.
 - Assert the name "Shakshuka" and Shakshuka's picture.
 
-</details>
-
-<details>
-<summary>🚧 PR#7 — Remove day</summary>
-
-## Tasks
-
-- [ ] Remove a recipe from a day and return that day to empty.
-- [ ] `MealPlanDay` emits `remove`.
-
-## Testing Strategy
-
 ### 🚧 Clears a day
 
 - Arrange Monday as Shakshuka.
@@ -307,7 +280,7 @@ export interface MealPlanStore {
 </details>
 
 <details>
-<summary>🚧 PR#8 — Assign from Search behind wip</summary>
+<summary>🚧 PR#6 — Assign from Search behind wip</summary>
 
 ## Tasks
 
@@ -323,6 +296,7 @@ export interface WeekdayPicker {
 
 - [ ] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
 - [ ] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
+- [ ] Disable Add to meal plan when `canAdd` is false.
 - [ ] Render Add to meal plan only when the `wip` flag is set.
 
 ## Testing Strategy
@@ -363,17 +337,6 @@ export interface WeekdayPicker {
 - Set the `wip` flag.
 - Assert "Add to meal plan" is shown.
 
-</details>
-
-<details>
-<summary>🚧 PR#9 — Disable add</summary>
-
-## Tasks
-
-- [ ] Disable Add to meal plan when `canAdd` is false.
-
-## Testing Strategy
-
 ### 🚧 Disables add when the recipe is already planned
 
 - Arrange `canAdd({ recipeId: shakshukaId })` false.
@@ -384,7 +347,7 @@ export interface WeekdayPicker {
 </details>
 
 <details>
-<summary>🚧 PR#10 — Remove wip flag</summary>
+<summary>🚧 PR#7 — Remove wip flag</summary>
 
 ## Tasks
 
@@ -418,7 +381,7 @@ export interface WeekdayPicker {
 
 ## Risks
 
-- The `wip` flag could ship still hiding the Meal Plan link and Add to meal plan if PR#10 is skipped.
+- The `wip` flag could ship still hiding the Meal Plan link and Add to meal plan if PR#7 is skipped.
 
 ## Future Plans
 
