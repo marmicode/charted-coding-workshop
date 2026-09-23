@@ -26,8 +26,8 @@ MealPlanPage
 |---------|---------------|-------------------|
 | Page root | `meal-plan-page` | Container for weekly plan |
 | Page title | `meal-plan-title` | "Weekly Meal Plan" (or similar) |
-| Week indicator | `meal-plan-week` | Current week label (e.g. "Week of Sep 6, 2026") |
-| Empty state | `meal-plan-empty` | Shown when `isEmpty()` is true instead of the day-slot list. Day slots render only after the first assignment. |
+| Week indicator | `meal-plan-week` | Current week label (e.g. "Week of Sep 1, 2026") |
+| Empty state | `meal-plan-empty` | Shown when `isEmpty()` is true; prompts user to add recipes |
 | Day slots container | `meal-plan-days` | Wraps seven `DaySlot` components |
 
 ## DaySlot
@@ -72,7 +72,7 @@ MealPlanPage
 ### View plan (P2)
 
 1. User navigates to `/meal-plan`.
-2. `meal-plan-page` renders seven `day-slot-*` elements in Sunday–Saturday order.
+2. `meal-plan-page` renders seven `day-slot-*` elements in Monday–Sunday order.
 3. Assigned days show recipe names; unassigned days show `day-slot-empty`.
 
 ### Remove recipe (P3)
@@ -84,7 +84,7 @@ MealPlanPage
 
 1. User chooses "Move" action on an assigned day (button `day-slot-move` or via change flow).
 2. User picks target day.
-3. If the target is empty, source becomes empty and target shows the recipe. If the target already has a recipe, the two days swap.
+3. Source day becomes empty; target day shows the recipe.
 
 ## Accessibility
 
