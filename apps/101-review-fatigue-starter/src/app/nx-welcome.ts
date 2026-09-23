@@ -882,7 +882,7 @@ nx run-many -t build test lint</pre>
               </svg>
               View project details
             </summary>
-            <pre>nx show project whiskmate</pre>
+            <pre>nx show project 101-review-fatigue-starter</pre>
           </details>
 
           <details>

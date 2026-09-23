@@ -1,9 +1,9 @@
 {
-  "name": "whiskmate",
+  "name": "101-review-fatigue-starter",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "wm",
-  "sourceRoot": "apps/whiskmate/src",
+  "sourceRoot": "apps/101-review-fatigue-starter/src",
   "tags": [],
   "targets": {
     "build": {
@@ -11,16 +11,16 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/whiskmate",
-        "browser": "apps/whiskmate/src/main.ts",
-        "tsConfig": "apps/whiskmate/tsconfig.app.json",
+        "outputPath": "dist/apps/101-review-fatigue-starter",
+        "browser": "apps/101-review-fatigue-starter/src/main.ts",
+        "tsConfig": "apps/101-review-fatigue-starter/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/whiskmate/public"
+            "input": "apps/101-review-fatigue-starter/public"
           }
         ],
-        "styles": ["apps/whiskmate/src/styles.css"]
+        "styles": ["apps/101-review-fatigue-starter/src/styles.css"]
       },
       "configurations": {
         "production": {
@@ -51,10 +51,10 @@
       "defaultConfiguration": "development",
       "configurations": {
         "production": {
-          "buildTarget": "whiskmate:build:production"
+          "buildTarget": "101-review-fatigue-starter:build:production"
         },
         "development": {
-          "buildTarget": "whiskmate:build:development"
+          "buildTarget": "101-review-fatigue-starter:build:development"
         }
       }
     },
@@ -65,8 +65,8 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "whiskmate:build",
-        "staticFilePath": "dist/apps/whiskmate/browser",
+        "buildTarget": "101-review-fatigue-starter:build",
+        "staticFilePath": "dist/apps/101-review-fatigue-starter/browser",
         "spa": true
       }
     }
