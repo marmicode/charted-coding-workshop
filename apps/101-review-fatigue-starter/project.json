@@ -11,18 +11,18 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/101-review-fatigue-starter",
-        "browser": "apps/101-review-fatigue-starter/src/main.ts",
-        "tsConfig": "apps/101-review-fatigue-starter/tsconfig.app.json",
+        "outputPath": "dist/{projectRoot}",
+        "browser": "{projectRoot}/src/main.ts",
+        "tsConfig": "{projectRoot}/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/101-review-fatigue-starter/public"
+            "input": "{projectRoot}/public"
           }
         ],
         "styles": [
-          "apps/101-review-fatigue-starter/src/material-theme.scss",
-          "apps/101-review-fatigue-starter/src/styles.css"
+          "{projectRoot}/src/material-theme.scss",
+          "{projectRoot}/src/styles.css"
         ]
       },
       "configurations": {
@@ -69,7 +69,7 @@
       "executor": "@nx/web:file-server",
       "options": {
         "buildTarget": "101-review-fatigue-starter:build",
-        "staticFilePath": "dist/apps/101-review-fatigue-starter/browser",
+        "staticFilePath": "dist/{projectRoot}/browser",
         "spa": true
       }
     }
