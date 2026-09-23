@@ -32,5 +32,4 @@
 ## Notes
 
 - Validation passed on first iteration (2026-09-04).
-- Scope defaults documented in Assumptions: one recipe per day, current week only, no rollover, no shared plans.
 - Ready for `/speckit-plan`.

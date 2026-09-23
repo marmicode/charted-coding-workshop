@@ -6,7 +6,7 @@
 
 ## Summary
 
-Add a weekly meal plan to Whiskmate so users can assign existing recipes to days of the current calendar week (Monday–Sunday), view the plan at a glance, and update assignments (add, replace, remove, move). Technical approach: new `meal-plan` feature module in the Angular app with a signal-based `MealPlan` service persisting to `localStorage` (same pattern as `UserFavorites`), a `/meal-plan` route, and unit/component tests via Vitest.
+Add a weekly meal plan to Whiskmate so users can assign existing recipes to weekdays (Monday–Sunday), view the plan at a glance, and update assignments (add, replace, remove). The plan is a reusable template, not a dated calendar week. Technical approach: new `meal-plan` feature module in the Angular app with a signal-based `MealPlan` service persisting to `localStorage` (same pattern as `UserFavorites`), a `/meal-plan` route, add-from-Search, and unit/component tests via Vitest.
 
 ## Technical Context
 
@@ -17,21 +17,21 @@ Add a weekly meal plan to Whiskmate so users can assign existing recipes to days
 **Target Platform**: Web browser (SPA served by `@angular/build:dev-server`)  
 **Project Type**: Nx monorepo, single Angular frontend app (`apps/whiskmate`)  
 **Performance Goals**: Instant UI updates on assignment (<100ms perceived); no network latency (local data)  
-**Constraints**: Current calendar week only; one recipe per day; no backend; offline-capable via localStorage  
+**Constraints**: Monday–Sunday template with no week reset; one recipe per day; the same recipe may repeat; no backend; offline-capable via localStorage  
 **Scale/Scope**: Single user; 7 day slots; ~10 static recipes in seed data; 1 new route, ~5 new source files, tests
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 The project constitution (`.specify/memory/constitution.md`) is a template and has not been ratified. **Gate status: PASS (provisional)** — design follows established Whiskmate conventions:
 
-| Principle | Compliance |
-|-----------|--------------|
+| Principle               | Compliance                                                          |
+| ----------------------- | ------------------------------------------------------------------- |
 | Match existing patterns | `MealPlan` service mirrors `UserFavorites` (signals + localStorage) |
-| Test coverage | Vitest unit tests for service; component tests for page/slots |
-| Simplicity | No new libraries, no backend, no state management framework |
-| Independent testability | User stories map to service methods + UI `data-testid` contracts |
+| Test coverage           | Vitest unit tests for service; component tests for page/slots       |
+| Simplicity              | No new libraries, no backend, no state management framework         |
+| Independent testability | User stories map to service methods + UI `data-testid` contracts    |
 
 **Post-design re-check**: No violations. Complexity Tracking table not required.
 
@@ -65,8 +65,8 @@ apps/whiskmate/src/app/
 │   ├── recipe-repository.ts
 │   └── ...
 ├── meal-plan/                      # NEW feature folder
-│   ├── meal-plan.ts                # Service: state, persistence, week rollover
-│   ├── meal-plan-week.ts           # Weekday types, weekKey helpers, empty plan factory
+│   ├── meal-plan.ts                # Service: state, persistence, assignment rules
+│   ├── meal-plan-week.ts           # Weekday types and empty plan factory
 │   ├── meal-plan-page.ng.ts        # Main weekly plan view
 │   ├── day-slot.ng.ts              # Single day slot component
 │   ├── recipe-picker.ng.ts         # Recipe selection dialog/overlay
@@ -94,52 +94,51 @@ Completed — see [research.md](./research.md).
 **Resolved decisions**:
 
 1. `localStorage` persistence via `LocalStorage` service
-2. ISO week key (`YYYY-Www`) with automatic rollover
+2. Monday–Sunday template with no week key and no automatic reset
 3. Signal-based `MealPlan` injectable service
-4. Recipe ID references with broken-state handling at resolve time
-5. Dedicated `/meal-plan` route with in-page recipe picker
+4. Recipe ID references; a missing id renders that day empty and the slot stays
+5. Dedicated `/meal-plan` route, in-page recipe picker, and add-from-Search weekday picker
 6. Vitest for service and component tests
 
 ## Phase 1: Design & Contracts
 
 Completed — artifacts:
 
-| Artifact | Path | Purpose |
-|----------|------|---------|
-| Data model | [data-model.md](./data-model.md) | Entities, storage schema, validation rules |
-| Route contract | [contracts/routes.md](./contracts/routes.md) | `/meal-plan` route and nav |
-| Service contract | [contracts/meal-plan-service.md](./contracts/meal-plan-service.md) | `MealPlan` public API and behavior |
-| UI contract | [contracts/ui-components.md](./contracts/ui-components.md) | Components and `data-testid` selectors |
-| Quickstart | [quickstart.md](./quickstart.md) | Manual and automated validation guide |
+| Artifact         | Path                                                               | Purpose                                    |
+| ---------------- | ------------------------------------------------------------------ | ------------------------------------------ |
+| Data model       | [data-model.md](./data-model.md)                                   | Entities, storage schema, validation rules |
+| Route contract   | [contracts/routes.md](./contracts/routes.md)                       | `/meal-plan` route and nav                 |
+| Service contract | [contracts/meal-plan-service.md](./contracts/meal-plan-service.md) | `MealPlan` public API and behavior         |
+| UI contract      | [contracts/ui-components.md](./contracts/ui-components.md)         | Components and `data-testid` selectors     |
+| Quickstart       | [quickstart.md](./quickstart.md)                                   | Manual and automated validation guide      |
 
 ### Implementation sequence (for `/speckit-tasks`)
 
 Recommended task ordering:
 
-1. **Foundation**: `meal-plan-week.ts` (types, `getCurrentWeekKey`, `createEmptyPlan`)
-2. **Service**: `meal-plan.ts` with persistence, assign/remove/move, broken resolution
-3. **Service tests**: `meal-plan.spec.ts` (persistence, rollover, validation)
+1. **Foundation**: `meal-plan-week.ts` (types, `createEmptyPlan`)
+2. **Service**: `meal-plan.ts` with persistence, assign/remove, and missing-id resolution
+3. **Service tests**: `meal-plan.spec.ts` (persistence, validation)
 4. **Routing**: `meal-plan.router-helper.ts`, route in `app.routes.ts`, nav link in `app.ts`
 5. **UI — DaySlot**: `day-slot.ng.ts` + tests
 6. **UI — RecipePicker**: `recipe-picker.ng.ts`
 7. **UI — MealPlanPage**: `meal-plan-page.ng.ts` + tests, wire picker
-8. **Polish**: empty state, broken state styling, accessibility labels
+8. **Polish**: empty state, accessibility labels
 9. **Verify**: run quickstart scenarios
 
 ### Key integration points
 
-| Existing code | Integration |
-|---------------|-------------|
-| `RecipeRepository` | Validate and resolve recipe IDs in `MealPlan` |
-| `LocalStorage` | Persist `whiskmate:meal-plan` JSON blob |
+| Existing code                    | Integration                                      |
+| -------------------------------- | ------------------------------------------------ |
+| `RecipeRepository`               | Validate and resolve recipe IDs in `MealPlan`    |
+| `LocalStorage`                   | Persist `whiskmate:meal-plan` JSON blob          |
 | `RecipeFilter` / `RecipePreview` | Reuse in `RecipePicker` for consistent search UX |
-| `App` navbar | Add `MEAL PLAN` link alongside `SEARCH` |
+| `App` navbar                     | Add `MEAL PLAN` link alongside `SEARCH`          |
 
 ### Out of scope (deferred)
 
-- Add-to-plan action from `RecipePreview` card (spec US1 scenario 2) — can be a follow-up task
 - Drag-and-drop between days
-- Past/future week navigation
+- Dated calendar weeks, including past or future weeks
 - Shopping list generation from plan
 
 ## Next Step

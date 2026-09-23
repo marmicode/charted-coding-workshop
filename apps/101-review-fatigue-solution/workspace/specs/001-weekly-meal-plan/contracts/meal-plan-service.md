@@ -11,16 +11,9 @@
 ## Public interface
 
 ```typescript
-export type Weekday =
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday'
-  | 'sunday';
+export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
-export type DaySlotStatus = 'empty' | 'assigned' | 'broken';
+export type DaySlotStatus = 'empty' | 'assigned';
 
 export interface DaySlotView {
   day: Weekday;
@@ -32,23 +25,17 @@ export interface DaySlotView {
 }
 
 export interface MealPlanServiceDef {
-  /** Reactive list of seven day slots for the current week, Monday-first. */
+  /** Reactive list of seven day slots, Monday through Sunday, including empty days. */
   readonly daySlots: Signal<readonly DaySlotView[]>;
 
-  /** Whether the entire week has no assignments (for empty-state messaging). */
+  /** True when every weekday renders empty. An unknown recipe id counts as empty. */
   readonly isEmpty: Signal<boolean>;
 
-  /** ISO week key for the loaded plan (e.g. "2026-W36"). */
-  readonly weekKey: Signal<string>;
-
-  /** Assign a recipe to a day. Replaces any existing assignment. Throws or no-ops if recipeId invalid. */
+  /** Assign a recipe to a weekday. The same recipe may be planned on more than one day. Replaces the recipe if that day already has one. No-ops if recipeId is not in the collection. */
   assignRecipe(day: Weekday, recipeId: string): void;
 
-  /** Clear the assignment for a day. No-op if already empty. */
+  /** Clear the assignment for a weekday. No-op if that day renders empty. */
   removeAssignment(day: Weekday): void;
-
-  /** Move assignment from one day to another. Target day receives recipe; source becomes empty. */
-  moveAssignment(fromDay: Weekday, toDay: Weekday): void;
 }
 ```
 
@@ -56,44 +43,36 @@ export interface MealPlanServiceDef {
 
 ### assignRecipe(day, recipeId)
 
-| Precondition | Postcondition |
-|--------------|---------------|
-| `recipeId` exists in recipe collection | `day` slot shows `status: 'assigned'` with resolved recipe name |
-| `day` already has a recipe | Previous recipe replaced (FR-004) |
-| `recipeId` does not exist | Assignment rejected; no persistence change (FR-011) |
-| Any successful mutation | `localStorage` updated immediately (FR-007) |
+| Precondition                                  | Postcondition                                                               |
+| --------------------------------------------- | --------------------------------------------------------------------------- |
+| `recipeId` exists in recipe collection        | `day` slot shows `status: 'assigned'` with resolved recipe name and picture |
+| `day` already has a recipe                    | Previous recipe replaced (FR-004). No confirmation dialog                   |
+| `recipeId` is already assigned to another day | Both days show that recipe (FR-008)                                         |
+| `recipeId` does not exist                     | Assignment rejected; no persistence change (FR-010)                         |
+| Any successful mutation                       | `localStorage` updated immediately (FR-006)                                 |
 
 ### removeAssignment(day)
 
-| Precondition | Postcondition |
-|--------------|---------------|
-| Day has assigned or broken slot | Day becomes `status: 'empty'` |
-| Day already empty | No-op |
-| Recipe in collection | Recipe remains in collection (FR-005) |
+| Precondition              | Postcondition                         |
+| ------------------------- | ------------------------------------- |
+| Day renders as assigned   | Day becomes `status: 'empty'`         |
+| Day already renders empty | No-op                                 |
+| Recipe in collection      | Recipe remains in collection (FR-005) |
 
-### moveAssignment(fromDay, toDay)
+### Load (internal, on init)
 
-| Precondition | Postcondition |
-|--------------|---------------|
-| Source day has assignment | Source becomes empty; target shows recipe |
-| Source day empty | No-op |
-| Target day has assignment | Target assignment overwritten by moved recipe |
-| Same recipe on multiple days elsewhere | Unaffected (FR-009) |
-
-### Week rollover (internal, on init and before reads)
-
-| Condition | Behavior |
-|-----------|----------|
-| Stored `weekKey` === current week | Load assignments as-is |
-| Stored `weekKey` !== current week | Discard stored data; create empty plan for current week |
-| No stored data | Create empty plan for current week |
-| Corrupt JSON in storage | Fall back to empty plan for current week |
+| Condition                              | Behavior                                                            |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| Stored assignments present             | Load them. Reloading restores the same weekdays                     |
+| No stored data                         | Create an empty Monday–Sunday plan                                  |
+| Corrupt JSON in storage                | Fall back to an empty Monday–Sunday plan                            |
+| Stored recipe id not in the collection | That day renders `status: 'empty'`. The weekday slot stays (FR-011) |
 
 ## Dependencies
 
-| Dependency | Usage |
-|------------|-------|
-| `LocalStorage` | Read/write `whiskmate:meal-plan` key |
+| Dependency         | Usage                                         |
+| ------------------ | --------------------------------------------- |
+| `LocalStorage`     | Read/write `whiskmate:meal-plan` key          |
 | `RecipeRepository` | Validate recipe IDs; resolve names and images |
 
 ## Storage key

@@ -5,11 +5,11 @@
 
 ## Application routes
 
-| Path | Component | Nav label | Description |
-|------|-----------|-----------|-------------|
-| `/search` | `RecipeSearch` | SEARCH | Existing recipe browse/search (unchanged) |
-| `/meal-plan` | `MealPlanPage` | MEAL PLAN | Weekly meal plan view (new) |
-| `/` | — | — | Redirects to `/search` (unchanged) |
+| Path         | Component      | Nav label | Description                               |
+| ------------ | -------------- | --------- | ----------------------------------------- |
+| `/search`    | `RecipeSearch` | SEARCH    | Existing recipe browse/search (unchanged) |
+| `/meal-plan` | `MealPlanPage` | MEAL PLAN | Weekly meal plan view (new)               |
+| `/`          | —              | —         | Redirects to `/search` (unchanged)        |
 
 ## Router helper
 
@@ -35,6 +35,6 @@ export const mealPlanRouterHelper = {
 
 ## Deep linking
 
-- Visiting `/meal-plan` directly MUST render the current week's plan.
+- Visiting `/meal-plan` directly MUST render the Monday–Sunday plan.
 - No query parameters required for v1.
 - No route guards; feature is available to all users (single-user app).

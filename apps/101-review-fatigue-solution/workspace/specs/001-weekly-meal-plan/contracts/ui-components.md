@@ -8,13 +8,14 @@
 ```text
 MealPlanPage
 ├── (empty state) NoMealPlan / inline message
-├── DaySlot × 7
+├── DaySlot × 7 (Monday through Sunday, including empty days)
 │   ├── day label
-│   ├── recipe name / empty prompt / broken message
-│   └── actions: Add | Change | Remove | Move
+│   ├── recipe name and picture, or empty prompt
+│   └── actions: Add | Change | Remove
 └── RecipePicker (dialog or overlay)
     ├── RecipeFilter (reused)
-    └── RecipePreview rows (selectable) OR compact recipe list
+    ├── Catalog (reused)
+    └── RecipePreview rows (selectable)
 ```
 
 ## MealPlanPage
@@ -22,43 +23,41 @@ MealPlanPage
 **Selector**: `wm-meal-plan-page`  
 **Route**: `/meal-plan`
 
-| Element | `data-testid` | Content / behavior |
-|---------|---------------|-------------------|
-| Page root | `meal-plan-page` | Container for weekly plan |
-| Page title | `meal-plan-title` | "Weekly Meal Plan" (or similar) |
-| Week indicator | `meal-plan-week` | Current week label (e.g. "Week of Sep 1, 2026") |
-| Empty state | `meal-plan-empty` | Shown when `isEmpty()` is true; prompts user to add recipes |
-| Day slots container | `meal-plan-days` | Wraps seven `DaySlot` components |
+| Element             | `data-testid`     | Content / behavior                                             |
+| ------------------- | ----------------- | -------------------------------------------------------------- |
+| Page root           | `meal-plan-page`  | Container for weekly plan                                      |
+| Page title          | `meal-plan-title` | "Weekly Meal Plan" (or similar)                                |
+| Day slots container | `meal-plan-days`  | Always wraps seven `DaySlot` components, Monday through Sunday |
 
 ## DaySlot
 
 **Selector**: `wm-day-slot`  
 **Inputs**: `slot: DaySlotView`
 
-| Element | `data-testid` | Content / behavior |
-|---------|---------------|-------------------|
-| Slot root | `day-slot-{weekday}` | e.g. `day-slot-monday` |
-| Day label | `day-slot-label` | "Monday", etc. |
-| Recipe name | `day-slot-recipe-name` | Recipe name when assigned; hidden when empty |
-| Empty prompt | `day-slot-empty` | e.g. "No meal planned" when `status === 'empty'` |
-| Broken message | `day-slot-broken` | e.g. "Recipe unavailable" when `status === 'broken'` |
-| Add button | `day-slot-add` | Opens recipe picker; visible when empty |
-| Change button | `day-slot-change` | Opens recipe picker; visible when assigned or broken |
-| Remove button | `day-slot-remove` | Clears assignment; visible when assigned or broken |
+| Element        | `data-testid`             | Content / behavior                                                                                    |
+| -------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Slot root      | `day-slot-{weekday}`      | e.g. `day-slot-monday`                                                                                |
+| Day label      | `day-slot-label`          | "Monday", etc.                                                                                        |
+| Recipe name    | `day-slot-recipe-name`    | Recipe name when assigned; hidden when empty                                                          |
+| Recipe picture | `day-slot-recipe-picture` | Recipe picture when assigned; hidden when empty                                                       |
+| Empty prompt   | `day-slot-empty`          | e.g. "No meal planned" when `status === 'empty'`, including a stored id that is not in the collection |
+| Add button     | `day-slot-add`            | Opens recipe picker; visible when empty                                                               |
+| Change button  | `day-slot-change`         | Opens recipe picker; visible when assigned. Selecting a recipe replaces the previous one              |
+| Remove button  | `day-slot-remove`         | Clears assignment; visible when assigned                                                              |
 
 ## RecipePicker
 
 **Selector**: `wm-recipe-picker`  
 **Role**: Modal/dialog for selecting a recipe to assign to a target day
 
-| Element | `data-testid` | Content / behavior |
-|---------|---------------|-------------------|
-| Picker root | `recipe-picker` | Dialog container |
-| Picker title | `recipe-picker-title` | e.g. "Choose a recipe for Monday" |
-| Recipe option | `recipe-picker-option-{recipeId}` | Selectable row per recipe |
-| Confirm / select | `recipe-picker-select` | On recipe row click or explicit select button |
-| Cancel | `recipe-picker-cancel` | Closes without assignment |
-| No recipes | `recipe-picker-empty` | Message when collection is empty; link to search |
+| Element          | `data-testid`                     | Content / behavior                                                       |
+| ---------------- | --------------------------------- | ------------------------------------------------------------------------ |
+| Picker root      | `recipe-picker`                   | Dialog container                                                         |
+| Picker title     | `recipe-picker-title`             | e.g. "Choose a recipe for Monday"                                        |
+| Recipe option    | `recipe-picker-option-{recipeId}` | Selectable row per recipe                                                |
+| Confirm / select | `recipe-picker-select`            | On recipe row click or explicit select button                            |
+| Cancel           | `recipe-picker-cancel`            | Closes without assignment                                                |
+| No recipes       | `recipe-picker-empty`             | "No recipes found" when no recipe matches, including an empty collection |
 
 ## Interaction flows
 
@@ -72,19 +71,13 @@ MealPlanPage
 ### View plan (P2)
 
 1. User navigates to `/meal-plan`.
-2. `meal-plan-page` renders seven `day-slot-*` elements in Monday–Sunday order.
-3. Assigned days show recipe names; unassigned days show `day-slot-empty`.
+2. `meal-plan-page` renders seven `day-slot-*` elements in Monday–Sunday order, including when every day is empty.
+3. Assigned days show the recipe name and picture; unassigned days, and days whose stored id is missing from the collection, show `day-slot-empty`.
 
 ### Remove recipe (P3)
 
 1. User clicks `day-slot-remove` on an assigned day.
 2. Slot returns to empty state (`day-slot-empty` visible, `day-slot-recipe-name` absent).
-
-### Move recipe (P3)
-
-1. User chooses "Move" action on an assigned day (button `day-slot-move` or via change flow).
-2. User picks target day.
-3. Source day becomes empty; target day shows the recipe.
 
 ## Accessibility
 
