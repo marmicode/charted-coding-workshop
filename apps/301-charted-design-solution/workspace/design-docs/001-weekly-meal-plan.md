@@ -129,14 +129,7 @@ export interface RecipeRepositoryDef {
 ## Tasks
 
 ```ts
-export type Weekday =
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday'
-  | 'sunday';
+export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
 /**
  * Recipe ids per weekday, not recipe snapshots.
@@ -354,11 +347,6 @@ export interface WeekdayPicker {
 - [ ] Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
 
 ## Testing Strategy
-
-### 🚧 Shows the Meal Plan link with the wip flag removed
-
-- Mount `App` with the `wip` flag unset.
-- Assert the navbar shows Meal Plan next to Search, targeting `/meal-plan`.
 
 ### 🚧 Shows Add to meal plan with the wip flag removed
 
