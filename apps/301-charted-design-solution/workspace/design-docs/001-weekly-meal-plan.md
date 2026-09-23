@@ -34,29 +34,29 @@
 # Design
 
 - Add a `MealPlan` page at `/meal-plan`, wired like `RecipeSearch` via a router helper and a navbar link.
-- Persist weekday assignments in `UserMealPlan` with `LocalStorage`, same pattern as `UserFavorites`.
+- Persist weekday assignments in `MealPlanStore` with `LocalStorage`, same pattern as `UserFavorites`.
 - Store recipe ids per weekday, not recipe snapshots, so the name and picture stay in sync with the catalog.
 - Resolve each id through `RecipeRepository.getById({id: string})`. A missing id renders as empty.
 - `MealPlanDay` shows the weekday label, the recipe name and picture or the empty state, and emits remove.
-- Search keeps the user on the page. `WeekdayPicker` on `RecipePreview` confirms a weekday and calls `UserMealPlan.assign`.
-- `RecipePreview` disables "Add to meal plan" when `UserMealPlan` already holds that recipe id.
+- Search keeps the user on the page. `WeekdayPicker` on `RecipePreview` confirms a weekday and calls `MealPlanStore.assign`.
+- `RecipePreview` disables "Add to meal plan" when `MealPlanStore.canAdd` is false for that recipe id.
 
 ## Diagram
 
 ```mermaid
 flowchart TD
   RecipeRepository(["RecipeRepository"])
-  UserMealPlan(["UserMealPlan"])
+  MealPlanStore(["MealPlanStore"])
 
   MealPlan -->|"[weekday: Weekday]<br>[recipe: Recipe]"| MealPlanDay
   MealPlanDay -->|"(remove: void)"| MealPlan
-  MealPlan -->|"assignments(): WeekdayAssignments"| UserMealPlan
-  MealPlan -->|"clear({weekday: Weekday}): void"| UserMealPlan
+  MealPlan -->|"assignments(): WeekdayAssignments"| MealPlanStore
+  MealPlan -->|"clear({weekday: Weekday}): void"| MealPlanStore
   MealPlan -->|"getById({id: string}): Recipe | undefined"| RecipeRepository
 
-  RecipePreview -->|"contains({recipeId: string}): boolean"| UserMealPlan
+  RecipePreview -->|"canAdd({recipeId: string}): boolean"| MealPlanStore
   WeekdayPicker -->|"(select: Weekday)"| RecipePreview
-  RecipePreview -->|"assign({weekday: Weekday, recipeId: string}): void"| UserMealPlan
+  RecipePreview -->|"assign({weekday: Weekday, recipeId: string}): void"| MealPlanStore
 ```
 
 ## Implementation Details
@@ -71,20 +71,20 @@ export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday'
  */
 export type WeekdayAssignments = Record<Weekday, string | null>;
 
-export interface UserMealPlan {
+export interface MealPlanStore {
   assignments(): WeekdayAssignments;
 
   /**
    * Stores the recipe id on that weekday and replaces any id already there.
    * No confirmation.
-   * Callers disable the action when `contains` is true, so the same id is not assigned twice.
+   * Callers disable the action when `canAdd` is false, so the same id is not assigned twice.
    */
   assign(params: { weekday: Weekday; recipeId: string }): void;
 
   clear(params: { weekday: Weekday }): void;
 
-  /** True when that recipe id is already on a weekday. */
-  contains(params: { recipeId: string }): boolean;
+  /** False when that recipe id is already on a weekday. */
+  canAdd(params: { recipeId: string }): boolean;
 }
 
 export interface RecipeRepositoryDef {
@@ -106,11 +106,11 @@ export interface WeekdayPicker {
 
 # Testing Strategy
 
-## UserMealPlan
+## MealPlanStore
 
 ### Replaces the recipe on a weekday
 
-- Arrange an empty `UserMealPlan`.
+- Arrange an empty `MealPlanStore`.
 - `assign({ weekday: 'monday', recipeId: 'shakshuka' })`.
 - `assign({ weekday: 'monday', recipeId: 'hummus' })`.
 - Assert Monday is `'hummus'` and the other six days are null.
@@ -121,16 +121,16 @@ export interface WeekdayPicker {
 - `clear({ weekday: 'monday' })`.
 - Assert Monday is null and the other days are unchanged.
 
-### Reports that a recipe is already planned
+### Allows add only when the recipe is not already planned
 
 - Arrange Wednesday as `'shakshuka'`.
-- Assert `contains({ recipeId: 'shakshuka' })` is true.
-- Assert `contains({ recipeId: 'hummus' })` is false.
+- Assert `canAdd({ recipeId: 'shakshuka' })` is false.
+- Assert `canAdd({ recipeId: 'hummus' })` is true.
 
 ### Restores assignments after reload
 
 - Arrange `LocalStorage` with Monday `'shakshuka'` and the other days null.
-- Construct `UserMealPlan`.
+- Construct `MealPlanStore`.
 - Assert `assignments()` matches that stored week.
 - `assign({ weekday: 'tuesday', recipeId: 'hummus' })`.
 - Assert `LocalStorage` now has Tuesday `'hummus'`.
@@ -152,7 +152,7 @@ export interface WeekdayPicker {
 
 ### Shows seven empty weekdays
 
-- Arrange `UserMealPlan` with every day null.
+- Arrange `MealPlanStore` with every day null.
 - Mount `MealPlan`.
 - Assert Monday through Sunday are shown, in that order.
 - Assert each day says no recipe is planned.
@@ -199,7 +199,7 @@ export interface WeekdayPicker {
 
 ### Asks which weekday, then assigns it
 
-- Arrange `contains` false for Shakshuka.
+- Arrange `canAdd` true for Shakshuka.
 - Mount `RecipePreview` with Shakshuka.
 - Choose "Add to meal plan".
 - Assert the weekday picker is open.
@@ -208,14 +208,14 @@ export interface WeekdayPicker {
 
 ### Disables add when the recipe is already planned
 
-- Arrange `contains({ recipeId: shakshukaId })` true.
+- Arrange `canAdd({ recipeId: shakshukaId })` false.
 - Mount `RecipePreview` with Shakshuka.
 - Assert "Add to meal plan" is disabled.
 - Assert the weekday picker does not open.
 
 ### Leaves the plan unchanged when the picker is dismissed
 
-- Arrange `contains` false.
+- Arrange `canAdd` true.
 - Mount `RecipePreview` with Shakshuka.
 - Open "Add to meal plan", then dismiss the picker.
 - Assert `assign` was not called.
