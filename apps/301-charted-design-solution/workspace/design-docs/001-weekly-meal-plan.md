@@ -103,3 +103,133 @@ export interface WeekdayPicker {
   weekdaySelected: Weekday;
 }
 ```
+
+# Testing Strategy
+
+## UserMealPlan
+
+### Replaces the recipe on a weekday
+
+- Arrange an empty `UserMealPlan`.
+- `assign({ weekday: 'monday', recipeId: 'shakshuka' })`.
+- `assign({ weekday: 'monday', recipeId: 'hummus' })`.
+- Assert Monday is `'hummus'` and the other six days are null.
+
+### Clears a weekday
+
+- Arrange Monday as `'shakshuka'`.
+- `clear({ weekday: 'monday' })`.
+- Assert Monday is null and the other days are unchanged.
+
+### Reports that a recipe is already planned
+
+- Arrange Wednesday as `'shakshuka'`.
+- Assert `contains({ recipeId: 'shakshuka' })` is true.
+- Assert `contains({ recipeId: 'hummus' })` is false.
+
+### Restores assignments after reload
+
+- Arrange `LocalStorage` with Monday `'shakshuka'` and the other days null.
+- Construct `UserMealPlan`.
+- Assert `assignments()` matches that stored week.
+- `assign({ weekday: 'tuesday', recipeId: 'hummus' })`.
+- Assert `LocalStorage` now has Tuesday `'hummus'`.
+
+## RecipeRepository
+
+### Returns a recipe by id
+
+- Arrange the catalog to include Shakshuka.
+- Call `getById({ id: shakshukaId })`.
+- Assert the result is Shakshuka.
+
+### Returns undefined for an unknown id
+
+- Call `getById({ id: 'missing' })`.
+- Assert the result is undefined.
+
+## MealPlan
+
+### Shows seven empty weekdays
+
+- Arrange `UserMealPlan` with every day null.
+- Mount `MealPlan`.
+- Assert Monday through Sunday are shown, in that order.
+- Assert each day says no recipe is planned.
+
+### Shows the name and picture of a planned recipe
+
+- Arrange Monday as Shakshuka's id. `getById` returns Shakshuka.
+- Mount `MealPlan`.
+- Assert Monday shows "Shakshuka" and Shakshuka's picture.
+- Assert the other days say no recipe is planned.
+
+### Renders a missing recipe as an empty day
+
+- Arrange Monday as `'missing'`. `getById` returns undefined.
+- Mount `MealPlan`.
+- Assert Monday says no recipe is planned.
+- Assert the Monday slot is still shown.
+
+### Clears a day
+
+- Arrange Monday as Shakshuka.
+- Mount `MealPlan`.
+- Remove Monday's recipe.
+- Assert `clear({ weekday: 'monday' })` ran.
+- Assert Monday says no recipe is planned.
+
+## MealPlanDay
+
+### Shows the empty state
+
+- Mount `MealPlanDay` with `weekday` `'monday'` and `recipe` null.
+- Assert the label is Monday.
+- Assert it says no recipe is planned.
+- Assert there is no remove control.
+
+### Shows the recipe and emits remove
+
+- Mount `MealPlanDay` with Shakshuka.
+- Assert the name "Shakshuka" and Shakshuka's picture.
+- Trigger remove.
+- Assert `remove` emitted.
+
+## RecipePreview
+
+### Asks which weekday, then assigns it
+
+- Arrange `contains` false for Shakshuka.
+- Mount `RecipePreview` with Shakshuka.
+- Choose "Add to meal plan".
+- Assert the weekday picker is open.
+- Confirm Wednesday.
+- Assert `assign({ weekday: 'wednesday', recipeId: shakshukaId })` ran.
+
+### Disables add when the recipe is already planned
+
+- Arrange `contains({ recipeId: shakshukaId })` true.
+- Mount `RecipePreview` with Shakshuka.
+- Assert "Add to meal plan" is disabled.
+- Assert the weekday picker does not open.
+
+### Leaves the plan unchanged when the picker is dismissed
+
+- Arrange `contains` false.
+- Mount `RecipePreview` with Shakshuka.
+- Open "Add to meal plan", then dismiss the picker.
+- Assert `assign` was not called.
+
+## WeekdayPicker
+
+### Emits the confirmed weekday
+
+- Mount `WeekdayPicker`.
+- Confirm Friday.
+- Assert `weekdaySelected` emitted `'friday'`.
+
+### Does not emit when dismissed
+
+- Mount `WeekdayPicker`.
+- Dismiss it without choosing a day.
+- Assert `weekdaySelected` did not emit.
