@@ -1,0 +1,154 @@
+{
+  "skill_name": "codesign",
+  "evals": [
+    {
+      "id": 0,
+      "name": "angular-saved-filters",
+      "prompt": "I want to add saved filters to the recipe search in our Angular app — you pick a few filters, name the combo, and it shows up as a chip you can click later. Before I start building it let's write a design doc.",
+      "expected_output": "design-docs/<slug>.md containing all six chapters in order, each written after its own round of interview questions, with a hand-back menu between chapters. An interview log showing concrete, proposal-shaped options.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "doc-written-to-design-docs",
+          "text": "A single design doc markdown file exists under design-docs/."
+        },
+        {
+          "name": "six-chapters-exact-order",
+          "text": "The doc contains exactly the six required H2 chapters — Goals, Non-Goals, Desired Behavior, Design & Implementation Details, Testing Strategy, Alternatives Considered — in that order, with no extra or missing chapters."
+        },
+        {
+          "name": "no-chapter-left-pending",
+          "text": "No chapter is left as _Pending._ or empty at the end of the run."
+        },
+        {
+          "name": "interviewed-chapter-by-chapter",
+          "text": "The interview log contains at least 6 distinct question rounds, and they appear in chapter order rather than as one upfront question dump before any writing."
+        },
+        {
+          "name": "handback-menu-between-chapters",
+          "text": "At least 5 next-step / hand-back menus appear in the log, each offering a continue option plus a revise or dig-deeper option."
+        },
+        {
+          "name": "options-are-concrete-proposals",
+          "text": "At least 70% of the logged options are concrete, specific proposals the user could paste into the doc — not abstract categories like Simple/Complex, Yes/No, or Option A/Option B."
+        },
+        {
+          "name": "multiselect-and-preview-used",
+          "text": "The log contains at least one question with multiSelect: true and at least one option carrying a preview."
+        },
+        {
+          "name": "non-goals-carry-reasons",
+          "text": "Every entry in the Non-Goals chapter states why not, or not yet — no bare list items."
+        },
+        {
+          "name": "alternatives-name-revisit-trigger",
+          "text": "Alternatives Considered says why each alternative lost, and at least one entry names a concrete condition that would make the team revisit it."
+        },
+        {
+          "name": "goals-are-outcome-shaped",
+          "text": "The Goals chapter states outcomes, not solutions — no specific implementation (localStorage, a library, a component name) is named as a goal."
+        },
+        {
+          "name": "persona-constraints-recorded",
+          "text": "The doc records Sam's actual stated constraints: localStorage for v1 with server sync deferred, no new state management library, testing through the component with faked HTTP rather than isolated store unit tests, and the stale-diet-tag edge case."
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "redis-session-migration",
+      "prompt": "we're moving session storage off the in-memory map onto redis because we're about to run more than one node. can you put a design doc in design-docs for it",
+      "expected_output": "Same six-chapter doc, in a backend/infra domain. Testing Strategy should address the seam (what talks to a real Redis vs. what is faked) and Alternatives Considered should carry revisit triggers.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "doc-written-to-design-docs",
+          "text": "A single design doc markdown file exists under design-docs/."
+        },
+        {
+          "name": "six-chapters-exact-order",
+          "text": "The doc contains exactly the six required H2 chapters — Goals, Non-Goals, Desired Behavior, Design & Implementation Details, Testing Strategy, Alternatives Considered — in that order, with no extra or missing chapters."
+        },
+        {
+          "name": "no-chapter-left-pending",
+          "text": "No chapter is left as _Pending._ or empty at the end of the run."
+        },
+        {
+          "name": "interviewed-chapter-by-chapter",
+          "text": "The interview log contains at least 6 distinct question rounds, and they appear in chapter order rather than as one upfront question dump before any writing."
+        },
+        {
+          "name": "handback-menu-between-chapters",
+          "text": "At least 5 next-step / hand-back menus appear in the log, each offering a continue option plus a revise or dig-deeper option."
+        },
+        {
+          "name": "options-are-concrete-proposals",
+          "text": "At least 70% of the logged options are concrete, specific proposals the user could paste into the doc — not abstract categories like Simple/Complex, Yes/No, or Option A/Option B."
+        },
+        {
+          "name": "multiselect-and-preview-used",
+          "text": "The log contains at least one question with multiSelect: true and at least one option carrying a preview."
+        },
+        {
+          "name": "non-goals-carry-reasons",
+          "text": "Every entry in the Non-Goals chapter states why not, or not yet — no bare list items."
+        },
+        {
+          "name": "alternatives-name-revisit-trigger",
+          "text": "Alternatives Considered says why each alternative lost, and at least one entry names a concrete condition that would make the team revisit it. Sticky sessions should appear as a rejected alternative."
+        },
+        {
+          "name": "testing-strategy-names-the-seam",
+          "text": "Testing Strategy states what talks to a real Redis versus what is faked, and at which seam — not just a generic unit/integration/e2e pyramid."
+        },
+        {
+          "name": "persona-constraints-recorded",
+          "text": "The doc records Alex's actual stated constraints: no logout storm during rollout, sub-5ms p99 lookup, an in-memory implementation kept behind the same interface so Redis stays optional for local dev and CI, and TTL handled by Redis expiry rather than a sweeper."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "resume-partial-doc",
+      "prompt": "let's continue the design doc for offline mode",
+      "expected_output": "Resumes at Desired Behavior. The existing Goals and Non-Goals chapters are left byte-identical, not rewritten or re-interviewed.",
+      "files": [
+        "evals/fixtures/offline-mode.md"
+      ],
+      "assertions": [
+        {
+          "name": "existing-chapters-untouched",
+          "text": "The pre-existing Goals and Non-Goals chapters are byte-identical to the fixture — not rewritten, reworded, or reordered."
+        },
+        {
+          "name": "resumed-at-desired-behavior",
+          "text": "The run resumed at Desired Behavior: the log contains no interview questions re-litigating Goals or Non-Goals, and the first question round is about Desired Behavior."
+        },
+        {
+          "name": "no-chapter-left-pending",
+          "text": "The four remaining chapters are filled in; no _Pending._ placeholder is left."
+        },
+        {
+          "name": "interviewed-chapter-by-chapter",
+          "text": "The interview log contains at least 4 question rounds, appearing in chapter order rather than as one upfront question dump."
+        },
+        {
+          "name": "handback-menu-between-chapters",
+          "text": "At least 3 next-step / hand-back menus appear in the log, each offering a continue option plus a revise or dig-deeper option."
+        },
+        {
+          "name": "options-are-concrete-proposals",
+          "text": "At least 70% of the logged options are concrete, specific proposals the user could paste into the doc — not abstract categories."
+        },
+        {
+          "name": "alternatives-name-revisit-trigger",
+          "text": "Alternatives Considered says why each alternative lost, and at least one entry names a concrete condition that would make the team revisit it. IndexedDB-by-hand should appear as a rejected alternative."
+        },
+        {
+          "name": "persona-constraints-recorded",
+          "text": "The doc records Sam's actual stated decisions: service worker + Cache API, read path only, stale cached copy shown with a visible date marker rather than blocked, the cache decision behind a plain injectable so it is testable without a service worker, and a single app-wide offline signal."
+        }
+      ]
+    }
+  ]
+}
