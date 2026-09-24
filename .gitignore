@@ -51,3 +51,4 @@ Thumbs.db
 tmp
 
 vitest.config.*.timestamp*
+.vitest-attachments
