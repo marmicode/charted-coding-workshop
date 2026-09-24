@@ -43,6 +43,7 @@
     "@vitest/browser-playwright": "~4.1.11",
     "@vitest/coverage-v8": "~4.1.0",
     "@vitest/ui": "~4.1.0",
+    "@wallabyjs/cli": "1.0.26",
     "angular-eslint": "^22.1.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
