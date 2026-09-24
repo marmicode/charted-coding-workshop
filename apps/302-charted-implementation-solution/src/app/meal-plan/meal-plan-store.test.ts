@@ -3,7 +3,7 @@ import { describe, it } from 'vitest';
 import { MealPlanStore } from './meal-plan-store';
 
 describe(MealPlanStore.name, () => {
-  it.todo('replaces the recipe on a weekday', () => {
+  it('replaces the recipe on a weekday', () => {
     TestBed.resetTestingModule();
     const store = TestBed.inject(MealPlanStore);
 
@@ -21,7 +21,7 @@ describe(MealPlanStore.name, () => {
     });
   });
 
-  it.todo('clears a weekday', () => {
+  it('clears a weekday', () => {
     TestBed.resetTestingModule();
     const store = TestBed.inject(MealPlanStore);
     store.assign({ weekday: 'monday', recipeId: 'shakshuka' });
@@ -39,7 +39,7 @@ describe(MealPlanStore.name, () => {
     });
   });
 
-  it.todo('allows add only when the recipe is not already planned', () => {
+  it('allows add only when the recipe is not already planned', () => {
     TestBed.resetTestingModule();
     const store = TestBed.inject(MealPlanStore);
     store.assign({ weekday: 'wednesday', recipeId: 'shakshuka' });

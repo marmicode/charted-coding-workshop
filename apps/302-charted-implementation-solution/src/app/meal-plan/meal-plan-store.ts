@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 export type Weekday =
   | 'monday'
@@ -16,27 +16,43 @@ export type Weekday =
  */
 export type WeekdayAssignments = Record<Weekday, string | null>;
 
-/**
- * @deprecated 🚧 work in progress
- */
 @Injectable({ providedIn: 'root' })
 export class MealPlanStore {
+  private readonly _assignments = signal<WeekdayAssignments>({
+    monday: null,
+    tuesday: null,
+    wednesday: null,
+    thursday: null,
+    friday: null,
+    saturday: null,
+    sunday: null,
+  });
+
   assignments(): WeekdayAssignments {
-    throw new Error('🚧 work in progress');
+    return this._assignments();
   }
 
-  assign(params: { weekday: Weekday; recipeId: string }): void {
-    void params;
-    throw new Error('🚧 work in progress');
+  assign({
+    weekday,
+    recipeId,
+  }: {
+    weekday: Weekday;
+    recipeId: string;
+  }): void {
+    this._assignments.update((assignments) => ({
+      ...assignments,
+      [weekday]: recipeId,
+    }));
   }
 
-  clear(params: { weekday: Weekday }): void {
-    void params;
-    throw new Error('🚧 work in progress');
+  clear({ weekday }: { weekday: Weekday }): void {
+    this._assignments.update((assignments) => ({
+      ...assignments,
+      [weekday]: null,
+    }));
   }
 
-  canAdd(params: { recipeId: string }): boolean {
-    void params;
-    throw new Error('🚧 work in progress');
+  canAdd({ recipeId }: { recipeId: string }): boolean {
+    return !Object.values(this._assignments()).includes(recipeId);
   }
 }

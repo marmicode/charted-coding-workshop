@@ -124,7 +124,7 @@ export interface RecipeRepositoryDef {
 </details>
 
 <details>
-<summary>🚧 PR#3 — Store behavior</summary>
+<summary>✅ PR#3 — Store behavior</summary>
 
 ## Tasks
 
@@ -155,26 +155,26 @@ export interface MealPlanStore {
 }
 ```
 
-- [ ] `assign` stores the recipe id and replaces any id already on that day. No confirmation.
-- [ ] `clear` removes the id for that weekday.
-- [ ] `canAdd` is false when that recipe id is already on a weekday.
+- [x] `assign` stores the recipe id and replaces any id already on that day. No confirmation.
+- [x] `clear` removes the id for that weekday.
+- [x] `canAdd` is false when that recipe id is already on a weekday.
 
 ## Testing Strategy
 
-### 🚧 Replaces the recipe on a weekday
+### ✅ Replaces the recipe on a weekday
 
 - Arrange an empty `MealPlanStore`.
 - `assign({ weekday: 'monday', recipeId: 'shakshuka' })`.
 - `assign({ weekday: 'monday', recipeId: 'hummus' })`.
 - Assert Monday is `'hummus'` and the other six days are null.
 
-### 🚧 Clears a weekday
+### ✅ Clears a weekday
 
 - Arrange Monday as `'shakshuka'`.
 - `clear({ weekday: 'monday' })`.
 - Assert Monday is null and the other days are unchanged.
 
-### 🚧 Allows add only when the recipe is not already planned
+### ✅ Allows add only when the recipe is not already planned
 
 - Arrange Wednesday as `'shakshuka'`.
 - Assert `canAdd({ recipeId: 'shakshuka' })` is false.
