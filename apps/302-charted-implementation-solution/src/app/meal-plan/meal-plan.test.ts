@@ -47,7 +47,7 @@ function dayElements(fixture: { nativeElement: HTMLElement }): HTMLElement[] {
 }
 
 describe(MealPlan.name, () => {
-  it.todo('shows seven empty weekdays', async () => {
+  it('shows seven empty weekdays', async () => {
     const fixture = mountMealPlan();
     await fixture.whenStable();
 
@@ -63,7 +63,7 @@ describe(MealPlan.name, () => {
     }
   });
 
-  it.todo('shows the name and picture of a planned recipe', async () => {
+  it('shows the name and picture of a planned recipe', async () => {
     const fixture = mountMealPlan((store) => {
       store.assign({ weekday: 'monday', recipeId: shakshuka.id });
     });
@@ -80,7 +80,7 @@ describe(MealPlan.name, () => {
     }
   });
 
-  it.todo('renders a missing recipe as an empty day', async () => {
+  it('renders a missing recipe as an empty day', async () => {
     const fixture = mountMealPlan((store) => {
       store.assign({ weekday: 'monday', recipeId: 'missing' });
     });
@@ -94,7 +94,7 @@ describe(MealPlan.name, () => {
     );
   });
 
-  it.todo('clears a day', async () => {
+  it('clears a day', async () => {
     TestBed.resetTestingModule();
     TestBed.overrideProvider(LocalStorage, { useValue: new MemoryStorage() });
     const store = TestBed.inject(MealPlanStore);

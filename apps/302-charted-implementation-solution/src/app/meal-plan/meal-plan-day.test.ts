@@ -9,7 +9,7 @@ if (shakshuka == null) {
 }
 
 describe(MealPlanDay.name, () => {
-  it.todo('shows the empty state', async () => {
+  it('shows the empty state', async () => {
     const fixture = TestBed.createComponent(MealPlanDay);
     fixture.componentRef.setInput('weekday', 'monday');
     fixture.componentRef.setInput('recipe', null);
@@ -21,7 +21,7 @@ describe(MealPlanDay.name, () => {
     expect(fixture.nativeElement.querySelector('button')).toBeNull();
   });
 
-  it.todo('shows the recipe', async () => {
+  it('shows the recipe', async () => {
     const fixture = TestBed.createComponent(MealPlanDay);
     fixture.componentRef.setInput('weekday', 'monday');
     fixture.componentRef.setInput('recipe', shakshuka);
@@ -33,7 +33,7 @@ describe(MealPlanDay.name, () => {
     expect(picture?.getAttribute('src')).toBe(shakshuka.pictureUri);
   });
 
-  it.todo('emits remove', async () => {
+  it('emits remove', async () => {
     const fixture = TestBed.createComponent(MealPlanDay);
     fixture.componentRef.setInput('weekday', 'monday');
     fixture.componentRef.setInput('recipe', shakshuka);

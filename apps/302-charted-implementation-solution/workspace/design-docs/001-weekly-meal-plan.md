@@ -202,61 +202,61 @@ export interface MealPlanStore {
 </details>
 
 <details>
-<summary>🚧 PR#5 — Meal Plan UI behind wip</summary>
+<summary>✅ PR#5 — Meal Plan UI behind wip</summary>
 
 ## Tasks
 
-- [ ] Show Monday through Sunday, including when every day is empty.
-- [ ] `MealPlanDay` shows the empty state and no remove control.
-- [ ] Show the planned recipe's name and picture from `findById`.
-- [ ] Render a missing id as an empty day. The weekday slot stays.
-- [ ] Remove a recipe from a day and return that day to empty.
-- [ ] `MealPlanDay` emits `remove`.
-- [ ] Render the Meal Plan link only when the `wip` flag is set.
+- [x] Show Monday through Sunday, including when every day is empty.
+- [x] `MealPlanDay` shows the empty state and no remove control.
+- [x] Show the planned recipe's name and picture from `findById`.
+- [x] Render a missing id as an empty day. The weekday slot stays.
+- [x] Remove a recipe from a day and return that day to empty.
+- [x] `MealPlanDay` emits `remove`.
+- [x] Render the Meal Plan link only when the `wip` flag is set.
 
 ## Testing Strategy
 
-### 🚧 Shows seven empty weekdays
+### ✅ Shows seven empty weekdays
 
 - Arrange `MealPlanStore` with every day null.
 - Mount `MealPlan`.
 - Assert Monday through Sunday are shown, in that order.
 - Assert each day says no recipe is planned.
 
-### 🚧 Shows the empty state
+### ✅ Shows the empty state
 
 - Mount `MealPlanDay` with `weekday` `'monday'` and `recipe` null.
 - Assert the label is Monday.
 - Assert it says no recipe is planned.
 - Assert there is no remove control.
 
-### 🚧 Hides the Meal Plan link unless wip is set
+### ✅ Hides the Meal Plan link unless wip is set
 
 - Mount `App` with the `wip` flag unset.
 - Assert the navbar has no Meal Plan link.
 - Set the `wip` flag.
 - Assert the navbar shows Meal Plan next to Search, targeting `/meal-plan`.
 
-### 🚧 Shows the name and picture of a planned recipe
+### ✅ Shows the name and picture of a planned recipe
 
 - Arrange Monday as Shakshuka's id. `findById` returns Shakshuka.
 - Mount `MealPlan`.
 - Assert Monday shows "Shakshuka" and Shakshuka's picture.
 - Assert the other days say no recipe is planned.
 
-### 🚧 Renders a missing recipe as an empty day
+### ✅ Renders a missing recipe as an empty day
 
 - Arrange Monday as `'missing'`. `findById` returns undefined.
 - Mount `MealPlan`.
 - Assert Monday says no recipe is planned.
 - Assert the Monday slot is still shown.
 
-### 🚧 Shows the recipe
+### ✅ Shows the recipe
 
 - Mount `MealPlanDay` with Shakshuka.
 - Assert the name "Shakshuka" and Shakshuka's picture.
 
-### 🚧 Clears a day
+### ✅ Clears a day
 
 - Arrange Monday as Shakshuka.
 - Mount `MealPlan`.
@@ -264,7 +264,7 @@ export interface MealPlanStore {
 - Assert `clear({ weekday: 'monday' })` ran.
 - Assert Monday says no recipe is planned.
 
-### 🚧 Emits remove
+### ✅ Emits remove
 
 - Mount `MealPlanDay` with Shakshuka.
 - Trigger remove.

@@ -26,7 +26,7 @@ function mealPlanLink(root: ParentNode): HTMLAnchorElement | undefined {
 }
 
 describe(App.name, () => {
-  it.todo('hides the meal plan link unless wip is set', async () => {
+  it('hides the meal plan link unless wip is set', async () => {
     TestBed.resetTestingModule();
     const storage = new MemoryStorage();
     TestBed.overrideProvider(LocalStorage, { useValue: storage });
