@@ -1,13 +1,17 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { WIP_STORAGE_KEY } from '../authz/wip.guard';
+import { MealPlanStore, type Weekday } from '../meal-plan/meal-plan-store';
+import { WeekdayPicker } from '../meal-plan/weekday-picker.ng';
 import { Card } from '../shared/card.ng';
+import { LocalStorage } from '../shared/local-storage';
 import type { Recipe } from './recipe';
 import { UserFavorites } from './user-favorites';
 
 @Component({
   selector: 'wm-recipe-preview',
-  imports: [Card, MatIcon, MatIconButton],
+  imports: [Card, MatIcon, MatIconButton, WeekdayPicker],
   template: `<wm-card
     [pictureUri]="recipe().pictureUri"
     [pictureAlt]="recipe().name"
@@ -26,7 +30,22 @@ import { UserFavorites } from './user-favorites';
       >
         <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
+      @if (wipEnabled()) {
+        <button
+          type="button"
+          [disabled]="!canAdd()"
+          (click)="onAddToMealPlan()"
+        >
+          Add to meal plan
+        </button>
+      }
     </div>
+    @if (pickerOpen()) {
+      <wm-weekday-picker
+        (select)="onWeekday($event)"
+        (dismissed)="pickerOpen.set(false)"
+      />
+    }
   </wm-card>`,
   styles: `
     .recipe-header {
@@ -54,9 +73,21 @@ export class RecipePreview {
   recipe = input.required<Recipe>();
 
   private _userFavorites = inject(UserFavorites);
+  private readonly _localStorage = inject(LocalStorage);
+  private readonly _mealPlanStore = inject(MealPlanStore);
+
+  pickerOpen = signal(false);
 
   isFavorite = computed(() =>
     this._userFavorites.favoriteIds().has(this.recipe().id),
+  );
+
+  wipEnabled = computed(
+    () => this._localStorage.getItem(WIP_STORAGE_KEY) != null,
+  );
+
+  canAdd = computed(() =>
+    this._mealPlanStore.canAdd({ recipeId: this.recipe().id }),
   );
 
   onLikeClick(): void {
@@ -65,5 +96,21 @@ export class RecipePreview {
     } else {
       this._userFavorites.addFavorite(this.recipe().id);
     }
+  }
+
+  onAddToMealPlan(): void {
+    if (!this.canAdd()) {
+      return;
+    }
+
+    this.pickerOpen.set(true);
+  }
+
+  onWeekday(weekday: Weekday): void {
+    this._mealPlanStore.assign({
+      weekday,
+      recipeId: this.recipe().id,
+    });
+    this.pickerOpen.set(false);
   }
 }

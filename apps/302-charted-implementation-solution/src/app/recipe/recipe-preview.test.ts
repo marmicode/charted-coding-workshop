@@ -55,7 +55,7 @@ function mountRecipePreview(arrange?: {
 }
 
 describe(RecipePreview.name, () => {
-  it.todo('asks which weekday, then assigns it', async () => {
+  it('asks which weekday, then assigns it', async () => {
     const { fixture, store } = mountRecipePreview();
     const assign = vi.spyOn(store, 'assign');
     await fixture.whenStable();
@@ -74,7 +74,7 @@ describe(RecipePreview.name, () => {
     });
   });
 
-  it.todo('leaves the plan unchanged when the picker is dismissed', async () => {
+  it('leaves the plan unchanged when the picker is dismissed', async () => {
     const { fixture, store } = mountRecipePreview();
     const assign = vi.spyOn(store, 'assign');
     await fixture.whenStable();
@@ -87,7 +87,7 @@ describe(RecipePreview.name, () => {
     expect(assign).not.toHaveBeenCalled();
   });
 
-  it.todo('hides add to meal plan unless wip is set', async () => {
+  it('hides add to meal plan unless wip is set', async () => {
     const storage = new MemoryStorage();
     const { fixture } = mountRecipePreview({ storage });
     await fixture.whenStable();
@@ -104,7 +104,7 @@ describe(RecipePreview.name, () => {
     ).toBeDefined();
   });
 
-  it.todo('disables add when the recipe is already planned', async () => {
+  it('disables add when the recipe is already planned', async () => {
     const storage = new MemoryStorage();
     storage.setItem(WIP_STORAGE_KEY, 'true');
     const { fixture } = mountRecipePreview({

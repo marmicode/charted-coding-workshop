@@ -13,7 +13,7 @@ function buttonByLabel(
 }
 
 describe(WeekdayPicker.name, () => {
-  it.todo('emits the confirmed weekday', async () => {
+  it('emits the confirmed weekday', async () => {
     const fixture = TestBed.createComponent(WeekdayPicker);
     let selected: Weekday | undefined;
     fixture.componentInstance.select.subscribe((weekday) => {
@@ -27,7 +27,7 @@ describe(WeekdayPicker.name, () => {
     expect(selected).toBe('friday');
   });
 
-  it.todo('does not emit when dismissed', async () => {
+  it('does not emit when dismissed', async () => {
     const fixture = TestBed.createComponent(WeekdayPicker);
     let emitted = 0;
     fixture.componentInstance.select.subscribe(() => {

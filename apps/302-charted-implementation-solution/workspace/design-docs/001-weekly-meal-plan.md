@@ -273,7 +273,7 @@ export interface MealPlanStore {
 </details>
 
 <details>
-<summary>🚧 PR#6 — Assign from Search behind wip</summary>
+<summary>✅ PR#6 — Assign from Search behind wip</summary>
 
 ## Tasks
 
@@ -287,26 +287,26 @@ export interface WeekdayPicker {
 }
 ```
 
-- [ ] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
-- [ ] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
-- [ ] Disable Add to meal plan when `canAdd` is false.
-- [ ] Render Add to meal plan only when the `wip` flag is set.
+- [x] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
+- [x] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
+- [x] Disable Add to meal plan when `canAdd` is false.
+- [x] Render Add to meal plan only when the `wip` flag is set.
 
 ## Testing Strategy
 
-### 🚧 Emits the confirmed weekday
+### ✅ Emits the confirmed weekday
 
 - Mount `WeekdayPicker`.
 - Confirm Friday.
 - Assert `select` emitted `'friday'`.
 
-### 🚧 Does not emit when dismissed
+### ✅ Does not emit when dismissed
 
 - Mount `WeekdayPicker`.
 - Dismiss it without choosing a day.
 - Assert `select` did not emit.
 
-### 🚧 Asks which weekday, then assigns it
+### ✅ Asks which weekday, then assigns it
 
 - Arrange `canAdd` true for Shakshuka.
 - Mount `RecipePreview` with Shakshuka.
@@ -315,14 +315,14 @@ export interface WeekdayPicker {
 - Confirm Wednesday.
 - Assert `assign({ weekday: 'wednesday', recipeId: shakshukaId })` ran.
 
-### 🚧 Leaves the plan unchanged when the picker is dismissed
+### ✅ Leaves the plan unchanged when the picker is dismissed
 
 - Arrange `canAdd` true.
 - Mount `RecipePreview` with Shakshuka.
 - Open "Add to meal plan", then dismiss the picker.
 - Assert `assign` was not called.
 
-### 🚧 Hides Add to meal plan unless wip is set
+### ✅ Hides Add to meal plan unless wip is set
 
 - Arrange `canAdd` true and the `wip` flag unset.
 - Mount `RecipePreview` with Shakshuka.
@@ -330,7 +330,7 @@ export interface WeekdayPicker {
 - Set the `wip` flag.
 - Assert "Add to meal plan" is shown.
 
-### 🚧 Disables add when the recipe is already planned
+### ✅ Disables add when the recipe is already planned
 
 - Arrange `canAdd({ recipeId: shakshukaId })` false.
 - Mount `RecipePreview` with Shakshuka.
