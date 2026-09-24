@@ -340,15 +340,15 @@ export interface WeekdayPicker {
 </details>
 
 <details>
-<summary>🚧 PR#7 — Remove wip flag</summary>
+<summary>✅ PR#7 — Remove wip flag</summary>
 
 ## Tasks
 
-- [ ] Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
+- [x] Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
 
 ## Testing Strategy
 
-### 🚧 Shows Add to meal plan with the wip flag removed
+### ✅ Shows Add to meal plan with the wip flag removed
 
 - Arrange `canAdd` true and the `wip` flag unset.
 - Mount `RecipePreview` with Shakshuka.

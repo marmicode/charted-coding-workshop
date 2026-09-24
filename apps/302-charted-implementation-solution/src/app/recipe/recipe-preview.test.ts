@@ -94,7 +94,7 @@ describe(RecipePreview.name, () => {
 
     expect(
       buttonByLabel(fixture.nativeElement, 'add to meal plan'),
-    ).toBeUndefined();
+    ).toBeDefined();
 
     storage.setItem(WIP_STORAGE_KEY, 'true');
     await fixture.whenStable();
@@ -124,7 +124,7 @@ describe(RecipePreview.name, () => {
     expect(fixture.nativeElement.querySelector('wm-weekday-picker')).toBeNull();
   });
 
-  it.todo('shows add to meal plan with the wip flag removed', async () => {
+  it('shows add to meal plan with the wip flag removed', async () => {
     const storage = new MemoryStorage();
     const { fixture } = mountRecipePreview({ storage });
     await fixture.whenStable();

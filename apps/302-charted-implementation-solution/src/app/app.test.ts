@@ -36,7 +36,7 @@ describe(App.name, () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
 
-    expect(mealPlanLink(fixture.nativeElement)).toBeUndefined();
+    expect(mealPlanLink(fixture.nativeElement)).toBeDefined();
 
     storage.setItem(WIP_STORAGE_KEY, 'true');
     await fixture.whenStable();
