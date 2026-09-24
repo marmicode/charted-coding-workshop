@@ -47,4 +47,12 @@ describe(MealPlanStore.name, () => {
     expect(store.canAdd({ recipeId: 'shakshuka' })).toBe(false);
     expect(store.canAdd({ recipeId: 'hummus' })).toBe(true);
   });
+
+  it.todo('restores assignments after reload', () => {
+    // Arrange `LocalStorage` with Monday `'shakshuka'` and the other days null.
+    // Construct `MealPlanStore`.
+    // Assert `assignments()` matches that stored week.
+    // `assign({ weekday: 'tuesday', recipeId: 'hummus' })`.
+    // Assert `LocalStorage` now has Tuesday `'hummus'`.
+  });
 });
