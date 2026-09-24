@@ -9,6 +9,12 @@ import {
 
 export interface RecipeRepositoryDef {
   search(filter: RecipeFilterCriteria): Observable<Recipe[]>;
+
+  /**
+   * Undefined when the id is not in the catalog.
+   * Meal Plan renders that day as empty. The weekday slot stays.
+   */
+  findById(params: { id: string }): Observable<Recipe | undefined>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,5 +46,13 @@ export class RecipeRepository implements RecipeRepositoryDef {
 
       return of(recipes);
     });
+  }
+
+  /**
+   * @deprecated 🚧 work in progress
+   */
+  findById(params: { id: string }): Observable<Recipe | undefined> {
+    void params;
+    throw new Error('🚧 work in progress');
   }
 }
