@@ -92,7 +92,7 @@ flowchart LR
 </details>
 
 <details>
-<summary>🚧 PR#2 — findById</summary>
+<summary>✅ PR#2 — findById</summary>
 
 ## Tasks
 
@@ -106,17 +106,17 @@ export interface RecipeRepositoryDef {
 }
 ```
 
-- [ ] Add `RecipeRepository.findById`. Search stays unchanged.
+- [x] Add `RecipeRepository.findById`. Search stays unchanged.
 
 ## Testing Strategy
 
-### 🚧 Returns a recipe by id
+### ✅ Returns a recipe by id
 
 - Arrange the catalog to include Shakshuka.
 - Call `findById({ id: shakshukaId })`.
 - Assert the result is Shakshuka.
 
-### 🚧 Returns undefined for an unknown id
+### ✅ Returns undefined for an unknown id
 
 - Call `findById({ id: 'missing' })`.
 - Assert the result is undefined.

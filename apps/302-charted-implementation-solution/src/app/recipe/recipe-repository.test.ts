@@ -5,7 +5,7 @@ import { RECIPES } from './recipe-data';
 import { RecipeRepository } from './recipe-repository';
 
 describe(RecipeRepository.name, () => {
-  it.todo('returns a recipe by id', async () => {
+  it('returns a recipe by id', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.name === 'Shakshuka');
     if (shakshuka == null) {
       throw new Error('Catalog must include Shakshuka.');
@@ -20,7 +20,7 @@ describe(RecipeRepository.name, () => {
     expect(result).toEqual(shakshuka);
   });
 
-  it.todo('returns undefined for an unknown id', async () => {
+  it('returns undefined for an unknown id', async () => {
     const repository = TestBed.inject(RecipeRepository);
 
     const result = await firstValueFrom(

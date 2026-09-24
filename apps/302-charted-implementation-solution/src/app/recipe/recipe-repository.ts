@@ -48,11 +48,10 @@ export class RecipeRepository implements RecipeRepositoryDef {
     });
   }
 
-  /**
-   * @deprecated 🚧 work in progress
-   */
-  findById(params: { id: string }): Observable<Recipe | undefined> {
-    void params;
-    throw new Error('🚧 work in progress');
+  findById({ id }: { id: string }): Observable<Recipe | undefined> {
+    return defer(() => {
+      const recipe = RECIPES.find((item) => item.id === id);
+      return of(recipe);
+    });
   }
 }
