@@ -123,4 +123,10 @@ describe(RecipePreview.name, () => {
 
     expect(fixture.nativeElement.querySelector('wm-weekday-picker')).toBeNull();
   });
+
+  it.todo('shows add to meal plan with the wip flag removed', () => {
+    // Arrange `canAdd` true and the `wip` flag unset.
+    // Mount `RecipePreview` with Shakshuka.
+    // Assert "Add to meal plan" is shown.
+  });
 });
