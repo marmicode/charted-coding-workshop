@@ -183,15 +183,15 @@ export interface MealPlanStore {
 </details>
 
 <details>
-<summary>🚧 PR#4 — Persist store</summary>
+<summary>✅ PR#4 — Persist store</summary>
 
 ## Tasks
 
-- [ ] Persist assignments in `LocalStorage` and restore them on load.
+- [x] Persist assignments in `LocalStorage` and restore them on load.
 
 ## Testing Strategy
 
-### 🚧 Restores assignments after reload
+### ✅ Restores assignments after reload
 
 - Arrange `LocalStorage` with Monday `'shakshuka'` and the other days null.
 - Construct `MealPlanStore`.

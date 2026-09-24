@@ -63,7 +63,7 @@ describe(MealPlanStore.name, () => {
     expect(store.canAdd({ recipeId: 'hummus' })).toBe(true);
   });
 
-  it.todo('restores assignments after reload', () => {
+  it('restores assignments after reload', () => {
     TestBed.resetTestingModule();
     const storage = new MemoryStorage();
     const storedWeek: WeekdayAssignments = {
