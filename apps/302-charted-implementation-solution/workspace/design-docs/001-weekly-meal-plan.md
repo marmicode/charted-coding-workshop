@@ -83,11 +83,11 @@ flowchart LR
 ```
 
 <details>
-<summary>🚧 PR#1 — Scaffold</summary>
+<summary>✅ PR#1 — Scaffold</summary>
 
 ## Tasks
 
-- [ ] Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
+- [x] Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
 
 </details>
 
