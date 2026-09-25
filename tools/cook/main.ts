@@ -13,6 +13,7 @@ import { type Public } from './util.ts';
 const STARTER_SUFFIX = '-starter';
 const SOLUTION_SUFFIX = '-solution';
 const COOKING_BRANCH = 'cooking';
+const FOCUSED_APP = 'whiskmate';
 
 export async function main(args: string[], ctx: Context) {
   const parsedArgs = parseArgs(args);
@@ -282,10 +283,67 @@ function maybeGetCurrentExercise({
   return exercises.find((exercise) => exercise.id === exerciseId) ?? null;
 }
 
+function retargetProjectJson(
+  fileSystemAdapter: Context['fileSystemAdapter'],
+  projectDir: string,
+) {
+  const path = join(projectDir, 'project.json');
+  const content = readIfPresent(fileSystemAdapter, path);
+  if (content == null) {
+    return;
+  }
+
+  const projectJson = JSON.parse(content);
+  projectJson.sourceRoot = `apps/${FOCUSED_APP}/src`;
+  if (Array.isArray(projectJson.implicitDependencies)) {
+    projectJson.implicitDependencies = [`${FOCUSED_APP}-*`];
+  }
+  fileSystemAdapter.writeFile(
+    path,
+    `${JSON.stringify(projectJson, null, 2)}\n`,
+  );
+}
+
+function retargetAppPath(
+  fileSystemAdapter: Context['fileSystemAdapter'],
+  path: string,
+  project: string,
+) {
+  const content = readIfPresent(fileSystemAdapter, path);
+  if (content == null) {
+    return;
+  }
+
+  fileSystemAdapter.writeFile(
+    path,
+    content.replaceAll(`apps/${project}`, `apps/${FOCUSED_APP}`),
+  );
+}
+
+function readIfPresent(
+  fileSystemAdapter: Context['fileSystemAdapter'],
+  path: string,
+): string | null {
+  try {
+    return fileSystemAdapter.readFile(path);
+  } catch {
+    return null;
+  }
+}
+
 function focusOnProject(ctx: Context, project: string) {
   const { commandRunner, fileSystemAdapter } = ctx;
+  const projectDir = join('apps', project);
 
-  fileSystemAdapter.copyDirContents(join('apps', project, 'workspace'), '.');
+  fileSystemAdapter.copyDirContents(join(projectDir, 'workspace'), '.');
+  retargetProjectJson(fileSystemAdapter, projectDir);
+  retargetAppPath(fileSystemAdapter, join(projectDir, 'vite.config.ts'), project);
+  retargetAppPath(
+    fileSystemAdapter,
+    join(projectDir, 'vitest.config.mts'),
+    project,
+  );
+  fileSystemAdapter.renameDir(projectDir, join('apps', FOCUSED_APP));
 
   const nxJson = JSON.parse(fileSystemAdapter.readFile('nx.json'));
   fileSystemAdapter.writeFile(
@@ -302,7 +360,7 @@ function focusOnProject(ctx: Context, project: string) {
 
   const appsFolder = 'apps';
   for (const folder of fileSystemAdapter.readDir(appsFolder)) {
-    if (folder !== project) {
+    if (folder !== FOCUSED_APP) {
       fileSystemAdapter.removeDir(join(appsFolder, folder));
     }
   }

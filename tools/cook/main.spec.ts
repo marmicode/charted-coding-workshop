@@ -37,7 +37,7 @@ describe('cook', () => {
         null,
         2,
       ),
-      'apps/1-recipe-search-starter/some-file.txt': '',
+      'apps/whiskmate/some-file.txt': '',
     });
   });
 
@@ -107,9 +107,7 @@ describe('cook', () => {
 
     expect(files['design-docs/plan.md']).toBe('# plan');
     expect(files['.claude/settings.json']).toBe('{}');
-    expect(files['apps/1-recipe-search-starter/workspace/design-docs/plan.md']).toBe(
-      '# plan',
-    );
+    expect(files['apps/whiskmate/workspace/design-docs/plan.md']).toBe('# plan');
   });
 
   it('copies the solution workspace when checking out the solution', async () => {
@@ -127,6 +125,48 @@ describe('cook', () => {
     expect(JSON.parse(files['nx.json'])).toEqual({
       defaultProject: '1-recipe-search-solution',
     });
+  });
+
+  it('moves the app to apps/whiskmate and renames paths', async () => {
+    const { files } = await runMain({
+      choices: { exercise: '1-recipe-search', useTdd: true },
+      files: {
+        'apps/1-recipe-search-starter/project.json':
+          '{"name":"1-recipe-search-starter","sourceRoot":"apps/1-recipe-search-starter/src","implicitDependencies":["1-recipe-search-starter-*"],"buildTarget":"1-recipe-search-starter:build"}',
+        'apps/1-recipe-search-starter/vite.config.ts':
+          "cacheDir: '../../node_modules/.vite/apps/1-recipe-search-starter'",
+        'apps/1-recipe-search-starter/vitest.config.mts':
+          "name: '1-recipe-search-starter',\ncoverage: '../../coverage/apps/1-recipe-search-starter'",
+        'apps/1-recipe-search-starter/workspace/tsconfig.base.json':
+          '{ "paths": { "@x": ["./apps/whiskmate/src/app/index.ts"] } }',
+        'apps/2-test-double-starter/project.json':
+          '{"name":"2-test-double-starter"}',
+      },
+      nxJsonContent: {},
+    });
+
+    expect(JSON.parse(files['apps/whiskmate/project.json'])).toEqual({
+      name: '1-recipe-search-starter',
+      sourceRoot: 'apps/whiskmate/src',
+      implicitDependencies: ['whiskmate-*'],
+      buildTarget: '1-recipe-search-starter:build',
+    });
+    expect(files['apps/whiskmate/vite.config.ts']).toBe(
+      "cacheDir: '../../node_modules/.vite/apps/whiskmate'",
+    );
+    expect(files['apps/whiskmate/vitest.config.mts']).toBe(
+      "name: '1-recipe-search-starter',\ncoverage: '../../coverage/apps/whiskmate'",
+    );
+    expect(files['tsconfig.base.json']).toBe(
+      '{ "paths": { "@x": ["./apps/whiskmate/src/app/index.ts"] } }',
+    );
+    expect(files['apps/whiskmate/workspace/tsconfig.base.json']).toBe(
+      '{ "paths": { "@x": ["./apps/whiskmate/src/app/index.ts"] } }',
+    );
+    expect(files['apps/2-test-double-starter/project.json']).toBeUndefined();
+    expect(JSON.parse(files['nx.json']).defaultProject).toBe(
+      '1-recipe-search-starter',
+    );
   });
 
   it('stops cooking', async () => {
@@ -241,25 +281,13 @@ class CommandRunnerFake implements CommandRunner {
 
 class GitFake implements GitAdapter {
   private _hasLocalChanges = false;
-  private _currentBranch = 'main';
 
-  configure({
-    hasLocalChanges,
-    currentBranch,
-  }: {
-    hasLocalChanges?: boolean;
-    currentBranch?: string;
-  }) {
+  configure({ hasLocalChanges }: { hasLocalChanges?: boolean }) {
     this._hasLocalChanges = hasLocalChanges ?? this._hasLocalChanges;
-    this._currentBranch = currentBranch ?? this._currentBranch;
   }
 
   hasLocalChanges() {
     return this._hasLocalChanges;
-  }
-
-  getCurrentBranch() {
-    return this._currentBranch;
   }
 }
 
@@ -308,6 +336,21 @@ class FileSystemFake implements FileSystemAdapter {
         ([filePath]) => !filePath.startsWith(dirPath),
       ),
     );
+  }
+
+  renameDir(from: string, to: string): void {
+    const prefix = `${from}/`;
+    const next: Record<string, string> = {};
+
+    for (const [filePath, content] of Object.entries(this._files)) {
+      if (filePath.startsWith(prefix)) {
+        next[`${to}/${filePath.slice(prefix.length)}`] = content;
+      } else {
+        next[filePath] = content;
+      }
+    }
+
+    this._files = next;
   }
 
   copyDirContents(source: string, destination: string): void {

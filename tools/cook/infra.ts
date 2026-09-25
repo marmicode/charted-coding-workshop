@@ -1,7 +1,14 @@
 import inquirer from 'enquirer';
 import { readFileSync, writeFileSync } from 'fs';
 import { execSync } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+} from 'node:fs';
 import { basename, join, relative } from 'node:path';
 
 const { prompt } = inquirer;
@@ -38,6 +45,10 @@ export class FileSystemAdapter {
 
   readDir(path: string): string[] {
     return readdirSync(path);
+  }
+
+  renameDir(from: string, to: string): void {
+    renameSync(from, to);
   }
 
   /**
@@ -86,12 +97,6 @@ export class FileSystemAdapter {
 }
 
 export class GitAdapter {
-  getCurrentBranch() {
-    return execSync('git branch --show-current', {
-      encoding: 'utf8',
-    }).trim();
-  }
-
   hasLocalChanges() {
     const status = execSync('git status --porcelain', { encoding: 'utf8' });
     return status.trim().length > 0;
