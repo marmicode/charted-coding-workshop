@@ -11,6 +11,29 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/learn-skills/user-prompt-submit.mts",
+            "async": true,
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/learn-skills/stop.mts",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }
