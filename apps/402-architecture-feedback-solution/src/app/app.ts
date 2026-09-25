@@ -1,9 +1,9 @@
 import { Component, computed } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { adminRouterHelper } from '@whiskmate/admin/feature-admin';
 import { mealPlanRouterHelper } from '@whiskmate/meal-plan/feature-meal-plan';
 import { recipeRouterHelper } from '@whiskmate/recipe/feature-search';
 import { Navbar } from '@whiskmate/shared/ui';
-import { adminRouterHelper } from './admin/admin.router-helper';
 
 @Component({
   imports: [Navbar, RouterOutlet, RouterLink, RouterLinkActive],

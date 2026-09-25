@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { defer, Observable, of } from 'rxjs';
 import {
   createDefaultRecipeFilterCriteria,
-  type Recipe,
   type RecipeFilterCriteria,
-} from '@whiskmate/shared-recipe/model';
+} from '@whiskmate/recipe/model';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
 import { RECIPES } from './recipe-data';
 
 export interface RecipeRepositoryDef {

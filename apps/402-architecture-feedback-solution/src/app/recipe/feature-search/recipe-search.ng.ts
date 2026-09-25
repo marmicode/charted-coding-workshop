@@ -7,12 +7,12 @@ import {
 import { rxResource } from '@angular/core/rxjs-interop';
 import { UserFavorites } from '@whiskmate/recipe/domain';
 import { RecipeRepository } from '@whiskmate/recipe/infra';
-import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/ui-search';
 import {
   createDefaultRecipeFilterCriteria,
-  type Recipe,
   type RecipeFilterCriteria,
-} from '@whiskmate/shared-recipe/model';
+} from '@whiskmate/recipe/model';
+import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/ui-search';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
 import { Catalog } from '@whiskmate/shared/ui';
 import { RecipePreview } from './recipe-preview.ng';
 

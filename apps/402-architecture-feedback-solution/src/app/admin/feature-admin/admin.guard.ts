@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { CurrentUser } from '@whiskmate/authz/domain';
 import { recipeRouterHelper } from '@whiskmate/recipe/feature-search';
-import { CurrentUser } from './user';
 
 export const adminGuard: CanActivateFn = () => {
   const currentUser = inject(CurrentUser);
