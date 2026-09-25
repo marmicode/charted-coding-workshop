@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 
-import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { runAgent } from '../internal/agent.mts';
 import { runHook } from '../internal/run-hook.mts';
 import {
-  cachePath,
-  dedupeDescriptions,
   isLearnSkillsReentry,
+  LearningSessionRepository,
   learnSkillsReentryEnv,
-  writeSessionCache,
-} from './internal/session-cache.mts';
+} from './internal/learning-session-repository.mts';
+import { readFile } from 'node:fs/promises';
 
 await runHook({
   hookEventName: 'UserPromptSubmit',
@@ -24,23 +22,30 @@ await runHook({
     }
 
     const prompt = input.prompt?.trim() ?? '';
-    if (!prompt || prompt.startsWith('/')) {
+    if (!prompt) {
       return;
     }
 
-    const sessionId = input.session_id;
-
     const cwd = input.cwd || process.cwd();
+    const learningSessionRepository = new LearningSessionRepository(cwd);
+
+    const sessionId = input.session_id;
+    const previousLearnedSkills =
+      (await learningSessionRepository.getSession(sessionId))?.learnedSkills ??
+      [];
     const instructionsPath = join(
       import.meta.dirname,
       'internal/detect-steering-in-user-prompt.md',
     );
     const instructions = await readFile(instructionsPath, 'utf8');
-    const classifierPrompt = `${instructions}
+    const classifierPrompt = `
+${instructions}
 
----
+## Previous learned skills
 
-User prompt to classify:
+${previousLearnedSkills.map((skill) => `- ${skill.description}`).join('\n') || 'None'}
+
+## User prompt to classify
 
 ${prompt}
 `;
@@ -52,12 +57,12 @@ ${prompt}
       return;
     }
 
-    const path = cachePath(cwd, sessionId);
-    await writeSessionCache(path, {
+    await learningSessionRepository.upsertSession({
       sessionId,
       transcriptPath: input.transcript_path ?? '',
-      learnedSkills: dedupeDescriptions(descriptions).map((description) => ({
+      learnedSkills: descriptions.map((description) => ({
         description,
+        seen: false,
       })),
     });
   },
@@ -65,41 +70,9 @@ ${prompt}
 
 function _steeringDescriptions(value: unknown): string[] {
   if (Array.isArray(value)) {
-    return value.flatMap((item) => _descriptionFromSteeringItem(item));
-  }
-
-  if (typeof value !== 'object' || value === null) {
-    return [];
-  }
-
-  const record = value as Record<string, unknown>;
-  if (Array.isArray(record.steerings)) {
-    return record.steerings.flatMap((item) =>
-      _descriptionFromSteeringItem(item),
+    return value.filter(
+      (item) => typeof item === 'string' && item.trim().length > 0,
     );
-  }
-
-  if (record.isSteering === true) {
-    return _descriptionFromSteeringItem(record.description);
-  }
-
-  return [];
-}
-
-function _descriptionFromSteeringItem(item: unknown): string[] {
-  if (typeof item === 'string') {
-    const trimmed = item.trim();
-    return trimmed ? [trimmed] : [];
-  }
-
-  if (
-    typeof item === 'object' &&
-    item !== null &&
-    'description' in item &&
-    typeof (item as { description: unknown }).description === 'string'
-  ) {
-    const trimmed = (item as { description: string }).description.trim();
-    return trimmed ? [trimmed] : [];
   }
 
   return [];

@@ -2,9 +2,8 @@
 import { runHook, stopContinuationOutput } from '../internal/run-hook.mts';
 import {
   isLearnSkillsReentry,
-  loadCache,
-  type SessionCache,
-} from './internal/session-cache.mts';
+  LearningSessionRepository,
+} from './internal/learning-session-repository.mts';
 
 await runHook({
   hookEventName: 'Stop',
@@ -17,44 +16,37 @@ await runHook({
       return;
     }
 
-    const cache = await loadCache(input);
+    const cwd = input.cwd || process.cwd();
+    const repository = new LearningSessionRepository(cwd);
+    const session = await repository.getSession(input.session_id);
 
-    if (!cache || cache.learnedSkills.length === 0) {
+    if (!session) {
       return;
     }
 
-    const skillList = cache.learnedSkills
+    const unseenLearnedSkills = session.learnedSkills.filter(
+      (skill) => !skill.seen,
+    );
+    if (unseenLearnedSkills.length === 0) {
+      return;
+    }
+
+    const learnedSkillsStr = unseenLearnedSkills
       .map((skill) => `- ${skill.description}`)
       .join('\n');
-    const sessionPayload = _sessionPayloadJson(cache);
 
-    await cache.clear();
+    await repository.markLearnedSkillsSeen({
+      sessionId: input.session_id,
+      descriptions: unseenLearnedSkills.map((skill) => skill.description),
+    });
 
     return {
-      output: stopContinuationOutput(`This session captured reusable steering.
-Ask the user — using AskUserQuestion with **multiple selection allowed** — which learned skills to add to the project. Use one option per skill (label = the skill description):
+      output: stopContinuationOutput(
+        `We just learned the following skills:
+${learnedSkillsStr}
 
-${skillList}
-
-## Session steering payload (for apply; cache file already removed)
-
-\`\`\`json
-${sessionPayload}
-\`\`\`
-
-After they answer, always read and follow \`.claude/hooks/learn-skills/internal/persist-learned-skills.md\` using the **session payload JSON above** and the **exact descriptions they selected** (use an empty list if they chose none). The apply step must run even when they select no skills.`),
+Remind me to run \`/save-learnings\` to save them.`,
+      ),
     };
   },
 });
-
-function _sessionPayloadJson(cache: SessionCache): string {
-  return JSON.stringify(
-    {
-      sessionId: cache.sessionId,
-      transcriptPath: cache.transcriptPath,
-      learnedSkills: cache.learnedSkills,
-    },
-    null,
-    2,
-  );
-}

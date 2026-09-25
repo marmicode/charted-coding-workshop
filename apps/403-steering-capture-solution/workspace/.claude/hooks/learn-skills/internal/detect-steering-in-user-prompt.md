@@ -1,6 +1,9 @@
 # Detect steering in a user prompt
 
-You are a one-shot CLI agent started by the project's **UserPromptSubmit** hook. Decide whether **this user prompt** is steering that should become a durable project preference. Print JSON and exit. Do not read the transcript, do not write files, and do not ask questions.
+You are a one-shot CLI agent started by the project's **UserPromptSubmit** hook. Decide whether **this user prompt** is steering that should become a durable project preference.
+Print JSON and exit.
+Do not read the transcript, do not write files, and do not ask questions.
+Ignore previous learned skills to avoid duplicates.
 
 ## Input
 
