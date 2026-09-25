@@ -9,7 +9,28 @@
     "isolatedModules": true,
     "target": "es2022",
     "emitDecoratorMetadata": false,
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@whiskmate/meal-plan/feature-meal-plan": [
+        "./src/app/meal-plan/feature-meal-plan/index.ts"
+      ],
+      "@whiskmate/meal-plan/ui": ["./src/app/meal-plan/ui/index.ts"],
+      "@whiskmate/recipe/domain": ["./src/app/recipe/domain/index.ts"],
+      "@whiskmate/recipe/feature-search": [
+        "./src/app/recipe/feature-search/index.ts"
+      ],
+      "@whiskmate/recipe/infra": ["./src/app/recipe/infra/index.ts"],
+      "@whiskmate/recipe/ui-search": ["./src/app/recipe/ui-search/index.ts"],
+      "@whiskmate/shared-meal-plan/domain": [
+        "./src/app/shared-meal-plan/domain/index.ts"
+      ],
+      "@whiskmate/shared-recipe/model": [
+        "./src/app/shared-recipe/model/index.ts"
+      ],
+      "@whiskmate/shared/infra": ["./src/app/shared/infra/index.ts"],
+      "@whiskmate/shared/model": ["./src/app/shared/model/index.ts"],
+      "@whiskmate/shared/ui": ["./src/app/shared/ui/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

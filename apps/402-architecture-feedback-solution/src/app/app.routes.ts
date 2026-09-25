@@ -1,11 +1,9 @@
 import { Route } from '@angular/router';
+import { MealPlan, mealPlanRouterHelper } from '@whiskmate/meal-plan/feature-meal-plan';
+import { RecipeSearch, recipeRouterHelper } from '@whiskmate/recipe/feature-search';
 import { Admin } from './admin/admin.ng';
 import { adminRouterHelper } from './admin/admin.router-helper';
 import { adminGuard } from './authz/admin.guard';
-import { MealPlan } from './meal-plan/meal-plan.ng';
-import { mealPlanRouterHelper } from './meal-plan/meal-plan.router-helper';
-import { RecipeSearch } from './recipe/recipe-search.ng';
-import { recipeRouterHelper } from './recipe/recipe.router-helper';
 
 export const appRoutes: Route[] = [
   {

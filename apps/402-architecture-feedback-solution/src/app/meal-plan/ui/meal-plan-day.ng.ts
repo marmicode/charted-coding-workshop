@@ -1,7 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
-import type { Recipe } from '../recipe/recipe';
-import { Card } from '../shared/card.ng';
-import type { Weekday } from './meal-plan-store';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
+import type { Weekday } from '@whiskmate/shared/model';
+import { Card } from '@whiskmate/shared/ui';
 
 @Component({
   selector: 'wm-meal-plan-day',

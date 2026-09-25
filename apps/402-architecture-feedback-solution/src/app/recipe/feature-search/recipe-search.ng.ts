@@ -5,17 +5,16 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Catalog } from '../shared/catalog.ng';
-import { NoRecipes } from './no-recipes.ng';
-import type { Recipe } from './recipe';
+import { UserFavorites } from '@whiskmate/recipe/domain';
+import { RecipeRepository } from '@whiskmate/recipe/infra';
+import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/ui-search';
 import {
   createDefaultRecipeFilterCriteria,
-  RecipeFilterCriteria,
-} from './recipe-filter-criteria';
-import { RecipeFilter } from './recipe-filter.ng';
+  type Recipe,
+  type RecipeFilterCriteria,
+} from '@whiskmate/shared-recipe/model';
+import { Catalog } from '@whiskmate/shared/ui';
 import { RecipePreview } from './recipe-preview.ng';
-import { RecipeRepository } from './recipe-repository';
-import { UserFavorites } from './user-favorites';
 
 @Component({
   selector: 'wm-recipe-search',

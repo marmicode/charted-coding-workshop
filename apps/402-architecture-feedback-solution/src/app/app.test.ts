@@ -4,8 +4,7 @@ import { provideRouter } from '@angular/router';
 import { describe, it } from 'vitest';
 import { App } from './app';
 import { appRoutes } from './app.routes';
-import { WIP_STORAGE_KEY } from './authz/wip.guard';
-import { LocalStorage } from './shared/local-storage';
+import { LocalStorage, WIP_STORAGE_KEY } from '@whiskmate/shared/infra';
 
 class MemoryStorage implements LocalStorage {
   private readonly items = signal(new Map<string, string>());

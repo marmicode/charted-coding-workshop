@@ -28,7 +28,7 @@ export default [
   },
   {
     files: ['**/*.ts'],
-    ignores: ['**/src/app/shared/clock-adapter.ts'],
+    ignores: ['**/src/app/shared/infra/clock-adapter.ts'],
     rules: {
       'no-restricted-globals': [
         'error',

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it } from 'vitest';
-import { LocalStorage } from '../shared/local-storage';
+import { LocalStorage } from '@whiskmate/shared/infra';
 import { MealPlanStore, type WeekdayAssignments } from './meal-plan-store';
 
 const MEAL_PLAN_STORAGE_KEY = 'whiskmate:meal-plan';

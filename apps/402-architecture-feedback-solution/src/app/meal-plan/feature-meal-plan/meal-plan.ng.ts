@@ -1,20 +1,11 @@
 import { Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { forkJoin, map, of } from 'rxjs';
-import type { Recipe } from '../recipe/recipe';
-import { RecipeRepository } from '../recipe/recipe-repository';
-import { MealPlanDay } from './meal-plan-day.ng';
-import { MealPlanStore, type Weekday } from './meal-plan-store';
-
-const WEEKDAYS: Weekday[] = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday',
-];
+import { MealPlanDay } from '@whiskmate/meal-plan/ui';
+import { RecipeRepository } from '@whiskmate/recipe/infra';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
+import { WEEKDAYS, type Weekday } from '@whiskmate/shared/model';
 
 @Component({
   selector: 'wm-meal-plan',

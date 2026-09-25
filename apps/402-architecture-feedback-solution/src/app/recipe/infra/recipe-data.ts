@@ -1,4 +1,8 @@
-import { createIngredient, createQuantity, createRecipe } from './recipe';
+import {
+  createIngredient,
+  createQuantity,
+  createRecipe,
+} from '@whiskmate/shared-recipe/model';
 
 export const RECIPES = [
   createRecipe({

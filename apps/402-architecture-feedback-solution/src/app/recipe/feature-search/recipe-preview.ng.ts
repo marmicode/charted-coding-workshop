@@ -1,11 +1,11 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MealPlanStore, type Weekday } from '../meal-plan/meal-plan-store';
-import { WeekdayPicker } from '../meal-plan/weekday-picker.ng';
-import { Card } from '../shared/card.ng';
-import type { Recipe } from './recipe';
-import { UserFavorites } from './user-favorites';
+import { UserFavorites } from '@whiskmate/recipe/domain';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
+import type { Weekday } from '@whiskmate/shared/model';
+import { Card, WeekdayPicker } from '@whiskmate/shared/ui';
 
 @Component({
   selector: 'wm-recipe-preview',

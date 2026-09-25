@@ -5,8 +5,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
   createDefaultRecipeFilterCriteria,
-  RecipeFilterCriteria,
-} from './recipe-filter-criteria';
+  type RecipeFilterCriteria,
+} from '@whiskmate/shared-recipe/model';
 
 @Component({
   selector: 'wm-recipe-filter',

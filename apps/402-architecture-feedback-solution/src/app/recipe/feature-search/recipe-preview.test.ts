@@ -1,10 +1,9 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { describe, it, vi } from 'vitest';
-import { WIP_STORAGE_KEY } from '../authz/wip.guard';
-import { MealPlanStore } from '../meal-plan/meal-plan-store';
-import { LocalStorage } from '../shared/local-storage';
-import { RECIPES } from './recipe-data';
+import { RECIPES } from '@whiskmate/recipe/infra';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
+import { LocalStorage, WIP_STORAGE_KEY } from '@whiskmate/shared/infra';
 import { RecipePreview } from './recipe-preview.ng';
 
 const shakshuka = RECIPES.find((recipe) => recipe.name === 'Shakshuka');

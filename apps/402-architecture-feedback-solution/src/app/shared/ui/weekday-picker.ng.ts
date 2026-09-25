@@ -1,15 +1,5 @@
 import { Component, output } from '@angular/core';
-import type { Weekday } from './meal-plan-store';
-
-const WEEKDAYS: Weekday[] = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday',
-];
+import { WEEKDAYS, type Weekday } from '@whiskmate/shared/model';
 
 @Component({
   selector: 'wm-weekday-picker',

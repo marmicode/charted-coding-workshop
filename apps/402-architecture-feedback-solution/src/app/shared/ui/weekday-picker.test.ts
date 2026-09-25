@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it } from 'vitest';
-import type { Weekday } from './meal-plan-store';
+import type { Weekday } from '@whiskmate/shared/model';
 import { WeekdayPicker } from './weekday-picker.ng';
 
 function buttonByLabel(

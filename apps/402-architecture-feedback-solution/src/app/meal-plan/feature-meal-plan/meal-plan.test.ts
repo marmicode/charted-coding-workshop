@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, vi } from 'vitest';
-import { RECIPES } from '../recipe/recipe-data';
-import { LocalStorage } from '../shared/local-storage';
+import { RECIPES } from '@whiskmate/recipe/infra';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
+import { LocalStorage } from '@whiskmate/shared/infra';
 import { MealPlan } from './meal-plan.ng';
-import { MealPlanStore } from './meal-plan-store';
 
 const WEEKDAYS = [
   'Monday',

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { defer, Observable, of } from 'rxjs';
-import { Recipe } from './recipe';
-import { RECIPES } from './recipe-data';
 import {
   createDefaultRecipeFilterCriteria,
-  RecipeFilterCriteria,
-} from './recipe-filter-criteria';
+  type Recipe,
+  type RecipeFilterCriteria,
+} from '@whiskmate/shared-recipe/model';
+import { RECIPES } from './recipe-data';
 
 export interface RecipeRepositoryDef {
   search(filter: RecipeFilterCriteria): Observable<Recipe[]>;

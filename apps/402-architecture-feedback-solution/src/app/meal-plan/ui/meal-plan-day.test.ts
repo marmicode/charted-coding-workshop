@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it } from 'vitest';
-import { RECIPES } from '../recipe/recipe-data';
+import { RECIPES } from '@whiskmate/recipe/infra';
 import { MealPlanDay } from './meal-plan-day.ng';
 
 const shakshuka = RECIPES.find((recipe) => recipe.name === 'Shakshuka');

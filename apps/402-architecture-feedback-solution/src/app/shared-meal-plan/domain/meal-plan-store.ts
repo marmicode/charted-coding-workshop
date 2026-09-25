@@ -1,5 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { LocalStorage } from '../shared/local-storage';
+import { LocalStorage } from '@whiskmate/shared/infra';
+import type { Weekday } from '@whiskmate/shared/model';
 
 const MEAL_PLAN_STORAGE_KEY = 'whiskmate:meal-plan';
 const EMPTY_ASSIGNMENTS: WeekdayAssignments = {
@@ -11,15 +12,6 @@ const EMPTY_ASSIGNMENTS: WeekdayAssignments = {
   saturday: null,
   sunday: null,
 };
-
-export type Weekday =
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday'
-  | 'sunday';
 
 /**
  * Recipe ids per weekday, not recipe snapshots.

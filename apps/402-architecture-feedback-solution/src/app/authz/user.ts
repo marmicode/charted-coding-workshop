@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { LocalStorage } from '../shared/local-storage';
+import { LocalStorage } from '@whiskmate/shared/infra';
 import { User as UserProfile } from './user.model';
 
 const USER_STORAGE_KEY = 'whiskmate:user';

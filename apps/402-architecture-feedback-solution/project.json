@@ -4,7 +4,8 @@
   "projectType": "application",
   "prefix": "wm",
   "sourceRoot": "apps/402-architecture-feedback-solution/src",
-  "tags": [],
+  "tags": ["type:app"],
+  "implicitDependencies": ["402-architecture-feedback-solution-*"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

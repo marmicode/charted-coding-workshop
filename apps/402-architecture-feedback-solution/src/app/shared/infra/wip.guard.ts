@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
-import { LocalStorage } from '../shared/local-storage';
+import { LocalStorage } from './local-storage';
 
 export const WIP_STORAGE_KEY = 'wip';
 
