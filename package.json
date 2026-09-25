@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve 101-review-fatigue-starter",
+    "start": "nx serve",
     "cook": "node --experimental-strip-types tools/cook/main.ts"
   },
   "private": true,
