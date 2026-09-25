@@ -2,50 +2,41 @@
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { $ } from 'zx';
+import { runAgent } from '../internal/agent.mts';
+import { runHook } from '../internal/run-hook.mts';
 import {
   cachePath,
-  cwdFromInput,
   dedupeDescriptions,
-  isLearnSkillsRunning,
-  learnSkillsEnv,
-  parseJsonFromAgentText,
-  readUserPromptSubmitHookInput,
-  resolveAgentInvocation,
-  sessionIdFromInput,
+  isLearnSkillsReentry,
+  learnSkillsReentryEnv,
   writeSessionCache,
-} from './_shared.mts';
+} from './internal/session-cache.mts';
 
-process.exit(await main());
+await runHook({
+  hookEventName: 'UserPromptSubmit',
+  handler: async (input) => {
+    if (isLearnSkillsReentry()) {
+      return;
+    }
 
-async function main(): Promise<number> {
-  if (isLearnSkillsRunning()) {
-    return 0;
-  }
+    if (input.agent_id || (input.source && input.source !== 'user')) {
+      return;
+    }
 
-  const data = await readUserPromptSubmitHookInput();
+    const prompt = input.prompt?.trim() ?? '';
+    if (!prompt || prompt.startsWith('/')) {
+      return;
+    }
 
-  if (data.agent_id || (data.source && data.source !== 'user')) {
-    return 0;
-  }
+    const sessionId = input.session_id;
 
-  const prompt = data.prompt?.trim() ?? '';
-  if (!prompt || prompt.startsWith('/')) {
-    return 0;
-  }
-
-  const sessionId = sessionIdFromInput(data);
-  if (!sessionId) {
-    return 0;
-  }
-
-  const cwd = cwdFromInput(data);
-  const instructionsPath = join(
-    import.meta.dirname,
-    'detect-steering-in-user-prompt.md',
-  );
-  const instructions = await readFile(instructionsPath, 'utf8');
-  const classifierPrompt = `${instructions}
+    const cwd = input.cwd || process.cwd();
+    const instructionsPath = join(
+      import.meta.dirname,
+      'internal/detect-steering-in-user-prompt.md',
+    );
+    const instructions = await readFile(instructionsPath, 'utf8');
+    const classifierPrompt = `${instructions}
 
 ---
 
@@ -54,31 +45,23 @@ User prompt to classify:
 ${prompt}
 `;
 
-  const { bin, args } = await resolveAgentInvocation(cwd);
-  const result = await $({
-    cwd,
-    quiet: true,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    env: learnSkillsEnv(),
-  })`${bin} ${args} ${classifierPrompt}`.nothrow();
+    const descriptions = _steeringDescriptions(
+      await runAgent(classifierPrompt, { cwd, env: learnSkillsReentryEnv() }),
+    );
+    if (descriptions.length === 0) {
+      return;
+    }
 
-  const descriptions = _steeringDescriptions(
-    parseJsonFromAgentText(result.text().trim() || result.stderr.trim()),
-  );
-  if (descriptions.length === 0) {
-    return 0;
-  }
-
-  const path = cachePath(cwd, sessionId);
-  await writeSessionCache(path, {
-    sessionId,
-    transcriptPath: data.transcript_path ?? '',
-    learnedSkills: dedupeDescriptions(descriptions).map((description) => ({
-      description,
-    })),
-  });
-  return 0;
-}
+    const path = cachePath(cwd, sessionId);
+    await writeSessionCache(path, {
+      sessionId,
+      transcriptPath: input.transcript_path ?? '',
+      learnedSkills: dedupeDescriptions(descriptions).map((description) => ({
+        description,
+      })),
+    });
+  },
+});
 
 function _steeringDescriptions(value: unknown): string[] {
   if (Array.isArray(value)) {

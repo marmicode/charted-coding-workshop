@@ -1,50 +1,37 @@
 #!/usr/bin/env node
+import { runHook, stopContinuationOutput } from '../internal/run-hook.mts';
 import {
-  cachePath,
-  cwdFromInput,
-  deleteSessionCache,
-  isLearnSkillsRunning,
-  printStopHookJsonOutput,
-  readStopHookInput,
-  readSessionCache,
-  sessionIdFromInput,
-  stopContinuationOutput,
+  isLearnSkillsReentry,
+  loadCache,
   type SessionCache,
-} from './_shared.mts';
+} from './internal/session-cache.mts';
 
-process.exit(await main());
+await runHook({
+  hookEventName: 'Stop',
+  handler: async (input) => {
+    if (isLearnSkillsReentry()) {
+      return;
+    }
 
-async function main(): Promise<number> {
-  if (isLearnSkillsRunning()) {
-    return 0;
-  }
+    if (input.stop_hook_active) {
+      return;
+    }
 
-  const data = await readStopHookInput();
+    const cache = await loadCache(input);
 
-  if (data.stop_hook_active) {
-    return 0;
-  }
+    if (!cache || cache.learnedSkills.length === 0) {
+      return;
+    }
 
-  const sessionId = sessionIdFromInput(data);
-  if (!sessionId) {
-    return 0;
-  }
+    const skillList = cache.learnedSkills
+      .map((skill) => `- ${skill.description}`)
+      .join('\n');
+    const sessionPayload = _sessionPayloadJson(cache);
 
-  const cwd = cwdFromInput(data);
-  const cacheFilePath = cachePath(cwd, sessionId);
-  const cache = await readSessionCache(cacheFilePath);
+    await cache.clear();
 
-  if (!cache || cache.learnedSkills.length === 0) {
-    return 0;
-  }
-
-  const skillList = cache.learnedSkills
-    .map((skill) => `- ${skill.description}`)
-    .join('\n');
-  const sessionPayload = _sessionPayloadJson(cache);
-
-  printStopHookJsonOutput(
-    stopContinuationOutput(`This session captured reusable steering.
+    return {
+      output: stopContinuationOutput(`This session captured reusable steering.
 Ask the user — using AskUserQuestion with **multiple selection allowed** — which learned skills to add to the project. Use one option per skill (label = the skill description):
 
 ${skillList}
@@ -55,13 +42,10 @@ ${skillList}
 ${sessionPayload}
 \`\`\`
 
-After they answer, always read and follow \`.claude/hooks/learn-skills/persist-learned-skills.md\` using the **session payload JSON above** and the **exact descriptions they selected** (use an empty list if they chose none). The apply step must run even when they select no skills.`),
-  );
-
-  await deleteSessionCache(cacheFilePath);
-
-  return 0;
-}
+After they answer, always read and follow \`.claude/hooks/learn-skills/internal/persist-learned-skills.md\` using the **session payload JSON above** and the **exact descriptions they selected** (use an empty list if they chose none). The apply step must run even when they select no skills.`),
+    };
+  },
+});
 
 function _sessionPayloadJson(cache: SessionCache): string {
   return JSON.stringify(
