@@ -15,7 +15,7 @@ export class LearningSessionRepository {
   }: {
     sessionId: string;
     transcriptPath: string;
-    learnedSkills: LearnedSkill[];
+    learnedSkills?: LearnedSkill[];
   }): Promise<void> {
     const existing = await this.getSession(sessionId);
     const session: LearningSession = {
@@ -23,7 +23,10 @@ export class LearningSessionRepository {
       transcriptPath: transcriptPath.trim()
         ? transcriptPath
         : (existing?.transcriptPath ?? ''),
-      learnedSkills: [...(existing?.learnedSkills ?? []), ...learnedSkills],
+      learnedSkills: [
+        ...(existing?.learnedSkills ?? []),
+        ...(learnedSkills ?? []),
+      ],
     };
 
     await this._writeSession(session);

@@ -24,6 +24,15 @@ await runHook({
       return;
     }
 
+    /* Cursor's first beforeSubmitPrompt sends transcript_path: null. The file
+     * exists by the next prompt and by Stop, so keep backfilling it. */
+    if (session.transcriptPath == null) {
+      await repository.upsertSession({
+        sessionId: input.session_id,
+        transcriptPath: input.transcript_path,
+      });
+    }
+
     const unseenLearnedSkills = session.learnedSkills.filter(
       (skill) => !skill.seen,
     );
