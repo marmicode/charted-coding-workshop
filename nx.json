@@ -40,6 +40,7 @@
     }
   },
   "plugins": [
+    "./tools/plugins/implicit-libs.ts",
     {
       "plugin": "@nx/vitest",
       "options": {
