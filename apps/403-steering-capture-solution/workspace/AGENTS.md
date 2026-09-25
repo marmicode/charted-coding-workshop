@@ -1,0 +1,1 @@
+- Prefer skill guidelines over existing code when they conflict.
