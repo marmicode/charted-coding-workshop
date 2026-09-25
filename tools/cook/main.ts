@@ -337,13 +337,19 @@ function focusOnProject(ctx: Context, project: string) {
 
   fileSystemAdapter.copyDirContents(join(projectDir, 'workspace'), '.');
   retargetProjectJson(fileSystemAdapter, projectDir);
-  retargetAppPath(fileSystemAdapter, join(projectDir, 'vite.config.ts'), project);
+  retargetAppPath(
+    fileSystemAdapter,
+    join(projectDir, 'vite.config.ts'),
+    project,
+  );
   retargetAppPath(
     fileSystemAdapter,
     join(projectDir, 'vitest.config.mts'),
     project,
   );
-  fileSystemAdapter.renameDir(projectDir, join('apps', FOCUSED_APP));
+  const focusedAppDir = join('apps', FOCUSED_APP);
+  fileSystemAdapter.renameDir(projectDir, focusedAppDir);
+  fileSystemAdapter.removeDir(join(focusedAppDir, 'workspace'));
 
   const nxJson = JSON.parse(fileSystemAdapter.readFile('nx.json'));
   fileSystemAdapter.writeFile(

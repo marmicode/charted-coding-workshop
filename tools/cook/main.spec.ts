@@ -107,7 +107,9 @@ describe('cook', () => {
 
     expect(files['design-docs/plan.md']).toBe('# plan');
     expect(files['.claude/settings.json']).toBe('{}');
-    expect(files['apps/whiskmate/workspace/design-docs/plan.md']).toBe('# plan');
+    expect(
+      files['apps/whiskmate/workspace/design-docs/plan.md'],
+    ).toBeUndefined();
   });
 
   it('copies the solution workspace when checking out the solution', async () => {
@@ -160,9 +162,9 @@ describe('cook', () => {
     expect(files['tsconfig.base.json']).toBe(
       '{ "paths": { "@x": ["./apps/whiskmate/src/app/index.ts"] } }',
     );
-    expect(files['apps/whiskmate/workspace/tsconfig.base.json']).toBe(
-      '{ "paths": { "@x": ["./apps/whiskmate/src/app/index.ts"] } }',
-    );
+    expect(
+      files['apps/whiskmate/workspace/tsconfig.base.json'],
+    ).toBeUndefined();
     expect(files['apps/2-test-double-starter/project.json']).toBeUndefined();
     expect(JSON.parse(files['nx.json']).defaultProject).toBe(
       '1-recipe-search-starter',
@@ -355,7 +357,8 @@ class FileSystemFake implements FileSystemAdapter {
 
   copyDirContents(source: string, destination: string): void {
     const prefix = source.endsWith('/') ? source : `${source}/`;
-    const destPrefix = destination === '.' ? '' : `${destination.replace(/\/$/, '')}/`;
+    const destPrefix =
+      destination === '.' ? '' : `${destination.replace(/\/$/, '')}/`;
 
     for (const [filePath, content] of Object.entries(this._files)) {
       if (!filePath.startsWith(prefix)) {

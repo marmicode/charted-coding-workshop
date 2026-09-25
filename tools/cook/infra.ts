@@ -79,7 +79,7 @@ export class FileSystemAdapter {
    */
   removeDir(path: string): void {
     try {
-      rmSync(path, { maxRetries: 10, recursive: true });
+      rmSync(path, { force: true, maxRetries: 10, recursive: true });
     } catch {
       try {
         mkdirSync(TRASH_PATH, { recursive: true });
