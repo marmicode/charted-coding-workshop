@@ -42,6 +42,9 @@
       "@whiskmate/recipe/model": [
         "./apps/402-architecture-feedback-solution/src/app/recipe/model/index.ts"
       ],
+      "@whiskmate/recipe/ui": [
+        "./apps/402-architecture-feedback-solution/src/app/recipe/ui/index.ts"
+      ],
       "@whiskmate/recipe/ui-search": [
         "./apps/402-architecture-feedback-solution/src/app/recipe/ui-search/index.ts"
       ],

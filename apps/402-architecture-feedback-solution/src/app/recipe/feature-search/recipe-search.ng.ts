@@ -11,10 +11,12 @@ import {
   createDefaultRecipeFilterCriteria,
   type RecipeFilterCriteria,
 } from '@whiskmate/recipe/model';
+import { RecipePreview } from '@whiskmate/recipe/ui';
 import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/ui-search';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
 import type { Recipe } from '@whiskmate/shared-recipe/model';
+import type { Weekday } from '@whiskmate/shared/model';
 import { Catalog } from '@whiskmate/shared/ui';
-import { RecipePreview } from './recipe-preview.ng';
 
 @Component({
   selector: 'wm-recipe-search',
@@ -27,7 +29,13 @@ import { RecipePreview } from './recipe-preview.ng';
           <wm-no-recipes />
         } @else {
           @for (recipe of filteredRecipes.value(); track recipe.id) {
-            <wm-recipe-preview [recipe]="recipe" />
+            <wm-recipe-preview
+              [recipe]="recipe"
+              [favorite]="isFavorite(recipe.id)"
+              [canAdd]="canAdd(recipe.id)"
+              (toggleFavorite)="onToggleFavorite(recipe.id)"
+              (addToMealPlan)="onAddToMealPlan(recipe.id, $event)"
+            />
           }
         }
       }
@@ -52,6 +60,7 @@ export class RecipeSearch {
 
   private _userFavorites = inject(UserFavorites);
   private _recipeRepository = inject(RecipeRepository);
+  private _mealPlanStore = inject(MealPlanStore);
 
   private _recipes = rxResource({
     params: () => this.filter(),
@@ -67,5 +76,25 @@ export class RecipeSearch {
     }
 
     return recipes;
+  }
+
+  isFavorite(recipeId: string): boolean {
+    return this._userFavorites.favoriteIds().has(recipeId);
+  }
+
+  canAdd(recipeId: string): boolean {
+    return this._mealPlanStore.canAdd({ recipeId });
+  }
+
+  onToggleFavorite(recipeId: string): void {
+    if (this.isFavorite(recipeId)) {
+      this._userFavorites.removeFavorite(recipeId);
+    } else {
+      this._userFavorites.addFavorite(recipeId);
+    }
+  }
+
+  onAddToMealPlan(recipeId: string, weekday: Weekday): void {
+    this._mealPlanStore.assign({ weekday, recipeId });
   }
 }
