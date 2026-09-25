@@ -25,7 +25,12 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          depConstraints,
+          depConstraints: [
+            {
+              sourceTag: '*',
+              onlyDependOnLibsWithTags: ['*'],
+            },
+          ],
         },
       ],
     },
@@ -37,7 +42,12 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          depConstraints: testDepConstraints,
+          depConstraints: [
+            {
+              sourceTag: '*',
+              onlyDependOnLibsWithTags: ['*'],
+            },
+          ],
         },
       ],
     },
