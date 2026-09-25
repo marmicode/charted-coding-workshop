@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { join } from 'node:path';
-import { runAgent } from '../internal/agent.mts';
+import { parseJsonFromAgentText, runAgent } from '../internal/agent.mts';
 import { runHook } from '../internal/run-hook.mts';
 import {
   isLearnSkillsReentry,
@@ -50,7 +50,7 @@ ${previousLearnedSkills.map((skill) => `- ${skill.description}`).join('\n') || '
 ${prompt}
 `;
 
-    const descriptions = _steeringDescriptions(
+    const descriptions = _parseSteeringDescriptions(
       await runAgent(classifierPrompt, { cwd, env: learnSkillsReentryEnv() }),
     );
     if (descriptions.length === 0) {
@@ -68,9 +68,11 @@ ${prompt}
   },
 });
 
-function _steeringDescriptions(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value.filter(
+function _parseSteeringDescriptions(value: string): string[] {
+  const result = parseJsonFromAgentText(value);
+
+  if (Array.isArray(result)) {
+    return result.filter(
       (item) => typeof item === 'string' && item.trim().length > 0,
     );
   }

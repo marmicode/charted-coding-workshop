@@ -2,11 +2,26 @@ import { $, which } from 'zx';
 
 type AgentBin = 'claude' | 'cursor-agent';
 
+export async function runAgent(
+  prompt: string,
+  options: { cwd: string; env?: NodeJS.ProcessEnv },
+): Promise<string> {
+  const { bin, args } = await _resolveAgentInvocation(options.cwd);
+  const result = await $({
+    cwd: options.cwd,
+    quiet: true,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: options.env,
+  })`${bin} ${args} ${prompt}`.nothrow();
+
+  return result.text().trim();
+}
+
 /**
  * `cursor-agent` does not support an output JSON schema, so its reply is free
  * text. Pull the JSON object or array out of that text.
  */
-function parseJsonFromAgentText(text: string): unknown {
+export function parseJsonFromAgentText(text: string): unknown {
   const trimmed = text.trim();
   if (!trimmed) {
     return undefined;
@@ -37,21 +52,6 @@ function parseJsonFromAgentText(text: string): unknown {
       return undefined;
     }
   }
-}
-
-export async function runAgent(
-  prompt: string,
-  options: { cwd: string; env?: NodeJS.ProcessEnv },
-): Promise<unknown> {
-  const { bin, args } = await _resolveAgentInvocation(options.cwd);
-  const result = await $({
-    cwd: options.cwd,
-    quiet: true,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    env: options.env,
-  })`${bin} ${args} ${prompt}`.nothrow();
-
-  return parseJsonFromAgentText(result.text().trim() || result.stderr.trim());
 }
 
 async function _resolveAgentInvocation(
