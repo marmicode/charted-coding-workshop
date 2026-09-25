@@ -21,7 +21,7 @@ const type = (
   key: 'app' | 'feature' | 'ui' | 'domain' | 'infra' | 'model' | 'util',
 ) => `type:${key}`;
 
-export const modularLayeredDepConstraints: Array<{
+export const depConstraints: Array<{
   sourceTag?: string;
   onlyDependOnLibsWithTags?: string[];
   allowedExternalImports?: string[];
@@ -148,3 +148,10 @@ export const modularLayeredDepConstraints: Array<{
     allowedExternalImports: ['date-fns'],
   },
 ];
+
+export const testDepConstraints = depConstraints.map((constraint) => ({
+  ...constraint,
+  allowedExternalImports: constraint.allowedExternalImports
+    ? [...constraint.allowedExternalImports, '@angular/core/testing', 'vitest']
+    : undefined,
+}));

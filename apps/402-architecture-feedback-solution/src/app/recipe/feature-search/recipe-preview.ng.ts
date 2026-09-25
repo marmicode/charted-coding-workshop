@@ -28,11 +28,7 @@ import { Card, WeekdayPicker } from '@whiskmate/shared/ui';
       >
         <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
-      <button
-        type="button"
-        [disabled]="!canAdd()"
-        (click)="onAddToMealPlan()"
-      >
+      <button type="button" [disabled]="!canAdd()" (click)="onAddToMealPlan()">
         Add to meal plan
       </button>
     </div>

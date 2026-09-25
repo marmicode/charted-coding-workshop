@@ -1,0 +1,66 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "strict": false,
+    "paths": {
+      "@whiskmate/admin/feature-admin": [
+        "./apps/402-architecture-feedback-solution/src/app/admin/feature-admin/index.ts"
+      ],
+      "@whiskmate/authz/domain": [
+        "./apps/402-architecture-feedback-solution/src/app/authz/domain/index.ts"
+      ],
+      "@whiskmate/authz/model": [
+        "./apps/402-architecture-feedback-solution/src/app/authz/model/index.ts"
+      ],
+      "@whiskmate/meal-plan/feature-meal-plan": [
+        "./apps/402-architecture-feedback-solution/src/app/meal-plan/feature-meal-plan/index.ts"
+      ],
+      "@whiskmate/meal-plan/ui": [
+        "./apps/402-architecture-feedback-solution/src/app/meal-plan/ui/index.ts"
+      ],
+      "@whiskmate/recipe/domain": [
+        "./apps/402-architecture-feedback-solution/src/app/recipe/domain/index.ts"
+      ],
+      "@whiskmate/recipe/feature-search": [
+        "./apps/402-architecture-feedback-solution/src/app/recipe/feature-search/index.ts"
+      ],
+      "@whiskmate/recipe/infra": [
+        "./apps/402-architecture-feedback-solution/src/app/recipe/infra/index.ts"
+      ],
+      "@whiskmate/recipe/model": [
+        "./apps/402-architecture-feedback-solution/src/app/recipe/model/index.ts"
+      ],
+      "@whiskmate/recipe/ui-search": [
+        "./apps/402-architecture-feedback-solution/src/app/recipe/ui-search/index.ts"
+      ],
+      "@whiskmate/shared-meal-plan/domain": [
+        "./apps/402-architecture-feedback-solution/src/app/shared-meal-plan/domain/index.ts"
+      ],
+      "@whiskmate/shared-recipe/model": [
+        "./apps/402-architecture-feedback-solution/src/app/shared-recipe/model/index.ts"
+      ],
+      "@whiskmate/shared/infra": [
+        "./apps/402-architecture-feedback-solution/src/app/shared/infra/index.ts"
+      ],
+      "@whiskmate/shared/model": [
+        "./apps/402-architecture-feedback-solution/src/app/shared/model/index.ts"
+      ],
+      "@whiskmate/shared/ui": [
+        "./apps/402-architecture-feedback-solution/src/app/shared/ui/index.ts"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
