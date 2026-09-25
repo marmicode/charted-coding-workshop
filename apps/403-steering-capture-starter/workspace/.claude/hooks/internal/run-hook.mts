@@ -17,7 +17,7 @@ export async function runHook<HOOK_EVENT_NAME extends HookEvent>(options: {
   const input = _parseHookInput(await stdin(), options.hookEventName);
   const { exitCode = 0, output } = (await options.handler(input)) ?? {};
   if (output) {
-    console.log(JSON.stringify(output));
+    console.log(JSON.stringify(_normalizeHookOutput(output)));
   }
   process.exit(exitCode);
 }
@@ -51,27 +51,28 @@ export type HookOutputFor<HOOK_EVENT_NAME extends HookEvent> = Omit<
         >;
       });
 
-export function stopContinuationOutput(message: string): HookOutputFor<'Stop'> {
-  return _enrichCursorStopOutput({
-    hookSpecificOutput: {
-      hookEventName: 'Stop',
-      additionalContext: message,
-    },
-  });
-}
-
 /**
  * Cursor ignores Claude's stop hooks that do not "block".
  * We have to use a `followup_message` to make sure Cursor continues.
  */
-function _enrichCursorStopOutput(
-  output: HookOutputFor<'Stop'>,
-): HookOutputFor<'Stop'> & { followup_message?: string } {
-  return {
-    followup_message: output.hookSpecificOutput?.additionalContext,
-    ...output,
-  };
+function _normalizeHookOutput(output: HookJsonOutput): HookJsonOutput {
+  const hookSpecificOutput = output.hookSpecificOutput;
+  if (
+    hookSpecificOutput?.hookEventName === 'Stop' &&
+    hookSpecificOutput.additionalContext
+  ) {
+    return {
+      ...output,
+      followup_message: hookSpecificOutput.additionalContext,
+    };
+  }
+
+  return output;
 }
+
+type HookJsonOutput = SyncHookJSONOutput & {
+  followup_message?: string;
+};
 
 function _parseHookInput<HOOK_EVENT_NAME extends HookEvent>(
   raw: string,

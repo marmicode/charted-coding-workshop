@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { runHook, stopContinuationOutput } from '../internal/run-hook.mts';
+import { runHook } from '../internal/run-hook.mts';
 import {
   isLearnSkillsReentry,
   LearningSessionRepository,
@@ -41,12 +41,15 @@ await runHook({
     });
 
     return {
-      output: stopContinuationOutput(
-        `We just learned the following skills:
+      output: {
+        hookSpecificOutput: {
+          hookEventName: 'Stop',
+          additionalContext: `We just learned the following skills:
 ${learnedSkillsStr}
 
 Remind me to run \`/save-learnings\` to save them.`,
-      ),
+        },
+      },
     };
   },
 });

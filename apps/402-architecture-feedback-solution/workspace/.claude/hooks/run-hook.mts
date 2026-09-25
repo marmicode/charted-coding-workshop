@@ -17,14 +17,16 @@ export async function runHook<HOOK_EVENT_NAME extends HookEvent>(options: {
   const input = _parseHookInput(await stdin(), options.hookEventName);
   const { exitCode = 0, output } = (await options.handler(input)) ?? {};
   if (output) {
-    console.log(JSON.stringify(output));
+    console.log(JSON.stringify(_normalizeHookOutput(output)));
   }
   process.exit(exitCode);
 }
 
 type HookHandlerResult<HOOK_EVENT_NAME extends HookEvent> = {
   exitCode?: number;
-  output?: HookOutputFor<HOOK_EVENT_NAME>;
+  output?: HookOutputFor<HOOK_EVENT_NAME> & {
+    followup_message?: string;
+  };
 };
 
 type HookSpecificOutput = NonNullable<SyncHookJSONOutput['hookSpecificOutput']>;
@@ -49,11 +51,34 @@ export type HookOutputFor<HOOK_EVENT_NAME extends HookEvent> = Omit<
         >;
       });
 
+/**
+ * Cursor ignores Claude's stop hooks that do not "block".
+ * We have to use a `followup_message` to make sure Cursor continues.
+ */
+function _normalizeHookOutput(output: HookJsonOutput): HookJsonOutput {
+  const hookSpecificOutput = output.hookSpecificOutput;
+  if (
+    hookSpecificOutput?.hookEventName === 'Stop' &&
+    hookSpecificOutput.additionalContext
+  ) {
+    return {
+      ...output,
+      followup_message: hookSpecificOutput.additionalContext,
+    };
+  }
+
+  return output;
+}
+
+type HookJsonOutput = SyncHookJSONOutput & {
+  followup_message?: string;
+};
+
 function _parseHookInput<HOOK_EVENT_NAME extends HookEvent>(
   raw: string,
   hookEventName: HOOK_EVENT_NAME,
 ): HookInputFor<HOOK_EVENT_NAME> {
-  const data = _normalizeCursorHookInput(JSON.parse(raw) as HookInput);
+  const data = _normalizeHookInput(JSON.parse(raw) as HookInput, hookEventName);
 
   if (data.hook_event_name !== hookEventName) {
     throw new Error(
@@ -64,9 +89,32 @@ function _parseHookInput<HOOK_EVENT_NAME extends HookEvent>(
   return data as HookInputFor<HOOK_EVENT_NAME>;
 }
 
-function _normalizeCursorHookInput(data: HookInput): HookInput {
-  if ((data.hook_event_name as string) === 'postToolUse') {
-    data.hook_event_name = 'PostToolUse';
-  }
+function _normalizeHookInput(
+  data: HookInput,
+  hookEventName: HookEvent,
+): HookInput {
+  data.hook_event_name =
+    _normalizeHookEventName(hookEventName) ?? hookEventName;
   return data;
+}
+
+/**
+ * Claude Code hook names mapped to Cursor hook names.
+ * @see https://cursor.com/docs/reference/third-party-hooks#hook-step-mapping
+ */
+const CURSOR_HOOK_EVENT_NAMES: Record<string, HookEvent> = {
+  preToolUse: 'PreToolUse',
+  postToolUse: 'PostToolUse',
+  beforeSubmitPrompt: 'UserPromptSubmit',
+  stop: 'Stop',
+  subagentStop: 'SubagentStop',
+  sessionStart: 'SessionStart',
+  sessionEnd: 'SessionEnd',
+  preCompact: 'PreCompact',
+};
+
+function _normalizeHookEventName(
+  hookEventName: HookEvent,
+): HookEvent | undefined {
+  return CURSOR_HOOK_EVENT_NAMES[hookEventName];
 }
