@@ -52,3 +52,9 @@ pnpm cook start 101-review-fatigue
 :::warning
 Starting an exercise replaces local changes after you confirm, and it removes the other exercise apps from the working tree. Your work for the current exercise stays on the `cooking` branch until you start another one.
 :::
+
+## 🤖 Agentic Tutor
+
+Whenever you need help, you can ask the agentic tutor for a hint.
+
+You can use the `/next-hint` skill to get a hint for the current exercise.
