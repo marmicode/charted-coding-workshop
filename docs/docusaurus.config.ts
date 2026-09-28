@@ -10,7 +10,7 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'http://localhost:3000',
+  url: 'https://charted.marmicode.io',
   baseUrl: '/',
 
   organizationName: 'marmicode',
