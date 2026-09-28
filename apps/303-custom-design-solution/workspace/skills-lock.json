@@ -48,6 +48,12 @@
       "sourceType": "github",
       "skillPath": "skills/skill-creator/SKILL.md",
       "computedHash": "dcd4803e61e913e6fc27294184cd3a71f09f5e924ff20c8a9a20173e7b3c2bcf"
+    },
+    "wallaby-cli": {
+      "source": "wallabyjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/wallaby-cli/SKILL.md",
+      "computedHash": "5b5fba2af4ca8742a042c7c5bded8ea657746f59a58a6bec5be53f4a33124865"
     }
   }
 }

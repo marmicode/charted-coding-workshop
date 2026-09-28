@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "angular-developer/SKILL.md",
       "computedHash": "0850aa966b6a7da1151daa9d0ef2081bf397f052573a35c1643fb92b948f0f00"
+    },
+    "wallaby-cli": {
+      "source": "wallabyjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/wallaby-cli/SKILL.md",
+      "computedHash": "5b5fba2af4ca8742a042c7c5bded8ea657746f59a58a6bec5be53f4a33124865"
     }
   }
 }
