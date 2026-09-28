@@ -33,7 +33,11 @@ Do not copy a solution workspace.
 #### 2. Paste this prompt.
 
 ```text
-Add a user service that tells if the user is admin and loads the information from local storage. However you want, doesn't matter. We'll implement this later, and there are no formats for local storage yet. It checks the user roles and sees if there's admin in the user roles. I wanted to use the guard to create a guard and apply it to the admin route so that users cannot visit the admin page if they don't have the admin role.
+Add a user service that tells if the user is admin and loads the information from local storage.
+However you want, doesn't matter.
+We'll implement this later, and there are no formats for local storage yet.
+It checks the user roles and sees if there's admin in the user roles.
+Create a guard and apply it to the admin route so that users cannot visit the admin page if they don't have the admin role.
 ```
 
 #### 3. Note which files the agent read, if any.
@@ -58,4 +62,4 @@ npx skills add angular/skills
 
 #### 4. Note which skill reference files the agent opened.
 
-Use the skills panel, the transcript, or the file reads. Compare that list with round 1.
+Compare the transcript with round 1.
