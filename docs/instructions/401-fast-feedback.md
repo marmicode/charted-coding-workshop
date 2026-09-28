@@ -16,17 +16,50 @@ sidebar_label: 401. Fast Feedback
 pnpm cook start 401-fast-feedback
 ```
 
-The starter is the finished meal plan. `ClockAdapter` is unused. An ESLint rule already forbids `Date` and says `Use ClockAdapter instead of Date.` The hook that would report that failure still throws.
+An eslint rule already forbids `Date` and recommends usage of `ClockAdapter` instead.
+
+We want the agent to catch these simple issues as early as possible.
 
 ## 🎯 Goal
 
-Write the on-write ESLint hook so a lint failure comes back to the agent. Finish the hook before you paste the prompt.
+Write the on-write ESLint hook so a lint failure comes back to the agent.
 
 ## 📝 Steps
 
-#### 1. Wire the hook.
+#### 1. Implement the hook
 
-`.claude/settings.json` ships `"hooks": {}`. Register `PostToolUse` for `Edit|Write`.
+- Edit `.claude/hooks/eslint-on-write.mts`.
+
+- Parse `input.tool_input` with `toolInputSchema`. _(See [hook input schema](https://code.claude.com/docs/en/hooks#:~:text=Creates%20or%20overwrites%20a%20file))_
+
+- Use `zx` to run eslint on the file:
+
+```ts
+$`pnpm eslint --flag v10_config_lookup_from_file ${toolInput.file_path}`.nothrow();
+```
+
+- If the eslint command exits with code 0, then everything is fine. Return nothing.
+
+- If there is a proble, return an output with `hookSpecificOutput` containing `additionalContext` which will be served as a prompt to the agent:
+
+```text
+ESLint reported issues in the file you just edited (${toolInput.file_path}).
+Fix the issues that are related to the changes you made even if it's not caused by the changes you made.
+Boy scout rule: leave the code better than you found it.
+
+${lintErr}
+```
+
+#### 2. Paste this prompt before you wire the hook
+
+```text
+in apps/whiskmate/src/app/meal-plan/meal-plan-store.ts `assign`,
+prompt user with "are you still hungry?" if current date is december 25th
+```
+
+#### 3. Wire the hook
+
+Register the hook in `.claude/settings.json`.
 
 ```json
 {
@@ -37,7 +70,7 @@ Write the on-write ESLint hook so a lint failure comes back to the agent. Finish
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/eslint-on-write.mts",
+            "command": "node .claude/hooks/eslint-on-write.mts",
             "timeout": 30
           }
         ]
@@ -47,20 +80,4 @@ Write the on-write ESLint hook so a lint failure comes back to the agent. Finish
 }
 ```
 
-#### 2. Replace the throw.
-
-`.claude/hooks/eslint-on-write.mts` already imports `zod`, `zx`, and `runHook`, and it already declares `toolInputSchema` with `file_path`. The handler throws `🚧 Work in progress!`.
-
-- Parse `input.tool_input` with `toolInputSchema`.
-- Run `pnpm eslint --flag v10_config_lookup_from_file` on `file_path`.
-- Exit 0 means return nothing.
-- Any other exit sends the lint output back as `PostToolUse` `additionalContext`, and tells the agent to fix the issues in the file it just edited.
-
-`run-hook.mts` and the `Date` rule are already done. Do not rewrite them.
-
-#### 3. Paste this prompt only after the hook no longer throws.
-
-```text
-in apps/whiskmate/src/app/meal-plan/meal-plan-store.ts's `assign`,
-prompt user with "are you still hungry?" if current date is december 25th
-```
+#### 4. Try the prompt again in a new session
