@@ -16,47 +16,60 @@ sidebar_label: 403. Steering Capture
 pnpm cook start 403-steering-capture
 ```
 
-`save-learnings` is already installed and already reads `learnings.txt`. The two learn-skills hooks throw.
-
-:::warning
-Ignore `learning-session-repository.mts` and `detect-steering-in-user-prompt.md`. They are not the path for this exercise.
-:::
-
 ## 🎯 Goal
 
-Replace the two throws so a steer is appended to `learnings.txt`, and so the agent reminds you to run `/save-learnings`. Finish both hooks before you paste the prompt.
+Edit `.claude/hooks/learn-skills/user-prompt-submit.mts` and `.claude/hooks/learn-skills/stop.mts` hooks to respectively:
+
+- append any steering captured from the user prompt to `learnings.txt`
+- then remind you to run `/save-learnings` after the turn ends.
 
 ## 📝 Steps
 
-#### 1. Leave `.claude/settings.json` as it is.
-
-It already wires `UserPromptSubmit` to `.claude/hooks/learn-skills/user-prompt-submit.mts` (`async`, timeout 120) and `Stop` to `.claude/hooks/learn-skills/stop.mts` (timeout 30).
-
-#### 2. Replace the `UserPromptSubmit` throw.
+#### 1. Implement the `UserPromptSubmit` hook
 
 `user-prompt-submit.mts` already imports `runAgent` and `runHook`. The handler throws `🚧 Work in progress!`.
 
-- If `input.prompt` contains `save-learnings`, return.
-- Otherwise call `runAgent` with the prompt and ask for reusable steering as a list of descriptions (`- Do X instead of Y`).
+- Call `runAgent` with the prompt from `internal/detect-steering-in-user-prompt.md` combined with the user prompt from `input.prompt`
+
+```ts
+const prompt = `
+${detectSteeringInUserPrompt}
+
+## User prompt to classify
+
+${input.prompt}
+`;
+
+const result = await runAgent(prompt);
+```
+
 - If there is no steering pattern, the agent returns an empty string and nothing else.
+
 - Append the result to `learnings.txt` under a `## Session (${input.transcript_path})` heading.
 
-#### 3. Replace the `Stop` throw.
+```ts
+import { writeFileSync } from 'node:fs';
 
-`stop.mts` already imports `runHook`. The handler throws `🚧 Work in progress!`.
+writeFileSync('learnings.txt', `## Session (${input.transcript_path})\n${result}\n`, { flag: 'a' });
+```
 
-- If `input.stop_hook_active` is set, return.
+:::tip
+Add a guard that returns if `input.prompt` contains `save-learnings` to avoid asking user to save learnings when the prompt is about saving learnings.
+:::
+
+#### 2. Implement the `Stop` hook
+
 - Read `learnings.txt`. A missing file or an empty file returns nothing.
 - Any other content sends `Stop` `additionalContext`: the learnings, then this reminder: `Remind me to run /save-learnings to save them.`
 
-`runHook`, `runAgent`, and `save-learnings` are already written. Do not edit that skill.
-
-#### 4. Paste this prompt only after neither handler throws.
-
-```text
-When a store exposes a signal, return it with asReadonly(). Do not return the writable signal.
+```ts
+const learnings = readFileSync('learnings.txt', 'utf8');
 ```
 
-#### 5. Run `/save-learnings`.
+#### 3. Try the following prompt
 
-That command contains `save-learnings`, so `UserPromptSubmit` should not append it.
+```text
+In meal-planner-store.ts, use `@Service()` instead of `@Injectable()` decorator.
+```
+
+#### 4. Run `/save-learnings`
