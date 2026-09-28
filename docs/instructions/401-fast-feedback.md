@@ -26,7 +26,16 @@ Write the on-write ESLint hook so a lint failure comes back to the agent.
 
 ## 📝 Steps
 
-#### 1. Implement the hook
+#### 1. Paste this prompt before you wire the hook
+
+```text
+In apps/whiskmate/src/app/meal-plan/meal-plan-store.ts `assign`,
+prompt user with "are you still hungry?" if current date is december 25th
+```
+
+Make sure the generated code is using `Date` instead of `ClockAdapter` then revert the change.
+
+#### 2. Implement the hook
 
 - Edit `.claude/hooks/eslint-on-write.mts`.
 
@@ -48,13 +57,6 @@ Fix the issues that are related to the changes you made even if it's not caused 
 Boy scout rule: leave the code better than you found it.
 
 ${lintErr}
-```
-
-#### 2. Paste this prompt before you wire the hook
-
-```text
-in apps/whiskmate/src/app/meal-plan/meal-plan-store.ts `assign`,
-prompt user with "are you still hungry?" if current date is december 25th
 ```
 
 #### 3. Wire the hook

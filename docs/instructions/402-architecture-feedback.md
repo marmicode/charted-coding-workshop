@@ -16,31 +16,28 @@ sidebar_label: 402. Architecture Feedback
 pnpm cook start 402-architecture-feedback
 ```
 
-The starter has the meal plan, the Charted Coding skills, the ESLint hook from 401, and the implicit libraries. `depConstraints` is an empty array. The on-write hook is already wired.
+The workspace is now using Nx implicit libraries and Nx eslint rules to enforce module boundaries.
 
 ## 🎯 Goal
 
-Finish the module-boundary graph, then point ESLint at it. A boundary the agent never hears is not a wall. Finish the graph before you paste the prompt.
+Configure
 
 ## 📝 Steps
 
-#### 1. Fill `tools/eslint/dep-constraints.mts`.
-
-`depConstraints` is `[]`. `scope()`, `type()`, and `testDepConstraints` are already there. The file comment links to the cookbook for scopes, types, and `allowedExternalImports`.
-
-Fill the graph. Leave `scope()`, `type()`, and `testDepConstraints` as they are.
-
-#### 2. Point ESLint at that graph.
-
-`eslint.config.mjs` already imports `depConstraints` and `testDepConstraints`. Source files and specs both use `sourceTag: '*'` and `onlyDependOnLibsWithTags: ['*']`.
-
-- Point the source-file rule at `depConstraints`.
-- Point the spec rule at `testDepConstraints`.
-
-The libraries, `index.ts` entry points, implicit-libs plugin, path aliases, and `.claude/hooks/eslint-on-write.mts` are already done.
-
-#### 3. Paste this prompt only after ESLint uses your graph.
+#### 1. Try this prompt
 
 ```text
-in apps/whiskmate/src/app/recipe/ui-search/recipe-filter.ng.ts inject RecipeRepository and load categories for the dropdown.
+In apps/whiskmate/src/app/recipe/ui-search/recipe-filter.ng.ts inject `RecipeRepository` and load categories for the dropdown.
 ```
+
+Make sure the generated code is importing `RecipeRepository` within `recipe-filter.ng.ts` component then revert the change.
+
+#### 2. Fill `tools/eslint/dep-constraints.mts`.
+
+Update `depConstraints` to prevent modules of type `ui` from importing modules of type `infra`.
+
+#### 3. Point ESLint at that graph.
+
+Update `eslint.config.mjs` to point the source-file rule at `depConstraints` and the spec rule at `testDepConstraints`.
+
+#### 4. Try the prompt again
