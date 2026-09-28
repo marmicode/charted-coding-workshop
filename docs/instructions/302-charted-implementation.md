@@ -16,44 +16,37 @@ sidebar_label: 302. Charted Implementation
 pnpm cook start 302-charted-implementation
 ```
 
-The design doc is already at `design-docs/001-weekly-meal-plan.md`. Every PR is still open. There is no meal-plan code yet.
+The design doc is already at `design-docs/001-weekly-meal-plan.md`. There is no meal-plan code yet.
 
 ## 🎯 Goal
 
-Implement the meal plan one PR at a time. Each PR is scaffold, then red, then green. Review the slice before you start the next one.
+Implement the meal plan using charted coding skills.
 
-## 📝 Steps
+**The goal is to try and feel the right step granularity.**
 
-#### 1. Open the PR plan.
+Design doc is at `design-docs/001-weekly-meal-plan.md`.
 
-`design-docs/001-weekly-meal-plan.md`
-
-#### 2. Work the PRs in this order.
-
-1. Scaffold
-2. findById
-3. Store behavior
-4. Persist store
-5. Meal Plan UI behind wip
-6. Assign from Search behind wip
-7. Remove wip flag
-
-#### 3. For each PR, run the three skills in order.
+### Skills usage
 
 ```text
-/charted-scaffold
+/charted-scaffold <design-doc> <PR-number>
+/charted-red <design-doc> <PR-number>
+/charted-green <design-doc> <PR-number>
+
+# Or if you do not even remember where you are at:
+/charted-continue [design-doc] [PR-number]
 ```
+
+:::tip
+You can write all tests or fix all tests at once with such prompts: `/charted-red all tests` or `/charted-green all tests`
+:::
+
+:::tip
+You can compose the skills with prompts such as:
 
 ```text
-/charted-red
+Keep on invoking `charted-continue` skill with PR#YOUR_PR_NUMBER_HERE until all tasks and tests are completed.
+Do not start working on another PR automatically.
 ```
 
-```text
-/charted-green
-```
-
-Use `/charted-continue` when you come back to a PR that is already in progress.
-
-#### 4. Review the slice before the next PR.
-
-Read the diff for that PR. Leave the following PR open until this one is done.
+:::
