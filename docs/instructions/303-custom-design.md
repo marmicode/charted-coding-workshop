@@ -16,43 +16,47 @@ sidebar_label: 303. Custom Design
 pnpm cook start 303-custom-design
 ```
 
-The starter is the finished meal plan, with the Charted Coding skills and the checked design doc. It does not include `skill-creator`.
-
-:::info
-Skip this exercise if 301 needs the time. 201 already shows what a skill is when an agent reads one.
-:::
-
 ## 🎯 Goal
 
-A skill is authored markdown. Install `skill-creator` and write a short `codesign` skill. Stop when that skill file exists and encodes the interview.
+Create a custom design skill.
 
 ## 📝 Steps
 
-#### 1. Install `skill-creator` only.
+#### 1. Install `skill-creator`
 
 ```sh
 npx skills add anthropics/skills --skill skill-creator
 ```
 
-Do not install anything else for this exercise.
-
-#### 2. Paste this prompt.
+#### 2. Use the `skill-creator` skill to create a `codesign` skill
 
 ```text
-/skill-creator create a "codesign" skill that interviews me step by step using AskUserQuestion tool
-   to build a design doc markdown file in design-docs folder following this structure
-  - Goals
-  - Non-Goals
-  - Desired Behavior
-  - Design & Implementation Details
-  - Testing Strategy
-  - Alternatives Considered
-
-  After each chapter interview, write the chapter to the design doc file, and pause so that I can steer or continue
-
-  DO NOT USE READ ANY FILE FROM THIS WORKSPACE TO LEARN FROM WHILE CREATING THIS SKILL
+/skill-creator create a "codesign" skill...
 ```
 
-#### 3. Stop when the skill exists.
+:::warning
+Exceptionally, add the following to your prompt to avoid pollution by the workshop's specific instructions, skills, etc...
 
-`skill-creator` will try to continue into evals. That is optional. The exercise is done when a `codesign` skill file exists and describes the interview.
+```text
+Create this skill from scratch, using only the information in this prompt
+and my answers to your questions. Do not read, open, or search any files in this workspace to inform the
+skill.
+```
+
+:::
+
+:::tip
+
+Mention something like `Use "AskUserQuestion" tool to interview me.` to nudge agents to use the question tool instead of the chat.
+
+:::
+
+:::tip
+
+Ask the agent to write down the design doc as it is being created so that you can review it, edit it, commit it, and continue.
+
+:::
+
+#### 3. Try the skill
+
+Try it out.
