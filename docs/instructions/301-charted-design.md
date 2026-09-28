@@ -27,20 +27,20 @@ Install the Charted Coding skills and write the weekly meal plan design. The har
 #### 1. Install the Charted Coding skills.
 
 ```sh
-npx skills add marmicode/skills --skill charted-design --skill charted-review --skill charted-scaffold --skill charted-red --skill charted-green --skill charted-continue
+npx skills add marmicode/skills # and select all the skills
 ```
 
-#### 2. Write the design.
+#### 2. Prompt the agent to write the design.
 
 ```text
-/charted-design Write the design for a weekly meal plan in Whiskmate.
+/charted-design add a weekly meal plan
 ```
 
-#### 3. Stay on the document.
+#### 3. Design the feature.
 
-The design doc is the deliverable. Leave the meal-plan feature unimplemented.
+Answer the agent's questions.
+Feel free to edit the design doc as you go.
 
-#### 4. Check the two parts that are easy to rush.
-
-- The testing strategy says how each behavior will be verified.
-- The PR plan is an ordered list of small slices, not one late diff.
+:::warning
+Do not implement the feature yet.
+:::
