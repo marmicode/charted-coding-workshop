@@ -2,6 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { WIP_STORAGE_KEY } from '../authz/wip.guard';
+import { WeekdayAssignments } from '../meal-plan/meal-plan';
 import { MealPlanStore } from '../meal-plan/meal-plan-store';
 import { LocalStorage } from '../shared/local-storage';
 import { RECIPES } from './recipe-data';
@@ -115,10 +116,44 @@ describe(RecipePreview.name, () => {
     expect(addButton()).toBeTruthy();
   });
 
-  it.todo('disables add when the recipe is already planned', () => {
-    // Arrange `canAdd({ recipeId: shakshukaId })` false.
-    // Mount `RecipePreview` with Shakshuka.
-    // Assert "Add to meal plan" is disabled.
-    // Assert the weekday picker does not open.
+  it.todo('disables add when the recipe is already planned', async () => {
+    const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
+    const storedWeek: WeekdayAssignments = {
+      monday: null,
+      tuesday: null,
+      wednesday: shakshuka.id,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    };
+    const items = new Map<string, string>([
+      [WIP_STORAGE_KEY, 'true'],
+      ['whiskmate:meal-plan', JSON.stringify(storedWeek)],
+    ]);
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, {
+      useValue: {
+        getItem: (key: string) => items.get(key) ?? null,
+        setItem: (key: string, value: string) => {
+          items.set(key, value);
+        },
+      } satisfies LocalStorage,
+    });
+
+    const fixture = TestBed.createComponent(RecipePreview);
+    fixture.componentRef.setInput('recipe', shakshuka);
+    await fixture.whenStable();
+
+    const add = [...fixture.nativeElement.querySelectorAll('button')].find(
+      (button) => button.textContent?.includes('Add to meal plan'),
+    ) as HTMLButtonElement;
+
+    add.click();
+    await fixture.whenStable();
+
+    expect(add.disabled).toBe(true);
+    expect(fixture.nativeElement.querySelector('wm-weekday-picker')).toBeNull();
   });
 });
