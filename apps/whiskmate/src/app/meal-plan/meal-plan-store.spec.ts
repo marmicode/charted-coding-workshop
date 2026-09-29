@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { MealPlanStore } from './meal-plan-store';
 
 describe(MealPlanStore.name, () => {
-  it.todo('replaces the recipe on a weekday', () => {
+  it('replaces the recipe on a weekday', () => {
     const store = TestBed.runInInjectionContext(() => new MealPlanStore());
 
     store.assign({ weekday: 'monday', recipeId: 'shakshuka' });

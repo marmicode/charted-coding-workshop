@@ -155,13 +155,13 @@ export interface MealPlanStore {
 }
 ```
 
-- [ ] `assign` stores the recipe id and replaces any id already on that day. No confirmation.
+- [x] `assign` stores the recipe id and replaces any id already on that day. No confirmation.
 - [ ] `clear` removes the id for that weekday.
 - [ ] `canAdd` is false when that recipe id is already on a weekday.
 
 ## Testing Strategy
 
-### 🚧 Replaces the recipe on a weekday
+### ✅ Replaces the recipe on a weekday
 
 - Arrange an empty `MealPlanStore`.
 - `assign({ weekday: 'monday', recipeId: 'shakshuka' })`.

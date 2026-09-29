@@ -1,27 +1,43 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import type { Weekday, WeekdayAssignments } from './meal-plan';
+
+const emptyAssignments = (): WeekdayAssignments => ({
+  monday: null,
+  tuesday: null,
+  wednesday: null,
+  thursday: null,
+  friday: null,
+  saturday: null,
+  sunday: null,
+});
 
 /**
  * @deprecated 🚧 work in progress
  */
 @Injectable({ providedIn: 'root' })
 export class MealPlanStore {
-  /**
-   * @deprecated 🚧 work in progress
-   */
+  private readonly _assignments = signal(emptyAssignments());
+
   assignments(): WeekdayAssignments {
-    throw new Error(`🚧 work in progress`);
+    return this._assignments();
   }
 
   /**
    * Stores the recipe id on that weekday and replaces any id already there.
    * No confirmation.
    * Callers disable the action when `canAdd` is false, so the same id is not assigned twice.
-   *
-   * @deprecated 🚧 work in progress
    */
-  assign(_params: { weekday: Weekday; recipeId: string }): void {
-    throw new Error(`🚧 work in progress`);
+  assign({
+    weekday,
+    recipeId,
+  }: {
+    weekday: Weekday;
+    recipeId: string;
+  }): void {
+    this._assignments.update((assignments) => ({
+      ...assignments,
+      [weekday]: recipeId,
+    }));
   }
 
   /**
