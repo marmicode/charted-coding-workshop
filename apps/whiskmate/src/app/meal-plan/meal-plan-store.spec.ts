@@ -1,12 +1,23 @@
-import { describe, it } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { describe, expect, it } from 'vitest';
 import { MealPlanStore } from './meal-plan-store';
 
 describe(MealPlanStore.name, () => {
   it.todo('replaces the recipe on a weekday', () => {
-    // Arrange an empty `MealPlanStore`.
-    // `assign({ weekday: 'monday', recipeId: 'shakshuka' })`.
-    // `assign({ weekday: 'monday', recipeId: 'hummus' })`.
-    // Assert Monday is `'hummus'` and the other six days are null.
+    const store = TestBed.runInInjectionContext(() => new MealPlanStore());
+
+    store.assign({ weekday: 'monday', recipeId: 'shakshuka' });
+    store.assign({ weekday: 'monday', recipeId: 'hummus' });
+
+    expect(store.assignments()).toEqual({
+      monday: 'hummus',
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    });
   });
 
   it.todo('clears a weekday', () => {
