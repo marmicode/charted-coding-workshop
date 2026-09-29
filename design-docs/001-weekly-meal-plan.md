@@ -251,7 +251,7 @@ export interface MealPlanStore {
 - Assert Monday says no recipe is planned.
 - Assert the Monday slot is still shown.
 
-### 🚧 Shows the recipe
+### ✅ Shows the recipe
 
 - Mount `MealPlanDay` with Shakshuka.
 - Assert the name "Shakshuka" and Shakshuka's picture.

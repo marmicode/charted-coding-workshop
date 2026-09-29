@@ -17,7 +17,7 @@ describe(MealPlanDay.name, () => {
     expect(fixture.nativeElement.querySelector('button')).toBeNull();
   });
 
-  it.todo('shows the recipe', async () => {
+  it('shows the recipe', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const fixture = TestBed.createComponent(MealPlanDay);
     fixture.componentRef.setInput('weekday', 'monday');
