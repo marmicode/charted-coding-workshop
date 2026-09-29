@@ -1,12 +1,43 @@
-import { describe, it } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { describe, expect, it } from 'vitest';
+import { LocalStorage } from '../shared/local-storage';
 import { MealPlan } from './meal-plan.ng';
 
 describe(MealPlan.name, () => {
-  it.todo('shows seven empty weekdays', () => {
-    // Arrange `MealPlanStore` with every day null.
-    // Mount `MealPlan`.
-    // Assert Monday through Sunday are shown, in that order.
-    // Assert each day says no recipe is planned.
+  it.todo('shows seven empty weekdays', async () => {
+    const items = new Map<string, string>();
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, {
+      useValue: {
+        getItem: (key: string) => items.get(key) ?? null,
+        setItem: (key: string, value: string) => {
+          items.set(key, value);
+        },
+      } satisfies LocalStorage,
+    });
+
+    const fixture = TestBed.createComponent(MealPlan);
+    await fixture.whenStable();
+
+    const days = [...fixture.nativeElement.querySelectorAll('li')].map(
+      (day: HTMLElement) => ({
+        label: day.querySelector('h2')?.textContent?.trim(),
+        text: day.textContent,
+      }),
+    );
+
+    expect(days.map((day) => day.label)).toEqual([
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ]);
+    expect(
+      days.every((day) => day.text?.includes('No recipe is planned')),
+    ).toBe(true);
   });
 
   it.todo('shows the name and picture of a planned recipe', () => {
