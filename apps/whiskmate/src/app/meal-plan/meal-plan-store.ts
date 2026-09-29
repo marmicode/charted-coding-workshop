@@ -40,11 +40,11 @@ export class MealPlanStore {
     }));
   }
 
-  /**
-   * @deprecated 🚧 work in progress
-   */
-  clear(_params: { weekday: Weekday }): void {
-    throw new Error(`🚧 work in progress`);
+  clear({ weekday }: { weekday: Weekday }): void {
+    this._assignments.update((assignments) => ({
+      ...assignments,
+      [weekday]: null,
+    }));
   }
 
   /**

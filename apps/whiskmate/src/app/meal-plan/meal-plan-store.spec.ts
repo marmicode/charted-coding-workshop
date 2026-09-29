@@ -20,7 +20,7 @@ describe(MealPlanStore.name, () => {
     });
   });
 
-  it.todo('clears a weekday', () => {
+  it('clears a weekday', () => {
     const store = TestBed.runInInjectionContext(() => new MealPlanStore());
     store.assign({ weekday: 'monday', recipeId: 'shakshuka' });
     store.assign({ weekday: 'tuesday', recipeId: 'hummus' });

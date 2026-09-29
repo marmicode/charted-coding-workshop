@@ -156,7 +156,7 @@ export interface MealPlanStore {
 ```
 
 - [x] `assign` stores the recipe id and replaces any id already on that day. No confirmation.
-- [ ] `clear` removes the id for that weekday.
+- [x] `clear` removes the id for that weekday.
 - [ ] `canAdd` is false when that recipe id is already on a weekday.
 
 ## Testing Strategy
@@ -168,7 +168,7 @@ export interface MealPlanStore {
 - `assign({ weekday: 'monday', recipeId: 'hummus' })`.
 - Assert Monday is `'hummus'` and the other six days are null.
 
-### 🚧 Clears a weekday
+### ✅ Clears a weekday
 
 - Arrange Monday as `'shakshuka'`.
 - `clear({ weekday: 'monday' })`.
