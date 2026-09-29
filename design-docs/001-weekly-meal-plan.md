@@ -209,7 +209,7 @@ export interface MealPlanStore {
 - [x] Show Monday through Sunday, including when every day is empty.
 - [x] `MealPlanDay` shows the empty state and no remove control.
 - [x] Show the planned recipe's name and picture from `findById`.
-- [ ] Render a missing id as an empty day. The weekday slot stays.
+- [x] Render a missing id as an empty day. The weekday slot stays.
 - [ ] Remove a recipe from a day and return that day to empty.
 - [ ] `MealPlanDay` emits `remove`.
 - [x] Render the Meal Plan link only when the `wip` flag is set.
@@ -244,7 +244,7 @@ export interface MealPlanStore {
 - Assert Monday shows "Shakshuka" and Shakshuka's picture.
 - Assert the other days say no recipe is planned.
 
-### 🚧 Renders a missing recipe as an empty day
+### ✅ Renders a missing recipe as an empty day
 
 - Arrange Monday as `'missing'`. `findById` returns undefined.
 - Mount `MealPlan`.

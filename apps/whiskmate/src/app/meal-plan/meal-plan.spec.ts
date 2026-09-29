@@ -82,7 +82,7 @@ describe(MealPlan.name, () => {
     ).toBe(true);
   });
 
-  it.todo('renders a missing recipe as an empty day', async () => {
+  it('renders a missing recipe as an empty day', async () => {
     const storedWeek: WeekdayAssignments = {
       monday: 'missing',
       tuesday: null,
