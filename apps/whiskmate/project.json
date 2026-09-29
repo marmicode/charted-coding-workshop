@@ -1,0 +1,79 @@
+{
+  "name": "302-charted-implementation-starter",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "wm",
+  "sourceRoot": "apps/whiskmate/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/{projectRoot}",
+        "browser": "{projectRoot}/src/main.ts",
+        "tsConfig": "{projectRoot}/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "{projectRoot}/public"
+          }
+        ],
+        "styles": [
+          "{projectRoot}/src/material-theme.scss",
+          "{projectRoot}/src/styles.css"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "production": {
+          "buildTarget": "302-charted-implementation-starter:build:production"
+        },
+        "development": {
+          "buildTarget": "302-charted-implementation-starter:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "302-charted-implementation-starter:build",
+        "staticFilePath": "dist/{projectRoot}/browser",
+        "spa": true
+      }
+    }
+  }
+}
