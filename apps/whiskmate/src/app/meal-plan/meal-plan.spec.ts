@@ -118,7 +118,7 @@ describe(MealPlan.name, () => {
     expect(days).toHaveLength(7);
   });
 
-  it.todo('clears a day', async () => {
+  it('clears a day', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const storedWeek: WeekdayAssignments = {
       monday: shakshuka.id,

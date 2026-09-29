@@ -27,6 +27,7 @@ const WEEKDAYS: { weekday: Weekday; label: string }[] = [
         @if (recipeFor(day.weekday); as recipe) {
           <p>{{ recipe.name }}</p>
           <img [src]="recipe.pictureUri" [alt]="recipe.name" />
+          <button type="button" (click)="clearDay(day.weekday)">Remove</button>
         } @else {
           <p>No recipe is planned</p>
         }
@@ -47,6 +48,10 @@ export class MealPlan {
 
   protected recipeFor(weekday: Weekday): Recipe | undefined {
     return this.recipes.value()?.[weekday];
+  }
+
+  protected clearDay(weekday: Weekday): void {
+    this._mealPlanStore.clear({ weekday });
   }
 
   private async _loadRecipes(
