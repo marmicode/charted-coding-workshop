@@ -38,7 +38,7 @@ describe(MealPlanStore.name, () => {
     });
   });
 
-  it.todo('allows add only when the recipe is not already planned', () => {
+  it('allows add only when the recipe is not already planned', () => {
     const store = TestBed.runInInjectionContext(() => new MealPlanStore());
     store.assign({ weekday: 'wednesday', recipeId: 'shakshuka' });
 

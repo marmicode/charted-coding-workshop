@@ -11,9 +11,6 @@ const emptyAssignments = (): WeekdayAssignments => ({
   sunday: null,
 });
 
-/**
- * @deprecated 🚧 work in progress
- */
 @Injectable({ providedIn: 'root' })
 export class MealPlanStore {
   private readonly _assignments = signal(emptyAssignments());
@@ -47,12 +44,8 @@ export class MealPlanStore {
     }));
   }
 
-  /**
-   * False when that recipe id is already on a weekday.
-   *
-   * @deprecated 🚧 work in progress
-   */
-  canAdd(_params: { recipeId: string }): boolean {
-    throw new Error(`🚧 work in progress`);
+  /** False when that recipe id is already on a weekday. */
+  canAdd({ recipeId }: { recipeId: string }): boolean {
+    return !Object.values(this._assignments()).includes(recipeId);
   }
 }
