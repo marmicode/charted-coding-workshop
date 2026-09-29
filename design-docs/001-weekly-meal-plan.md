@@ -202,7 +202,7 @@ export interface MealPlanStore {
 </details>
 
 <details>
-<summary>🚧 PR#5 — Meal Plan UI behind wip</summary>
+<summary>✅ PR#5 — Meal Plan UI behind wip</summary>
 
 ## Tasks
 
@@ -211,7 +211,7 @@ export interface MealPlanStore {
 - [x] Show the planned recipe's name and picture from `findById`.
 - [x] Render a missing id as an empty day. The weekday slot stays.
 - [x] Remove a recipe from a day and return that day to empty.
-- [ ] `MealPlanDay` emits `remove`.
+- [x] `MealPlanDay` emits `remove`.
 - [x] Render the Meal Plan link only when the `wip` flag is set.
 
 ## Testing Strategy
@@ -264,7 +264,7 @@ export interface MealPlanStore {
 - Assert `clear({ weekday: 'monday' })` ran.
 - Assert Monday says no recipe is planned.
 
-### 🚧 Emits remove
+### ✅ Emits remove
 
 - Mount `MealPlanDay` with Shakshuka.
 - Trigger remove.

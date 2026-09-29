@@ -31,7 +31,7 @@ describe(MealPlanDay.name, () => {
     expect(picture?.getAttribute('alt')).toBe(shakshuka.name);
   });
 
-  it.todo('emits remove', async () => {
+  it('emits remove', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const fixture = TestBed.createComponent(MealPlanDay);
     fixture.componentRef.setInput('weekday', 'monday');

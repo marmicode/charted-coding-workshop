@@ -3,34 +3,30 @@ import { firstValueFrom } from 'rxjs';
 import type { Recipe } from '../recipe/recipe';
 import { RecipeRepository } from '../recipe/recipe-repository';
 import type { Weekday, WeekdayAssignments } from './meal-plan';
+import { MealPlanDay } from './meal-plan-day.ng';
 import { MealPlanStore } from './meal-plan-store';
 
-const WEEKDAYS: { weekday: Weekday; label: string }[] = [
-  { weekday: 'monday', label: 'Monday' },
-  { weekday: 'tuesday', label: 'Tuesday' },
-  { weekday: 'wednesday', label: 'Wednesday' },
-  { weekday: 'thursday', label: 'Thursday' },
-  { weekday: 'friday', label: 'Friday' },
-  { weekday: 'saturday', label: 'Saturday' },
-  { weekday: 'sunday', label: 'Sunday' },
+const WEEKDAYS: Weekday[] = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
 ];
 
-/**
- * @deprecated 🚧 work in progress
- */
 @Component({
   selector: 'wm-meal-plan',
+  imports: [MealPlanDay],
   template: `<ul>
-    @for (day of weekdays; track day.weekday) {
+    @for (weekday of weekdays; track weekday) {
       <li>
-        <h2>{{ day.label }}</h2>
-        @if (recipeFor(day.weekday); as recipe) {
-          <p>{{ recipe.name }}</p>
-          <img [src]="recipe.pictureUri" [alt]="recipe.name" />
-          <button type="button" (click)="clearDay(day.weekday)">Remove</button>
-        } @else {
-          <p>No recipe is planned</p>
-        }
+        <wm-meal-plan-day
+          [weekday]="weekday"
+          [recipe]="recipeFor(weekday) ?? null"
+          (remove)="clearDay(weekday)"
+        />
       </li>
     }
   </ul>`,
@@ -59,9 +55,9 @@ export class MealPlan {
   ): Promise<Record<Weekday, Recipe | undefined>> {
     const recipes = {} as Record<Weekday, Recipe | undefined>;
 
-    for (const day of WEEKDAYS) {
-      const id = assignments[day.weekday];
-      recipes[day.weekday] =
+    for (const weekday of WEEKDAYS) {
+      const id = assignments[weekday];
+      recipes[weekday] =
         id == null
           ? undefined
           : await firstValueFrom(this._recipeRepository.findById({ id }));

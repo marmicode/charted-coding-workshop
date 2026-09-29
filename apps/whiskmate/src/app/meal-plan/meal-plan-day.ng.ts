@@ -12,15 +12,13 @@ const WEEKDAY_LABELS: Record<Weekday, string> = {
   sunday: 'Sunday',
 };
 
-/**
- * @deprecated 🚧 work in progress
- */
 @Component({
   selector: 'wm-meal-plan-day',
   template: `<h2>{{ label() }}</h2>
     @if (recipe(); as plannedRecipe) {
       <p>{{ plannedRecipe.name }}</p>
       <img [src]="plannedRecipe.pictureUri" [alt]="plannedRecipe.name" />
+      <button type="button" (click)="remove.emit()">Remove</button>
     } @else {
       <p>No recipe is planned</p>
     }`,
