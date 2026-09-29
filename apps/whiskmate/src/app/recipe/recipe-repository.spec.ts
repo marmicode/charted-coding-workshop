@@ -1,11 +1,19 @@
-import { describe, it } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
+import { describe, expect, it } from 'vitest';
+import { RECIPES } from './recipe-data';
 import { RecipeRepository } from './recipe-repository';
 
 describe(RecipeRepository.name, () => {
-  it.todo('returns a recipe by id', () => {
-    // Arrange the catalog to include Shakshuka.
-    // Call `findById({ id: shakshukaId })`.
-    // Assert the result is Shakshuka.
+  it('returns a recipe by id', async () => {
+    const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
+    const repository = TestBed.inject(RecipeRepository);
+
+    const result = await firstValueFrom(
+      repository.findById({ id: shakshuka.id }),
+    );
+
+    expect(result).toEqual(shakshuka);
   });
 
   it.todo('returns undefined for an unknown id', () => {

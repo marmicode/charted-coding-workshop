@@ -18,11 +18,8 @@ export interface RecipeRepositoryDef {
 
 @Injectable({ providedIn: 'root' })
 export class RecipeRepository implements RecipeRepositoryDef {
-  /**
-   * @deprecated 🚧 work in progress
-   */
-  findById(_params: { id: string }): Observable<Recipe | undefined> {
-    throw new Error(`🚧 work in progress`);
+  findById({ id }: { id: string }): Observable<Recipe | undefined> {
+    return of(RECIPES.find((recipe) => recipe.id === id));
   }
 
   search(

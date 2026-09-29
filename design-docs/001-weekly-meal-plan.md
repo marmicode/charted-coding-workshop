@@ -110,7 +110,7 @@ export interface RecipeRepositoryDef {
 
 ## Testing Strategy
 
-### 🚧 Returns a recipe by id
+### ✅ Returns a recipe by id
 
 - Arrange the catalog to include Shakshuka.
 - Call `findById({ id: shakshukaId })`.
