@@ -4,7 +4,7 @@ import { LocalStorage } from '../shared/local-storage';
 import { MealPlan } from './meal-plan.ng';
 
 describe(MealPlan.name, () => {
-  it.todo('shows seven empty weekdays', async () => {
+  it('shows seven empty weekdays', async () => {
     const items = new Map<string, string>();
     TestBed.resetTestingModule();
     TestBed.overrideProvider(LocalStorage, {
