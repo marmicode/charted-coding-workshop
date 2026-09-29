@@ -1,10 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { LocalStorage } from '../shared/local-storage';
 import { WeekdayAssignments } from './meal-plan';
 import { MealPlanStore } from './meal-plan-store';
 
 describe(MealPlanStore.name, () => {
+  beforeEach(() => {
+    const items = new Map<string, string>();
+    const localStorage: LocalStorage = {
+      getItem: (key) => items.get(key) ?? null,
+      setItem: (key, value) => {
+        items.set(key, value);
+      },
+    };
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, { useValue: localStorage });
+  });
+
   it('replaces the recipe on a weekday', () => {
     const store = TestBed.runInInjectionContext(() => new MealPlanStore());
 
@@ -48,7 +61,7 @@ describe(MealPlanStore.name, () => {
     expect(store.canAdd({ recipeId: 'hummus' })).toBe(true);
   });
 
-  it.todo('restores assignments after reload', () => {
+  it('restores assignments after reload', () => {
     const storedWeek: WeekdayAssignments = {
       monday: 'shakshuka',
       tuesday: null,
