@@ -1,11 +1,9 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { WIP_STORAGE_KEY } from '../authz/wip.guard';
 import type { Weekday } from '../meal-plan/meal-plan';
 import { MealPlanStore } from '../meal-plan/meal-plan-store';
 import { WeekdayPicker } from '../meal-plan/weekday-picker.ng';
-import { LocalStorage } from '../shared/local-storage';
 import { Card } from '../shared/card.ng';
 import type { Recipe } from './recipe';
 import { UserFavorites } from './user-favorites';
@@ -31,15 +29,13 @@ import { UserFavorites } from './user-favorites';
       >
         <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
-      @if (wipEnabled()) {
-        <button
-          type="button"
-          [disabled]="!canAddRecipe()"
-          (click)="openPicker()"
-        >
-          Add to meal plan
-        </button>
-      }
+      <button
+        type="button"
+        [disabled]="!canAddRecipe()"
+        (click)="openPicker()"
+      >
+        Add to meal plan
+      </button>
     </div>
     @if (pickerOpen()) {
       <wm-weekday-picker (select)="assignWeekday($event)" />
@@ -72,12 +68,8 @@ export class RecipePreview {
 
   private _userFavorites = inject(UserFavorites);
   private readonly _mealPlanStore = inject(MealPlanStore);
-  private readonly _localStorage = inject(LocalStorage);
 
   protected readonly pickerOpen = signal(false);
-  protected readonly wipEnabled = computed(
-    () => this._localStorage.getItem(WIP_STORAGE_KEY) != null,
-  );
 
   protected readonly canAddRecipe = computed(() =>
     this._mealPlanStore.canAdd({ recipeId: this.recipe().id }),

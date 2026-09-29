@@ -1,10 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { adminRouterHelper } from './admin/admin.router-helper';
-import { WIP_STORAGE_KEY } from './authz/wip.guard';
 import { mealPlanRouterHelper } from './meal-plan/meal-plan.router-helper';
 import { recipeRouterHelper } from './recipe/recipe.router-helper';
-import { LocalStorage } from './shared/local-storage';
 import { Navbar } from './shared/title.ng';
 
 @Component({
@@ -12,7 +10,7 @@ import { Navbar } from './shared/title.ng';
   selector: 'wm-root',
   template: `<wm-navbar title="👨🏻‍🍳 Welcome to Whiskmate 🥘">
       <div class="actions" data-slot="actions">
-        @for (link of links(); track link.label) {
+        @for (link of links; track link.label) {
           <a [routerLink]="link.route" routerLinkActive="active">{{
             link.label
           }}</a>
@@ -44,32 +42,18 @@ import { Navbar } from './shared/title.ng';
   `,
 })
 export class App {
-  private readonly _localStorage = inject(LocalStorage);
-
-  private readonly wipEnabled = computed(
-    () => this._localStorage.getItem(WIP_STORAGE_KEY) != null,
-  );
-
-  links = computed(() => {
-    const links = [
-      {
-        label: 'SEARCH',
-        route: recipeRouterHelper.search(),
-      },
-    ];
-
-    if (this.wipEnabled()) {
-      links.push({
-        label: 'MEAL PLAN',
-        route: mealPlanRouterHelper.mealPlan(),
-      });
-    }
-
-    links.push({
+  links = [
+    {
+      label: 'SEARCH',
+      route: recipeRouterHelper.search(),
+    },
+    {
+      label: 'MEAL PLAN',
+      route: mealPlanRouterHelper.mealPlan(),
+    },
+    {
       label: 'ADMIN',
       route: adminRouterHelper.admin(),
-    });
-
-    return links;
-  });
+    },
+  ];
 }

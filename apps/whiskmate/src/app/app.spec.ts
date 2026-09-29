@@ -32,7 +32,7 @@ describe(App.name, () => {
         href: link.getAttribute('href'),
       }));
 
-    expect(labels().some((link) => link.label === 'meal plan')).toBe(false);
+    expect(labels().some((link) => link.label === 'meal plan')).toBe(true);
 
     localStorage.setItem(WIP_STORAGE_KEY, 'true');
     await fixture.whenStable();

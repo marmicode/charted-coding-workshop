@@ -108,7 +108,7 @@ describe(RecipePreview.name, () => {
         button.textContent?.includes('Add to meal plan'),
       );
 
-    expect(addButton()).toBeUndefined();
+    expect(addButton()).toBeTruthy();
 
     localStorage.setItem(WIP_STORAGE_KEY, 'true');
     await fixture.whenStable();
@@ -157,7 +157,7 @@ describe(RecipePreview.name, () => {
     expect(fixture.nativeElement.querySelector('wm-weekday-picker')).toBeNull();
   });
 
-  it.todo('shows add to meal plan with the wip flag removed', async () => {
+  it('shows add to meal plan with the wip flag removed', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const items = new Map<string, string>();
 

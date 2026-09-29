@@ -16,20 +16,20 @@
 
 # Desired Behavior
 
-- [ ] Navbar includes a Meal Plan link next to Search.
-- [ ] Meal Plan page shows seven weekday slots: Monday through Sunday, not dates.
-- [ ] An empty day shows that no recipe is planned for that day, even if the whole week is empty.
-- [ ] Each recipe card on Search has an "Add to meal plan" action.
-- [ ] Choosing "Add to meal plan" asks which weekday to assign.
-- [ ] Confirming a weekday stores that recipe on that day and shows it on Meal Plan.
-- [ ] Assigning a recipe to a day that already has one replaces the previous recipe.
-- [ ] Each filled day shows the assigned recipe's name and picture.
-- [ ] Each filled day has a control to remove the recipe from that day.
-- [ ] Removing a recipe from a day returns that day to the empty state.
-- [ ] Reloading the app restores the same weekday assignments.
-- [ ] "Add to meal plan" is disabled when that recipe is already assigned to a day.
-- [ ] Closing the weekday picker without choosing a day leaves the plan unchanged.
-- [ ] A saved recipe id missing from the catalog shows that day as empty. The weekday slot stays.
+- [x] Navbar includes a Meal Plan link next to Search.
+- [x] Meal Plan page shows seven weekday slots: Monday through Sunday, not dates.
+- [x] An empty day shows that no recipe is planned for that day, even if the whole week is empty.
+- [x] Each recipe card on Search has an "Add to meal plan" action.
+- [x] Choosing "Add to meal plan" asks which weekday to assign.
+- [x] Confirming a weekday stores that recipe on that day and shows it on Meal Plan.
+- [x] Assigning a recipe to a day that already has one replaces the previous recipe.
+- [x] Each filled day shows the assigned recipe's name and picture.
+- [x] Each filled day has a control to remove the recipe from that day.
+- [x] Removing a recipe from a day returns that day to the empty state.
+- [x] Reloading the app restores the same weekday assignments.
+- [x] "Add to meal plan" is disabled when that recipe is already assigned to a day.
+- [x] Closing the weekday picker without choosing a day leaves the plan unchanged.
+- [x] A saved recipe id missing from the catalog shows that day as empty. The weekday slot stays.
 
 # Design
 
@@ -83,11 +83,11 @@ flowchart LR
 ```
 
 <details>
-<summary>🚧 PR#1 — Scaffold</summary>
+<summary>✅ PR#1 — Scaffold</summary>
 
 ## Tasks
 
-- [ ] Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
+- [x] Scaffold `MealPlan`, `MealPlanDay`, `WeekdayPicker`, `MealPlanStore`, and the router helper.
 
 </details>
 
@@ -340,15 +340,15 @@ export interface WeekdayPicker {
 </details>
 
 <details>
-<summary>🚧 PR#7 — Remove wip flag</summary>
+<summary>✅ PR#7 — Remove wip flag</summary>
 
 ## Tasks
 
-- [ ] Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
+- [x] Remove the `wip` flag. The Meal Plan link and Add to meal plan button are on for everyone.
 
 ## Testing Strategy
 
-### 🚧 Shows Add to meal plan with the wip flag removed
+### ✅ Shows Add to meal plan with the wip flag removed
 
 - Arrange `canAdd` true and the `wip` flag unset.
 - Mount `RecipePreview` with Shakshuka.
