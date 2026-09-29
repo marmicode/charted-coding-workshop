@@ -21,9 +21,21 @@ describe(MealPlanStore.name, () => {
   });
 
   it.todo('clears a weekday', () => {
-    // Arrange Monday as `'shakshuka'`.
-    // `clear({ weekday: 'monday' })`.
-    // Assert Monday is null and the other days are unchanged.
+    const store = TestBed.runInInjectionContext(() => new MealPlanStore());
+    store.assign({ weekday: 'monday', recipeId: 'shakshuka' });
+    store.assign({ weekday: 'tuesday', recipeId: 'hummus' });
+
+    store.clear({ weekday: 'monday' });
+
+    expect(store.assignments()).toEqual({
+      monday: null,
+      tuesday: 'hummus',
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    });
   });
 
   it.todo('allows add only when the recipe is not already planned', () => {
