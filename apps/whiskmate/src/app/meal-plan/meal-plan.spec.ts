@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { RECIPES } from '../recipe/recipe-data';
 import { LocalStorage } from '../shared/local-storage';
 import { WeekdayAssignments } from './meal-plan';
 import { MealPlan } from './meal-plan.ng';
+import { MealPlanStore } from './meal-plan-store';
 
 describe(MealPlan.name, () => {
   it('shows seven empty weekdays', async () => {
@@ -117,11 +118,40 @@ describe(MealPlan.name, () => {
     expect(days).toHaveLength(7);
   });
 
-  it.todo('clears a day', () => {
-    // Arrange Monday as Shakshuka.
-    // Mount `MealPlan`.
-    // Remove Monday's recipe.
-    // Assert `clear({ weekday: 'monday' })` ran.
-    // Assert Monday says no recipe is planned.
+  it.todo('clears a day', async () => {
+    const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
+    const storedWeek: WeekdayAssignments = {
+      monday: shakshuka.id,
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    };
+    const items = new Map<string, string>([
+      ['whiskmate:meal-plan', JSON.stringify(storedWeek)],
+    ]);
+    const clear = vi.spyOn(MealPlanStore.prototype, 'clear');
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, {
+      useValue: {
+        getItem: (key: string) => items.get(key) ?? null,
+        setItem: (key: string, value: string) => {
+          items.set(key, value);
+        },
+      } satisfies LocalStorage,
+    });
+
+    const fixture = TestBed.createComponent(MealPlan);
+    await fixture.whenStable();
+
+    const monday = fixture.nativeElement.querySelector('li') as HTMLElement;
+    monday.querySelector('button')?.click();
+    await fixture.whenStable();
+
+    expect(clear).toHaveBeenCalledWith({ weekday: 'monday' });
+    expect(monday.textContent).toContain('No recipe is planned');
   });
 });
