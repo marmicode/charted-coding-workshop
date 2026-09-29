@@ -20,9 +20,20 @@ describe(WeekdayPicker.name, () => {
     expect(selected).toBe('friday');
   });
 
-  it.todo('does not emit when dismissed', () => {
-    // Mount `WeekdayPicker`.
-    // Dismiss it without choosing a day.
-    // Assert `select` did not emit.
+  it.todo('does not emit when dismissed', async () => {
+    const fixture = TestBed.createComponent(WeekdayPicker);
+    let emitted = false;
+    fixture.componentInstance.select.subscribe(() => {
+      emitted = true;
+    });
+    await fixture.whenStable();
+
+    const dismiss = [...fixture.nativeElement.querySelectorAll('button')].find(
+      (button) => button.textContent?.trim() === 'Dismiss',
+    );
+    dismiss?.click();
+
+    expect(emitted).toBe(false);
+    expect(dismiss).toBeTruthy();
   });
 });
