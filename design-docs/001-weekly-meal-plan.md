@@ -288,7 +288,7 @@ export interface WeekdayPicker {
 ```
 
 - [x] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
-- [ ] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
+- [x] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
 - [ ] Disable Add to meal plan when `canAdd` is false.
 - [ ] Render Add to meal plan only when the `wip` flag is set.
 
@@ -315,7 +315,7 @@ export interface WeekdayPicker {
 - Confirm Wednesday.
 - Assert `assign({ weekday: 'wednesday', recipeId: shakshukaId })` ran.
 
-### 🚧 Leaves the plan unchanged when the picker is dismissed
+### ✅ Leaves the plan unchanged when the picker is dismissed
 
 - Arrange `canAdd` true.
 - Mount `RecipePreview` with Shakshuka.

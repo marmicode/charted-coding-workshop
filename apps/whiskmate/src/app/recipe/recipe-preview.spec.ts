@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MealPlanStore } from '../meal-plan/meal-plan-store';
 import { LocalStorage } from '../shared/local-storage';
 import { RECIPES } from './recipe-data';
 import { RecipePreview } from './recipe-preview.ng';
 
 describe(RecipePreview.name, () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('asks which weekday, then assigns it', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const items = new Map<string, string>();
@@ -45,7 +49,7 @@ describe(RecipePreview.name, () => {
     });
   });
 
-  it.todo('leaves the plan unchanged when the picker is dismissed', async () => {
+  it('leaves the plan unchanged when the picker is dismissed', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const items = new Map<string, string>();
     const assign = vi.spyOn(MealPlanStore.prototype, 'assign');
