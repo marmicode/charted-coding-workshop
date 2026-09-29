@@ -16,8 +16,11 @@ describe(RecipeRepository.name, () => {
     expect(result).toEqual(shakshuka);
   });
 
-  it.todo('returns undefined for an unknown id', () => {
-    // Call `findById({ id: 'missing' })`.
-    // Assert the result is undefined.
+  it.todo('returns undefined for an unknown id', async () => {
+    const repository = TestBed.inject(RecipeRepository);
+
+    const result = await firstValueFrom(repository.findById({ id: 'missing' }));
+
+    expect(result).toBeUndefined();
   });
 });
