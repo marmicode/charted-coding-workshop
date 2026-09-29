@@ -14,7 +14,7 @@ describe(RecipePreview.name, () => {
 
   it('asks which weekday, then assigns it', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
-    const items = new Map<string, string>();
+    const items = new Map<string, string>([[WIP_STORAGE_KEY, 'true']]);
     const assign = vi.spyOn(MealPlanStore.prototype, 'assign');
 
     TestBed.resetTestingModule();
@@ -53,7 +53,7 @@ describe(RecipePreview.name, () => {
 
   it('leaves the plan unchanged when the picker is dismissed', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
-    const items = new Map<string, string>();
+    const items = new Map<string, string>([[WIP_STORAGE_KEY, 'true']]);
     const assign = vi.spyOn(MealPlanStore.prototype, 'assign');
 
     TestBed.resetTestingModule();
@@ -85,7 +85,7 @@ describe(RecipePreview.name, () => {
     expect(assign).not.toHaveBeenCalled();
   });
 
-  it.todo('hides add to meal plan unless wip is set', async () => {
+  it('hides add to meal plan unless wip is set', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const storedValues = signal<Record<string, string>>({});
     const localStorage: LocalStorage = {
