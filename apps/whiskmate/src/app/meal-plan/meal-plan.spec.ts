@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
+import { RECIPES } from '../recipe/recipe-data';
 import { LocalStorage } from '../shared/local-storage';
+import { WeekdayAssignments } from './meal-plan';
 import { MealPlan } from './meal-plan.ng';
 
 describe(MealPlan.name, () => {
@@ -40,11 +42,44 @@ describe(MealPlan.name, () => {
     ).toBe(true);
   });
 
-  it.todo('shows the name and picture of a planned recipe', () => {
-    // Arrange Monday as Shakshuka's id. `findById` returns Shakshuka.
-    // Mount `MealPlan`.
-    // Assert Monday shows "Shakshuka" and Shakshuka's picture.
-    // Assert the other days say no recipe is planned.
+  it.todo('shows the name and picture of a planned recipe', async () => {
+    const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
+    const storedWeek: WeekdayAssignments = {
+      monday: shakshuka.id,
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    };
+    const items = new Map<string, string>([
+      ['whiskmate:meal-plan', JSON.stringify(storedWeek)],
+    ]);
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, {
+      useValue: {
+        getItem: (key: string) => items.get(key) ?? null,
+        setItem: (key: string, value: string) => {
+          items.set(key, value);
+        },
+      } satisfies LocalStorage,
+    });
+
+    const fixture = TestBed.createComponent(MealPlan);
+    await fixture.whenStable();
+
+    const days = [...fixture.nativeElement.querySelectorAll('li')];
+    const monday = days[0] as HTMLElement;
+    const picture = monday.querySelector('img');
+
+    expect(monday.textContent).toContain('Shakshuka');
+    expect(picture?.getAttribute('src')).toBe(shakshuka.pictureUri);
+    expect(picture?.getAttribute('alt')).toBe(shakshuka.name);
+    expect(
+      days.slice(1).every((day) => day.textContent?.includes('No recipe is planned')),
+    ).toBe(true);
   });
 
   it.todo('renders a missing recipe as an empty day', () => {
