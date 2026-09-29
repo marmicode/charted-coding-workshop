@@ -42,7 +42,7 @@ describe(MealPlan.name, () => {
     ).toBe(true);
   });
 
-  it.todo('shows the name and picture of a planned recipe', async () => {
+  it('shows the name and picture of a planned recipe', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const storedWeek: WeekdayAssignments = {
       monday: shakshuka.id,
