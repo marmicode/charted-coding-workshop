@@ -207,12 +207,12 @@ export interface MealPlanStore {
 ## Tasks
 
 - [x] Show Monday through Sunday, including when every day is empty.
-- [ ] `MealPlanDay` shows the empty state and no remove control.
+- [x] `MealPlanDay` shows the empty state and no remove control.
 - [ ] Show the planned recipe's name and picture from `findById`.
 - [ ] Render a missing id as an empty day. The weekday slot stays.
 - [ ] Remove a recipe from a day and return that day to empty.
 - [ ] `MealPlanDay` emits `remove`.
-- [ ] Render the Meal Plan link only when the `wip` flag is set.
+- [x] Render the Meal Plan link only when the `wip` flag is set.
 
 ## Testing Strategy
 
@@ -223,14 +223,14 @@ export interface MealPlanStore {
 - Assert Monday through Sunday are shown, in that order.
 - Assert each day says no recipe is planned.
 
-### 🚧 Shows the empty state
+### ✅ Shows the empty state
 
 - Mount `MealPlanDay` with `weekday` `'monday'` and `recipe` null.
 - Assert the label is Monday.
 - Assert it says no recipe is planned.
 - Assert there is no remove control.
 
-### 🚧 Hides the Meal Plan link unless wip is set
+### ✅ Hides the Meal Plan link unless wip is set
 
 - Mount `App` with the `wip` flag unset.
 - Assert the navbar has no Meal Plan link.
