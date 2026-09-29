@@ -38,7 +38,10 @@ import { UserFavorites } from './user-favorites';
       </button>
     </div>
     @if (pickerOpen()) {
-      <wm-weekday-picker (select)="assignWeekday($event)" />
+      <wm-weekday-picker
+        (select)="assignWeekday($event)"
+        (dismiss)="closePicker()"
+      />
     }
   </wm-card>`,
   styles: `
@@ -85,6 +88,10 @@ export class RecipePreview {
     }
 
     this.pickerOpen.set(true);
+  }
+
+  protected closePicker(): void {
+    this.pickerOpen.set(false);
   }
 
   protected assignWeekday(weekday: Weekday): void {

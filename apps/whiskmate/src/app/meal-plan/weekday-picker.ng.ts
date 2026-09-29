@@ -18,7 +18,7 @@ const WEEKDAYS: { weekday: Weekday; label: string }[] = [
         {{ day.label }}
       </button>
     }
-    <button type="button">Dismiss</button>`,
+    <button type="button" (click)="dismiss.emit()">Dismiss</button>`,
 })
 export class WeekdayPicker {
   /**
@@ -27,6 +27,9 @@ export class WeekdayPicker {
    */
   // eslint-disable-next-line @angular-eslint/no-output-native -- name fixed by the design doc
   readonly select = output<Weekday>();
+
+  /** Closes the picker without choosing a day. */
+  readonly dismiss = output<void>();
 
   protected readonly weekdays = WEEKDAYS;
 }
