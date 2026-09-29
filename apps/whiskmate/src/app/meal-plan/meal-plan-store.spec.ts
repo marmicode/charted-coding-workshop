@@ -39,8 +39,10 @@ describe(MealPlanStore.name, () => {
   });
 
   it.todo('allows add only when the recipe is not already planned', () => {
-    // Arrange Wednesday as `'shakshuka'`.
-    // Assert `canAdd({ recipeId: 'shakshuka' })` is false.
-    // Assert `canAdd({ recipeId: 'hummus' })` is true.
+    const store = TestBed.runInInjectionContext(() => new MealPlanStore());
+    store.assign({ weekday: 'wednesday', recipeId: 'shakshuka' });
+
+    expect(store.canAdd({ recipeId: 'shakshuka' })).toBe(false);
+    expect(store.canAdd({ recipeId: 'hummus' })).toBe(true);
   });
 });
