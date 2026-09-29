@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
+import { LocalStorage } from '../shared/local-storage';
+import { WeekdayAssignments } from './meal-plan';
 import { MealPlanStore } from './meal-plan-store';
 
 describe(MealPlanStore.name, () => {
@@ -47,10 +49,36 @@ describe(MealPlanStore.name, () => {
   });
 
   it.todo('restores assignments after reload', () => {
-    // Arrange `LocalStorage` with Monday `'shakshuka'` and the other days null.
-    // Construct `MealPlanStore`.
-    // Assert `assignments()` matches that stored week.
-    // `assign({ weekday: 'tuesday', recipeId: 'hummus' })`.
-    // Assert `LocalStorage` now has Tuesday `'hummus'`.
+    const storedWeek: WeekdayAssignments = {
+      monday: 'shakshuka',
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    };
+    const items = new Map<string, string>([
+      ['whiskmate:meal-plan', JSON.stringify(storedWeek)],
+    ]);
+    const localStorage: LocalStorage = {
+      getItem: (key) => items.get(key) ?? null,
+      setItem: (key, value) => {
+        items.set(key, value);
+      },
+    };
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, { useValue: localStorage });
+    const store = TestBed.runInInjectionContext(() => new MealPlanStore());
+
+    expect(store.assignments()).toEqual(storedWeek);
+
+    store.assign({ weekday: 'tuesday', recipeId: 'hummus' });
+
+    expect(JSON.parse(localStorage.getItem('whiskmate:meal-plan')!)).toEqual({
+      ...storedWeek,
+      tuesday: 'hummus',
+    });
   });
 });
