@@ -157,9 +157,28 @@ describe(RecipePreview.name, () => {
     expect(fixture.nativeElement.querySelector('wm-weekday-picker')).toBeNull();
   });
 
-  it.todo('shows add to meal plan with the wip flag removed', () => {
-    // Arrange `canAdd` true and the `wip` flag unset.
-    // Mount `RecipePreview` with Shakshuka.
-    // Assert "Add to meal plan" is shown.
+  it.todo('shows add to meal plan with the wip flag removed', async () => {
+    const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
+    const items = new Map<string, string>();
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, {
+      useValue: {
+        getItem: (key: string) => items.get(key) ?? null,
+        setItem: (key: string, value: string) => {
+          items.set(key, value);
+        },
+      } satisfies LocalStorage,
+    });
+
+    const fixture = TestBed.createComponent(RecipePreview);
+    fixture.componentRef.setInput('recipe', shakshuka);
+    await fixture.whenStable();
+
+    const add = [...fixture.nativeElement.querySelectorAll('button')].find(
+      (button) => button.textContent?.includes('Add to meal plan'),
+    );
+
+    expect(add).toBeTruthy();
   });
 });
