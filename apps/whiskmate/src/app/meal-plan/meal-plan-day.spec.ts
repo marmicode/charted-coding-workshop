@@ -31,9 +31,19 @@ describe(MealPlanDay.name, () => {
     expect(picture?.getAttribute('alt')).toBe(shakshuka.name);
   });
 
-  it.todo('emits remove', () => {
-    // Mount `MealPlanDay` with Shakshuka.
-    // Trigger remove.
-    // Assert `remove` emitted.
+  it.todo('emits remove', async () => {
+    const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
+    const fixture = TestBed.createComponent(MealPlanDay);
+    fixture.componentRef.setInput('weekday', 'monday');
+    fixture.componentRef.setInput('recipe', shakshuka);
+    let emitted = false;
+    fixture.componentInstance.remove.subscribe(() => {
+      emitted = true;
+    });
+    await fixture.whenStable();
+
+    fixture.nativeElement.querySelector('button')?.click();
+
+    expect(emitted).toBe(true);
   });
 });
