@@ -306,7 +306,7 @@ export interface WeekdayPicker {
 - Dismiss it without choosing a day.
 - Assert `select` did not emit.
 
-### 🚧 Asks which weekday, then assigns it
+### ✅ Asks which weekday, then assigns it
 
 - Arrange `canAdd` true for Shakshuka.
 - Mount `RecipePreview` with Shakshuka.

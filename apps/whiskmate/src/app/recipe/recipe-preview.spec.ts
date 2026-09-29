@@ -6,7 +6,7 @@ import { RECIPES } from './recipe-data';
 import { RecipePreview } from './recipe-preview.ng';
 
 describe(RecipePreview.name, () => {
-  it.todo('asks which weekday, then assigns it', async () => {
+  it('asks which weekday, then assigns it', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const items = new Map<string, string>();
     const assign = vi.spyOn(MealPlanStore.prototype, 'assign');

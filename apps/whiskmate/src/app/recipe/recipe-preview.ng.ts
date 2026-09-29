@@ -1,13 +1,16 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import type { Weekday } from '../meal-plan/meal-plan';
+import { MealPlanStore } from '../meal-plan/meal-plan-store';
+import { WeekdayPicker } from '../meal-plan/weekday-picker.ng';
 import { Card } from '../shared/card.ng';
 import type { Recipe } from './recipe';
 import { UserFavorites } from './user-favorites';
 
 @Component({
   selector: 'wm-recipe-preview',
-  imports: [Card, MatIcon, MatIconButton],
+  imports: [Card, MatIcon, MatIconButton, WeekdayPicker],
   template: `<wm-card
     [pictureUri]="recipe().pictureUri"
     [pictureAlt]="recipe().name"
@@ -26,7 +29,13 @@ import { UserFavorites } from './user-favorites';
       >
         <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
+      <button type="button" (click)="pickerOpen.set(true)">
+        Add to meal plan
+      </button>
     </div>
+    @if (pickerOpen()) {
+      <wm-weekday-picker (select)="assignWeekday($event)" />
+    }
   </wm-card>`,
   styles: `
     .recipe-header {
@@ -54,10 +63,21 @@ export class RecipePreview {
   recipe = input.required<Recipe>();
 
   private _userFavorites = inject(UserFavorites);
+  private readonly _mealPlanStore = inject(MealPlanStore);
+
+  protected readonly pickerOpen = signal(false);
 
   isFavorite = computed(() =>
     this._userFavorites.favoriteIds().has(this.recipe().id),
   );
+
+  protected assignWeekday(weekday: Weekday): void {
+    this._mealPlanStore.assign({
+      weekday,
+      recipeId: this.recipe().id,
+    });
+    this.pickerOpen.set(false);
+  }
 
   onLikeClick(): void {
     if (this.isFavorite()) {
