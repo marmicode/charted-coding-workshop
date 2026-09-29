@@ -294,7 +294,7 @@ export interface WeekdayPicker {
 
 ## Testing Strategy
 
-### 🚧 Emits the confirmed weekday
+### ✅ Emits the confirmed weekday
 
 - Mount `WeekdayPicker`.
 - Confirm Friday.

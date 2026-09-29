@@ -4,7 +4,7 @@ import type { Weekday } from './meal-plan';
 import { WeekdayPicker } from './weekday-picker.ng';
 
 describe(WeekdayPicker.name, () => {
-  it.todo('emits the confirmed weekday', async () => {
+  it('emits the confirmed weekday', async () => {
     const fixture = TestBed.createComponent(WeekdayPicker);
     let selected: Weekday | undefined;
     fixture.componentInstance.select.subscribe((weekday) => {
