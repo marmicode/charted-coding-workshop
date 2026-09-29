@@ -1,5 +1,7 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { WIP_STORAGE_KEY } from '../authz/wip.guard';
 import { MealPlanStore } from '../meal-plan/meal-plan-store';
 import { LocalStorage } from '../shared/local-storage';
 import { RECIPES } from './recipe-data';
@@ -83,12 +85,34 @@ describe(RecipePreview.name, () => {
     expect(assign).not.toHaveBeenCalled();
   });
 
-  it.todo('hides add to meal plan unless wip is set', () => {
-    // Arrange `canAdd` true and the `wip` flag unset.
-    // Mount `RecipePreview` with Shakshuka.
-    // Assert "Add to meal plan" is not shown.
-    // Set the `wip` flag.
-    // Assert "Add to meal plan" is shown.
+  it.todo('hides add to meal plan unless wip is set', async () => {
+    const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
+    const storedValues = signal<Record<string, string>>({});
+    const localStorage: LocalStorage = {
+      getItem: (key) => storedValues()[key] ?? null,
+      setItem: (key, value) => {
+        storedValues.update((current) => ({ ...current, [key]: value }));
+      },
+    };
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, { useValue: localStorage });
+
+    const fixture = TestBed.createComponent(RecipePreview);
+    fixture.componentRef.setInput('recipe', shakshuka);
+    await fixture.whenStable();
+
+    const addButton = () =>
+      [...fixture.nativeElement.querySelectorAll('button')].find((button) =>
+        button.textContent?.includes('Add to meal plan'),
+      );
+
+    expect(addButton()).toBeUndefined();
+
+    localStorage.setItem(WIP_STORAGE_KEY, 'true');
+    await fixture.whenStable();
+
+    expect(addButton()).toBeTruthy();
   });
 
   it.todo('disables add when the recipe is already planned', () => {
