@@ -82,11 +82,39 @@ describe(MealPlan.name, () => {
     ).toBe(true);
   });
 
-  it.todo('renders a missing recipe as an empty day', () => {
-    // Arrange Monday as `'missing'`. `findById` returns undefined.
-    // Mount `MealPlan`.
-    // Assert Monday says no recipe is planned.
-    // Assert the Monday slot is still shown.
+  it.todo('renders a missing recipe as an empty day', async () => {
+    const storedWeek: WeekdayAssignments = {
+      monday: 'missing',
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    };
+    const items = new Map<string, string>([
+      ['whiskmate:meal-plan', JSON.stringify(storedWeek)],
+    ]);
+
+    TestBed.resetTestingModule();
+    TestBed.overrideProvider(LocalStorage, {
+      useValue: {
+        getItem: (key: string) => items.get(key) ?? null,
+        setItem: (key: string, value: string) => {
+          items.set(key, value);
+        },
+      } satisfies LocalStorage,
+    });
+
+    const fixture = TestBed.createComponent(MealPlan);
+    await fixture.whenStable();
+
+    const days = [...fixture.nativeElement.querySelectorAll('li')];
+    const monday = days[0] as HTMLElement;
+
+    expect(monday.querySelector('h2')?.textContent?.trim()).toBe('Monday');
+    expect(monday.textContent).toContain('No recipe is planned');
+    expect(days).toHaveLength(7);
   });
 
   it.todo('clears a day', () => {
