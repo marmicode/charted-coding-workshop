@@ -8,11 +8,23 @@ import {
 } from './recipe-filter-criteria';
 
 export interface RecipeRepositoryDef {
+  /**
+   * Undefined when the id is not in the catalog.
+   * Meal Plan renders that day as empty. The weekday slot stays.
+   */
+  findById(params: { id: string }): Observable<Recipe | undefined>;
   search(filter: RecipeFilterCriteria): Observable<Recipe[]>;
 }
 
 @Injectable({ providedIn: 'root' })
 export class RecipeRepository implements RecipeRepositoryDef {
+  /**
+   * @deprecated 🚧 work in progress
+   */
+  findById(_params: { id: string }): Observable<Recipe | undefined> {
+    throw new Error(`🚧 work in progress`);
+  }
+
   search(
     {
       keywords,
