@@ -273,7 +273,7 @@ export interface MealPlanStore {
 </details>
 
 <details>
-<summary>🚧 PR#6 — Assign from Search behind wip</summary>
+<summary>✅ PR#6 — Assign from Search behind wip</summary>
 
 ## Tasks
 
@@ -289,7 +289,7 @@ export interface WeekdayPicker {
 
 - [x] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
 - [x] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
-- [ ] Disable Add to meal plan when `canAdd` is false.
+- [x] Disable Add to meal plan when `canAdd` is false.
 - [x] Render Add to meal plan only when the `wip` flag is set.
 
 ## Testing Strategy
@@ -330,7 +330,7 @@ export interface WeekdayPicker {
 - Set the `wip` flag.
 - Assert "Add to meal plan" is shown.
 
-### 🚧 Disables add when the recipe is already planned
+### ✅ Disables add when the recipe is already planned
 
 - Arrange `canAdd({ recipeId: shakshukaId })` false.
 - Mount `RecipePreview` with Shakshuka.

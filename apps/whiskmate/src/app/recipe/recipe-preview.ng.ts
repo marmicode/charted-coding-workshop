@@ -32,7 +32,11 @@ import { UserFavorites } from './user-favorites';
         <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
       @if (wipEnabled()) {
-        <button type="button" (click)="pickerOpen.set(true)">
+        <button
+          type="button"
+          [disabled]="!canAddRecipe()"
+          (click)="openPicker()"
+        >
           Add to meal plan
         </button>
       }
@@ -75,9 +79,21 @@ export class RecipePreview {
     () => this._localStorage.getItem(WIP_STORAGE_KEY) != null,
   );
 
+  protected readonly canAddRecipe = computed(() =>
+    this._mealPlanStore.canAdd({ recipeId: this.recipe().id }),
+  );
+
   isFavorite = computed(() =>
     this._userFavorites.favoriteIds().has(this.recipe().id),
   );
+
+  protected openPicker(): void {
+    if (!this.canAddRecipe()) {
+      return;
+    }
+
+    this.pickerOpen.set(true);
+  }
 
   protected assignWeekday(weekday: Weekday): void {
     this._mealPlanStore.assign({

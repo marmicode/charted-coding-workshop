@@ -116,7 +116,7 @@ describe(RecipePreview.name, () => {
     expect(addButton()).toBeTruthy();
   });
 
-  it.todo('disables add when the recipe is already planned', async () => {
+  it('disables add when the recipe is already planned', async () => {
     const shakshuka = RECIPES.find((recipe) => recipe.id === 'shakshuka')!;
     const storedWeek: WeekdayAssignments = {
       monday: null,
