@@ -11,16 +11,14 @@ const WEEKDAYS: { weekday: Weekday; label: string }[] = [
   { weekday: 'sunday', label: 'Sunday' },
 ];
 
-/**
- * @deprecated 🚧 work in progress
- */
 @Component({
   selector: 'wm-weekday-picker',
   template: `@for (day of weekdays; track day.weekday) {
-    <button type="button" (click)="select.emit(day.weekday)">
-      {{ day.label }}
-    </button>
-  }`,
+      <button type="button" (click)="select.emit(day.weekday)">
+        {{ day.label }}
+      </button>
+    }
+    <button type="button">Dismiss</button>`,
 })
 export class WeekdayPicker {
   /**

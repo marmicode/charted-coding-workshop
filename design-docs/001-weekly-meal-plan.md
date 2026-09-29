@@ -287,7 +287,7 @@ export interface WeekdayPicker {
 }
 ```
 
-- [ ] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
+- [x] `WeekdayPicker` emits `select` on confirm and does not emit on dismiss.
 - [ ] Add to meal plan assigns the chosen weekday. Dismiss does not call `assign`.
 - [ ] Disable Add to meal plan when `canAdd` is false.
 - [ ] Render Add to meal plan only when the `wip` flag is set.
@@ -300,7 +300,7 @@ export interface WeekdayPicker {
 - Confirm Friday.
 - Assert `select` emitted `'friday'`.
 
-### 🚧 Does not emit when dismissed
+### ✅ Does not emit when dismissed
 
 - Mount `WeekdayPicker`.
 - Dismiss it without choosing a day.

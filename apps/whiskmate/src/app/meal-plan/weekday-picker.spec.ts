@@ -20,7 +20,7 @@ describe(WeekdayPicker.name, () => {
     expect(selected).toBe('friday');
   });
 
-  it.todo('does not emit when dismissed', async () => {
+  it('does not emit when dismissed', async () => {
     const fixture = TestBed.createComponent(WeekdayPicker);
     let emitted = false;
     fixture.componentInstance.select.subscribe(() => {
