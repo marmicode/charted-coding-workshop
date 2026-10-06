@@ -54,6 +54,9 @@ export type HookOutputFor<HOOK_EVENT_NAME extends HookEvent> = Omit<
 /**
  * Cursor ignores Claude's stop hooks that do not "block".
  * We have to use a `followup_message` to make sure Cursor continues.
+ *
+ * Copilot CLI expects `additionalContext` at the top level and ignores
+ * Claude's nested `hookSpecificOutput.additionalContext`.
  */
 function _normalizeHookOutput(output: HookJsonOutput): HookJsonOutput {
   const hookSpecificOutput = output.hookSpecificOutput;
@@ -61,9 +64,20 @@ function _normalizeHookOutput(output: HookJsonOutput): HookJsonOutput {
     hookSpecificOutput?.hookEventName === 'Stop' &&
     hookSpecificOutput.additionalContext
   ) {
-    return {
+    output = {
       ...output,
       followup_message: hookSpecificOutput.additionalContext,
+    };
+  }
+
+  if (
+    hookSpecificOutput &&
+    'additionalContext' in hookSpecificOutput &&
+    hookSpecificOutput?.additionalContext
+  ) {
+    output = {
+      ...output,
+      additionalContext: hookSpecificOutput.additionalContext,
     };
   }
 
@@ -72,6 +86,7 @@ function _normalizeHookOutput(output: HookJsonOutput): HookJsonOutput {
 
 type HookJsonOutput = SyncHookJSONOutput & {
   followup_message?: string;
+  additionalContext?: string;
 };
 
 function _parseHookInput<HOOK_EVENT_NAME extends HookEvent>(
@@ -95,6 +110,32 @@ function _normalizeHookInput(
 ): HookInput {
   data.hook_event_name =
     _normalizeHookEventName(hookEventName) ?? hookEventName;
+
+  data = _normalizeCopilotHookInput(data);
+
+  return data;
+}
+
+/**
+ * Copilot CLI uses `path` instead of `file_path` in tool inputs.
+ * Some versions also send camelCase payloads (`toolName`, `toolArgs` as a JSON string).
+ */
+function _normalizeCopilotHookInput(data: HookInput): HookInput {
+  if (
+    'tool_input' in data &&
+    data.tool_input !== null &&
+    typeof data.tool_input === 'object' &&
+    'path' in data.tool_input
+  ) {
+    data = {
+      ...data,
+      tool_input: {
+        ...data.tool_input,
+        file_path: data.tool_input.path,
+      },
+    };
+  }
+
   return data;
 }
 
