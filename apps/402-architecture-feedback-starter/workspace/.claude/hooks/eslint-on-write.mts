@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { $ } from 'zx';
-import { runHook } from './run-hook.mts';
+import { runHook } from './internal/run-hook.mts';
 
 const toolInputSchema = z.object({
   file_path: z.string(),
