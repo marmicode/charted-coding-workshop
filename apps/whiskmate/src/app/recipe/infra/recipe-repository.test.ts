@@ -25,11 +25,12 @@ describe(RecipeRepository.name, () => {
         keywords: '',
         maxIngredientCount: null,
         maxStepCount: null,
+        courses: [],
       }),
     );
 
     expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: {},
+      params: { courses: [] },
     });
     expect(recipes).toEqual([shakshuka]);
   });
@@ -42,11 +43,17 @@ describe(RecipeRepository.name, () => {
         keywords: 'shak',
         maxIngredientCount: 5,
         maxStepCount: 3,
+        courses: [],
       }),
     );
 
     expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: { keywords: 'shak', maxIngredientCount: 5, maxStepCount: 3 },
+      params: {
+        keywords: 'shak',
+        maxIngredientCount: 5,
+        maxStepCount: 3,
+        courses: [],
+      },
     });
   });
 

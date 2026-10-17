@@ -38,6 +38,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
   });
 
@@ -50,6 +51,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(recipeNames(fixture.nativeElement)).toEqual([
       'Shakshuka',
@@ -66,6 +68,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(
       fixture.nativeElement.querySelector('[data-testid="no-recipes-message"]')
@@ -84,6 +87,7 @@ describe(RecipeSearch.name, () => {
       keywords: 'shak',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
   });
 
@@ -98,6 +102,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: 5,
       maxStepCount: null,
+      courses: [],
     });
   });
 
@@ -112,6 +117,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: 3,
+      courses: [],
     });
   });
 
@@ -147,7 +153,7 @@ describe(RecipeSearch.name, () => {
     });
   });
 
-  it('stops sending courses once every course is unselected', async () => {
+  it('sends no courses once every course is unselected', async () => {
     const { fixture, search } = await mountRecipeSearch();
     await fixture.whenStable();
 
@@ -160,8 +166,8 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
-    expect(search.mock.lastCall?.[0]).not.toHaveProperty('courses');
   });
 
   it('combines keywords and course', async () => {
@@ -196,6 +202,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(recipeNames(fixture.nativeElement)).toEqual([
       'Lemon and Ricotta Cheesecake',
@@ -217,6 +224,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(addFavorite).toHaveBeenCalledExactlyOnceWith('shakshuka');
   });
@@ -239,6 +247,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(removeFavorite).toHaveBeenCalledExactlyOnceWith('shakshuka');
   });
@@ -261,6 +270,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(assign).toHaveBeenCalledExactlyOnceWith({
       weekday: 'wednesday',
@@ -278,6 +288,7 @@ describe(RecipeSearch.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(canAdd).toHaveBeenCalledWith({ recipeId: 'shakshuka' });
     expect(
