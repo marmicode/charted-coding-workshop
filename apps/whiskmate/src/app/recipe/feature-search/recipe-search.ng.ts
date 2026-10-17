@@ -17,7 +17,7 @@ import {
 import { RecipePreview } from '@whiskmate/recipe/ui';
 import { NoRecipes, RecipeFilter } from '@whiskmate/recipe/ui-search';
 import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
-import type { Recipe } from '@whiskmate/shared-recipe/model';
+import { COURSES, type Recipe } from '@whiskmate/shared-recipe/model';
 import type { Weekday } from '@whiskmate/shared/model';
 import { Catalog } from '@whiskmate/shared/ui';
 
@@ -112,6 +112,6 @@ function toRecipeSearchParams({
     keywords,
     maxIngredientCount,
     maxStepCount,
-    ...(courses.length > 0 ? { courses } : {}),
+    courses: courses.length > 0 ? courses : [...COURSES],
   };
 }

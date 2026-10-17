@@ -16,7 +16,7 @@ const shakshuka: Recipe = {
 };
 
 describe(RecipeRepository.name, () => {
-  it('searches all recipes without query params', async () => {
+  it('searches recipes with only the required courses param', async () => {
     const { repository, get } = setUpRecipeRepository();
     get.mockReturnValue(of([shakshuka]));
 
@@ -25,11 +25,12 @@ describe(RecipeRepository.name, () => {
         keywords: '',
         maxIngredientCount: null,
         maxStepCount: null,
+        courses: ['main'],
       }),
     );
 
     expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: {},
+      params: { courses: 'main' },
     });
     expect(recipes).toEqual([shakshuka]);
   });
@@ -42,11 +43,17 @@ describe(RecipeRepository.name, () => {
         keywords: 'shak',
         maxIngredientCount: 5,
         maxStepCount: 3,
+        courses: ['main'],
       }),
     );
 
     expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: { keywords: 'shak', maxIngredientCount: 5, maxStepCount: 3 },
+      params: {
+        keywords: 'shak',
+        maxIngredientCount: 5,
+        maxStepCount: 3,
+        courses: 'main',
+      },
     });
   });
 
