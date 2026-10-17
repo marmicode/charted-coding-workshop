@@ -31,6 +31,7 @@ describe(App.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(fixture.nativeElement.textContent).toContain('Shakshuka');
   });
@@ -50,11 +51,13 @@ describe(App.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(search).toHaveBeenNthCalledWith(2, {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
   });
 
@@ -92,6 +95,7 @@ describe(App.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
   });
 });
