@@ -112,6 +112,6 @@ function toRecipeSearchParams({
     keywords,
     maxIngredientCount,
     maxStepCount,
-    ...(courses.length > 0 ? { courses } : {}),
+    courses,
   };
 }
