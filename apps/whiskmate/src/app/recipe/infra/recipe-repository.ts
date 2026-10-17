@@ -11,9 +11,9 @@ export interface RecipeSearchParams {
   maxIngredientCount: number | null;
   maxStepCount: number | null;
   /**
-   * Omitted to search all courses.
+   * Empty to search all courses.
    */
-  courses?: Course[];
+  courses: Course[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -30,7 +30,7 @@ export class RecipeRepository {
       keywords,
       maxIngredientCount,
       maxStepCount,
-      ...(courses != null ? { courses } : {}),
+      courses,
     });
   }
 

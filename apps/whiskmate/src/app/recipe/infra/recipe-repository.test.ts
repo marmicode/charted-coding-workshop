@@ -25,6 +25,7 @@ describe(RecipeRepository.name, () => {
         keywords: '',
         maxIngredientCount: null,
         maxStepCount: null,
+        courses: [],
       }),
     );
 
@@ -32,6 +33,7 @@ describe(RecipeRepository.name, () => {
       keywords: '',
       maxIngredientCount: null,
       maxStepCount: null,
+      courses: [],
     });
     expect(recipes).toEqual([shakshuka]);
   });
@@ -44,6 +46,7 @@ describe(RecipeRepository.name, () => {
         keywords: 'shak',
         maxIngredientCount: 5,
         maxStepCount: 3,
+        courses: [],
       }),
     );
 
@@ -51,6 +54,7 @@ describe(RecipeRepository.name, () => {
       keywords: 'shak',
       maxIngredientCount: 5,
       maxStepCount: 3,
+      courses: [],
     });
   });
 
