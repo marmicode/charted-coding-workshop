@@ -1,50 +1,137 @@
-import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { describe, it } from 'vitest';
+import { provideRouter, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { describe, it, vi } from 'vitest';
+import { RecipeRepository } from '@whiskmate/recipe/infra';
+import { MealPlanStore } from '@whiskmate/shared-meal-plan/domain';
+import type { Recipe } from '@whiskmate/shared-recipe/model';
+import { LocalStorage } from '@whiskmate/shared/infra';
 import { App } from './app';
 import { appRoutes } from './app.routes';
-import { LocalStorage, WIP_STORAGE_KEY } from '@whiskmate/shared/infra';
 
-class MemoryStorage implements LocalStorage {
-  private readonly items = signal(new Map<string, string>());
-
-  setItem(key: string, value: string): void {
-    this.items.update((items) => new Map(items).set(key, value));
-  }
-
-  getItem(key: string): string | null {
-    return this.items().get(key) ?? null;
-  }
-}
-
-function mealPlanLink(root: ParentNode): HTMLAnchorElement | undefined {
-  return [...root.querySelectorAll('a')].find(
-    (link) => link.textContent?.trim().toLowerCase() === 'meal plan',
-  );
-}
+const shakshuka: Recipe = {
+  id: 'shakshuka',
+  course: 'main',
+  name: 'Shakshuka',
+  description: null,
+  pictureUri: 'https://example.com/shakshuka.jpg',
+  ingredients: [],
+  steps: [],
+};
 
 describe(App.name, () => {
-  it('hides the meal plan link unless wip is set', async () => {
-    TestBed.resetTestingModule();
-    const storage = new MemoryStorage();
-    TestBed.overrideProvider(LocalStorage, { useValue: storage });
-    TestBed.configureTestingModule({
-      providers: [provideRouter(appRoutes)],
+  it('redirects to the search page and searches all recipes', async () => {
+    const { fixture, router, search } = await mountApp();
+
+    await router.navigateByUrl('/');
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/search');
+    expect(search).toHaveBeenCalledExactlyOnceWith({
+      keywords: '',
+      maxIngredientCount: null,
+      maxStepCount: null,
     });
-    const fixture = TestBed.createComponent(App);
+    expect(fixture.nativeElement.textContent).toContain('Shakshuka');
+  });
+
+  it('searches all recipes again when coming back to the search page', async () => {
+    const { fixture, router, search } = await mountApp();
+
+    await router.navigateByUrl('/search');
+    await fixture.whenStable();
+    await router.navigateByUrl('/meal-plan');
+    await fixture.whenStable();
+    await router.navigateByUrl('/search');
     await fixture.whenStable();
 
-    expect(mealPlanLink(fixture.nativeElement)).toBeDefined();
+    expect(search).toHaveBeenCalledTimes(2);
+    expect(search).toHaveBeenNthCalledWith(1, {
+      keywords: '',
+      maxIngredientCount: null,
+      maxStepCount: null,
+    });
+    expect(search).toHaveBeenNthCalledWith(2, {
+      keywords: '',
+      maxIngredientCount: null,
+      maxStepCount: null,
+    });
+  });
 
-    storage.setItem(WIP_STORAGE_KEY, 'true');
+  it('does not search recipes on the meal plan page', async () => {
+    const { fixture, router, search, findById, mealPlanStore } =
+      await mountApp();
+    vi.spyOn(mealPlanStore, 'assignments').mockReturnValue({
+      monday: 'shakshuka',
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    });
+
+    await router.navigateByUrl('/meal-plan');
     await fixture.whenStable();
 
-    const links = [...fixture.nativeElement.querySelectorAll('a')];
-    const labels = links.map((link) => link.textContent?.trim().toLowerCase());
-    const searchIndex = labels.indexOf('search');
-    const mealPlanIndex = labels.indexOf('meal plan');
-    expect(mealPlanIndex).toBe(searchIndex + 1);
-    expect(links[mealPlanIndex]?.getAttribute('href')).toBe('/meal-plan');
+    expect(search).not.toHaveBeenCalled();
+    expect(findById).toHaveBeenCalledExactlyOnceWith({ id: 'shakshuka' });
+    expect(fixture.nativeElement.textContent).toContain('Shakshuka');
+  });
+
+  it('navigates from the meal plan to the search page through the navbar', async () => {
+    const { fixture, router, search } = await mountApp();
+
+    await router.navigateByUrl('/meal-plan');
+    await fixture.whenStable();
+    linkByText(fixture.nativeElement, 'SEARCH').click();
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/search');
+    expect(search).toHaveBeenCalledExactlyOnceWith({
+      keywords: '',
+      maxIngredientCount: null,
+      maxStepCount: null,
+    });
   });
 });
+
+async function mountApp() {
+  TestBed.configureTestingModule({
+    providers: [
+      provideRouter(appRoutes),
+      {
+        provide: LocalStorage,
+        useValue: {
+          getItem: vi.fn().mockReturnValue(null),
+          setItem: vi.fn(),
+        },
+      },
+    ],
+  });
+
+  const recipeRepository = TestBed.inject(RecipeRepository);
+  const search = vi
+    .spyOn(recipeRepository, 'search')
+    .mockReturnValue(of([shakshuka]));
+  const findById = vi
+    .spyOn(recipeRepository, 'findById')
+    .mockReturnValue(of(shakshuka));
+  const mealPlanStore = TestBed.inject(MealPlanStore);
+  const router = TestBed.inject(Router);
+
+  const fixture = TestBed.createComponent(App);
+  await fixture.whenStable();
+
+  return { fixture, router, search, findById, mealPlanStore };
+}
+
+function linkByText(root: HTMLElement, text: string): HTMLAnchorElement {
+  const link = [...root.querySelectorAll('a')].find(
+    (el) => el.textContent?.trim() === text,
+  );
+  if (link == null) {
+    throw new Error(`Link "${text}" not found.`);
+  }
+  return link;
+}

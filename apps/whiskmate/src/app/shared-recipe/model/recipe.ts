@@ -1,5 +1,10 @@
+export const COURSES = ['starter', 'main', 'dessert'] as const;
+
+export type Course = (typeof COURSES)[number];
+
 export interface Recipe {
   id: string;
+  course: Course;
   description: string | null;
   ingredients: Ingredient[];
   name: string;

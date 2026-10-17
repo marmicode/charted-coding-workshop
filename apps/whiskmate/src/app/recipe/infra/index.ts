@@ -1,5 +1,1 @@
-export { RECIPES } from './recipe-data';
-export {
-  RecipeRepository,
-  type RecipeRepositoryDef,
-} from './recipe-repository';
+export { RecipeRepository, type RecipeSearchParams } from './recipe-repository';

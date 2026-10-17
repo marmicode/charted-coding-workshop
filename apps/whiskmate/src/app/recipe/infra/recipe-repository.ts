@@ -1,57 +1,54 @@
-import { Injectable } from '@angular/core';
-import { defer, Observable, of } from 'rxjs';
-import {
-  createDefaultRecipeFilterCriteria,
-  type RecipeFilterCriteria,
-} from '@whiskmate/recipe/model';
-import type { Recipe } from '@whiskmate/shared-recipe/model';
-import { RECIPES } from './recipe-data';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { catchError, Observable, of, throwError } from 'rxjs';
+import type { Course, Recipe } from '@whiskmate/shared-recipe/model';
 
-export interface RecipeRepositoryDef {
-  search(filter: RecipeFilterCriteria): Observable<Recipe[]>;
+/**
+ * Query params sent to the backend's recipe search endpoint.
+ */
+export interface RecipeSearchParams {
+  keywords: string;
+  maxIngredientCount: number | null;
+  maxStepCount: number | null;
+  /**
+   * Omitted to search all courses.
+   */
+  courses?: Course[];
+}
+
+@Injectable({ providedIn: 'root' })
+export class RecipeRepository {
+  private _http = inject(HttpClient);
+
+  search({
+    keywords,
+    maxIngredientCount,
+    maxStepCount,
+    courses,
+  }: RecipeSearchParams): Observable<Recipe[]> {
+    return this._http.get<Recipe[]>('/api/recipes', {
+      params: {
+        ...(keywords ? { keywords } : {}),
+        ...(maxIngredientCount != null ? { maxIngredientCount } : {}),
+        ...(maxStepCount != null ? { maxStepCount } : {}),
+        ...(courses != null ? { courses } : {}),
+      },
+    });
+  }
 
   /**
    * Undefined when the id is not in the catalog.
    * Meal Plan renders that day as empty. The weekday slot stays.
    */
-  findById(params: { id: string }): Observable<Recipe | undefined>;
-}
-
-@Injectable({ providedIn: 'root' })
-export class RecipeRepository implements RecipeRepositoryDef {
-  search(
-    {
-      keywords,
-      maxIngredientCount,
-      maxStepCount,
-    }: RecipeFilterCriteria = createDefaultRecipeFilterCriteria(),
-  ): Observable<Recipe[]> {
-    return defer(() => {
-      const recipes = RECIPES.filter((recipe) => {
-        const conditions = [
-          () =>
-            keywords
-              ? recipe.name.toLowerCase().includes(keywords.toLowerCase())
-              : true,
-          () =>
-            maxIngredientCount != null
-              ? recipe.ingredients.length <= maxIngredientCount
-              : true,
-          () =>
-            maxStepCount != null ? recipe.steps.length <= maxStepCount : true,
-        ];
-
-        return conditions.every((condition) => condition());
-      });
-
-      return of(recipes);
-    });
-  }
-
   findById({ id }: { id: string }): Observable<Recipe | undefined> {
-    return defer(() => {
-      const recipe = RECIPES.find((item) => item.id === id);
-      return of(recipe);
-    });
+    return this._http
+      .get<Recipe>(`/api/recipes/${encodeURIComponent(id)}`)
+      .pipe(
+        catchError((error: unknown) =>
+          error instanceof HttpErrorResponse && error.status === 404
+            ? of(undefined)
+            : throwError(() => error),
+        ),
+      );
   }
 }

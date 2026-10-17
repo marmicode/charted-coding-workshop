@@ -6,7 +6,10 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { UserFavorites } from '@whiskmate/recipe/domain';
-import { RecipeRepository } from '@whiskmate/recipe/infra';
+import {
+  RecipeRepository,
+  type RecipeSearchParams,
+} from '@whiskmate/recipe/infra';
 import {
   createDefaultRecipeFilterCriteria,
   type RecipeFilterCriteria,
@@ -63,7 +66,7 @@ export class RecipeSearch {
   private _mealPlanStore = inject(MealPlanStore);
 
   private _recipes = rxResource({
-    params: () => this.filter(),
+    params: () => toRecipeSearchParams(this.filter()),
     stream: ({ params }) => this._recipeRepository.search(params),
   });
 
@@ -97,4 +100,18 @@ export class RecipeSearch {
   onAddToMealPlan(recipeId: string, weekday: Weekday): void {
     this._mealPlanStore.assign({ weekday, recipeId });
   }
+}
+
+function toRecipeSearchParams({
+  keywords,
+  maxIngredientCount,
+  maxStepCount,
+  courses,
+}: RecipeFilterCriteria): RecipeSearchParams {
+  return {
+    keywords,
+    maxIngredientCount,
+    maxStepCount,
+    ...(courses.length > 0 ? { courses } : {}),
+  };
 }
