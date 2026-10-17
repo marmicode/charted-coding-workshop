@@ -34,7 +34,7 @@ export class RecipeRepositoryFake implements RecipeRepositoryDef {
               : true,
           () =>
             maxStepCount != null ? recipe.steps.length <= maxStepCount : true,
-          () => (courses != null ? courses.includes(recipe.course) : true),
+          () => (courses.length > 0 ? courses.includes(recipe.course) : true),
         ];
 
         return conditions.every((condition) => condition());

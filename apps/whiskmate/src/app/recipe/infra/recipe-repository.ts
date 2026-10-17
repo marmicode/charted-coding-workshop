@@ -11,9 +11,9 @@ export interface RecipeSearchParams {
   maxIngredientCount: number | null;
   maxStepCount: number | null;
   /**
-   * Omitted to search all courses.
+   * Empty to search all courses.
    */
-  courses?: Course[];
+  courses: Course[];
 }
 
 export interface RecipeRepositoryDef {
@@ -36,7 +36,7 @@ export class RecipeRepository implements RecipeRepositoryDef {
       keywords,
       maxIngredientCount,
       maxStepCount,
-      ...(courses != null ? { courses } : {}),
+      courses,
     });
   }
 
