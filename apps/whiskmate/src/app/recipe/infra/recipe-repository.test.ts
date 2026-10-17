@@ -16,9 +16,9 @@ const shakshuka: Recipe = {
 };
 
 describe(RecipeRepository.name, () => {
-  it('searches all recipes without query params', async () => {
-    const { repository, get } = setUpRecipeRepository();
-    get.mockReturnValue(of([shakshuka]));
+  it('searches all recipes', async () => {
+    const { repository, post } = setUpRecipeRepository();
+    post.mockReturnValue(of([shakshuka]));
 
     const recipes = await firstValueFrom(
       repository.search({
@@ -28,14 +28,16 @@ describe(RecipeRepository.name, () => {
       }),
     );
 
-    expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: {},
+    expect(post).toHaveBeenCalledExactlyOnceWith('/api/recipes/search', {
+      keywords: '',
+      maxIngredientCount: null,
+      maxStepCount: null,
     });
     expect(recipes).toEqual([shakshuka]);
   });
 
   it('sends keywords, max ingredients and max steps', async () => {
-    const { repository, get } = setUpRecipeRepository();
+    const { repository, post } = setUpRecipeRepository();
 
     await firstValueFrom(
       repository.search({
@@ -45,13 +47,15 @@ describe(RecipeRepository.name, () => {
       }),
     );
 
-    expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: { keywords: 'shak', maxIngredientCount: 5, maxStepCount: 3 },
+    expect(post).toHaveBeenCalledExactlyOnceWith('/api/recipes/search', {
+      keywords: 'shak',
+      maxIngredientCount: 5,
+      maxStepCount: 3,
     });
   });
 
   it('sends courses', async () => {
-    const { repository, get } = setUpRecipeRepository();
+    const { repository, post } = setUpRecipeRepository();
 
     await firstValueFrom(
       repository.search({
@@ -62,8 +66,11 @@ describe(RecipeRepository.name, () => {
       }),
     );
 
-    expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: { courses: ['starter', 'dessert'] },
+    expect(post).toHaveBeenCalledExactlyOnceWith('/api/recipes/search', {
+      keywords: '',
+      maxIngredientCount: null,
+      maxStepCount: null,
+      courses: ['starter', 'dessert'],
     });
   });
 
@@ -93,9 +100,9 @@ describe(RecipeRepository.name, () => {
 });
 
 function setUpRecipeRepository() {
-  const get = vi
-    .spyOn(TestBed.inject(HttpClient), 'get')
-    .mockReturnValue(of([]));
+  const httpClient = TestBed.inject(HttpClient);
+  const get = vi.spyOn(httpClient, 'get').mockReturnValue(of(undefined));
+  const post = vi.spyOn(httpClient, 'post').mockReturnValue(of([]));
   const repository = TestBed.inject(RecipeRepository);
-  return { repository, get };
+  return { repository, get, post };
 }
