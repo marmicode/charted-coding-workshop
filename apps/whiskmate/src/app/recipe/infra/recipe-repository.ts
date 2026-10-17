@@ -16,8 +16,14 @@ export interface RecipeSearchParams {
   courses?: Course[];
 }
 
+export interface RecipeRepositoryDef {
+  search(params: RecipeSearchParams): Observable<Recipe[]>;
+
+  findById(params: { id: string }): Observable<Recipe | undefined>;
+}
+
 @Injectable({ providedIn: 'root' })
-export class RecipeRepository {
+export class RecipeRepository implements RecipeRepositoryDef {
   private _http = inject(HttpClient);
 
   search({
@@ -34,10 +40,6 @@ export class RecipeRepository {
     });
   }
 
-  /**
-   * Undefined when the id is not in the catalog.
-   * Meal Plan renders that day as empty. The weekday slot stays.
-   */
   findById({ id }: { id: string }): Observable<Recipe | undefined> {
     return this._http
       .get<Recipe>(`/api/recipes/${encodeURIComponent(id)}`)

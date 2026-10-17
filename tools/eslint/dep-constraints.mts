@@ -152,6 +152,11 @@ export const depConstraints: Array<{
 export const testDepConstraints = depConstraints.map((constraint) => ({
   ...constraint,
   allowedExternalImports: constraint.allowedExternalImports
-    ? [...constraint.allowedExternalImports, '@angular/core/testing', 'vitest']
+    ? [
+        ...constraint.allowedExternalImports,
+        '@angular/common/http/testing',
+        '@angular/core/testing',
+        'vitest',
+      ]
     : undefined,
 }));

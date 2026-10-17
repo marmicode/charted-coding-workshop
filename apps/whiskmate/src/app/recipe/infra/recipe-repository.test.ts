@@ -1,7 +1,11 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { firstValueFrom, of, throwError } from 'rxjs';
-import { describe, it, vi } from 'vitest';
+import { firstValueFrom } from 'rxjs';
+import { describe, it } from 'vitest';
 import type { Recipe } from '@whiskmate/shared-recipe/model';
 import { RecipeRepository } from './recipe-repository';
 
@@ -16,93 +20,65 @@ const shakshuka: Recipe = {
 };
 
 describe(RecipeRepository.name, () => {
-  it('searches all recipes', async () => {
-    const { repository, post } = setUpRecipeRepository();
-    post.mockReturnValue(of([shakshuka]));
+  it('searches recipes', async () => {
+    const { repository, httpTesting } = setUpRecipeRepository();
 
-    const recipes = await firstValueFrom(
-      repository.search({
-        keywords: '',
-        maxIngredientCount: null,
-        maxStepCount: null,
-      }),
-    );
-
-    expect(post).toHaveBeenCalledExactlyOnceWith('/api/recipes/search', {
-      keywords: '',
-      maxIngredientCount: null,
-      maxStepCount: null,
-    });
-    expect(recipes).toEqual([shakshuka]);
-  });
-
-  it('sends keywords, max ingredients and max steps', async () => {
-    const { repository, post } = setUpRecipeRepository();
-
-    await firstValueFrom(
+    const result = firstValueFrom(
       repository.search({
         keywords: 'shak',
         maxIngredientCount: 5,
         maxStepCount: 3,
+        courses: ['main'],
       }),
     );
 
-    expect(post).toHaveBeenCalledExactlyOnceWith('/api/recipes/search', {
+    const request = httpTesting.expectOne({
+      method: 'POST',
+      url: '/api/recipes/search',
+    });
+    expect(request.request.body).toEqual({
       keywords: 'shak',
       maxIngredientCount: 5,
       maxStepCount: 3,
+      courses: ['main'],
     });
-  });
+    request.flush([shakshuka]);
 
-  it('sends courses', async () => {
-    const { repository, post } = setUpRecipeRepository();
-
-    await firstValueFrom(
-      repository.search({
-        keywords: '',
-        maxIngredientCount: null,
-        maxStepCount: null,
-        courses: ['starter', 'dessert'],
-      }),
-    );
-
-    expect(post).toHaveBeenCalledExactlyOnceWith('/api/recipes/search', {
-      keywords: '',
-      maxIngredientCount: null,
-      maxStepCount: null,
-      courses: ['starter', 'dessert'],
-    });
+    expect(await result).toEqual([shakshuka]);
   });
 
   it('fetches a recipe by id', async () => {
-    const { repository, get } = setUpRecipeRepository();
-    get.mockReturnValue(of(shakshuka));
+    const { repository, httpTesting } = setUpRecipeRepository();
 
-    const recipe = await firstValueFrom(
-      repository.findById({ id: 'shakshuka' }),
-    );
+    const result = firstValueFrom(repository.findById({ id: 'shakshuka' }));
 
-    expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes/shakshuka');
-    expect(recipe).toEqual(shakshuka);
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/recipes/shakshuka' })
+      .flush(shakshuka);
+
+    expect(await result).toEqual(shakshuka);
   });
 
   it('returns undefined when the recipe is not found', async () => {
-    const { repository, get } = setUpRecipeRepository();
-    get.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 404 })),
-    );
+    const { repository, httpTesting } = setUpRecipeRepository();
 
-    const recipe = await firstValueFrom(repository.findById({ id: 'missing' }));
+    const result = firstValueFrom(repository.findById({ id: 'missing' }));
 
-    expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes/missing');
-    expect(recipe).toBeUndefined();
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/recipes/missing' })
+      .flush(null, { status: 404, statusText: 'Not Found' });
+
+    expect(await result).toBeUndefined();
   });
 });
 
 function setUpRecipeRepository() {
-  const httpClient = TestBed.inject(HttpClient);
-  const get = vi.spyOn(httpClient, 'get').mockReturnValue(of(undefined));
-  const post = vi.spyOn(httpClient, 'post').mockReturnValue(of([]));
-  const repository = TestBed.inject(RecipeRepository);
-  return { repository, get, post };
+  TestBed.configureTestingModule({
+    providers: [provideHttpClient(), provideHttpClientTesting()],
+  });
+
+  return {
+    repository: TestBed.inject(RecipeRepository),
+    httpTesting: TestBed.inject(HttpTestingController),
+  };
 }
