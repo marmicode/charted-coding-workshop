@@ -50,7 +50,7 @@ describe(RecipeRepository.name, () => {
     });
   });
 
-  it('sends courses', async () => {
+  it('sends courses separated by commas', async () => {
     const { repository, get } = setUpRecipeRepository();
 
     await firstValueFrom(
@@ -63,7 +63,7 @@ describe(RecipeRepository.name, () => {
     );
 
     expect(get).toHaveBeenCalledExactlyOnceWith('/api/recipes', {
-      params: { courses: ['starter', 'dessert'] },
+      params: { courses: 'starter,dessert' },
     });
   });
 

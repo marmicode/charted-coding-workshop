@@ -31,7 +31,7 @@ export class RecipeRepository {
         ...(keywords ? { keywords } : {}),
         ...(maxIngredientCount != null ? { maxIngredientCount } : {}),
         ...(maxStepCount != null ? { maxStepCount } : {}),
-        ...(courses != null ? { courses } : {}),
+        ...(courses != null ? { courses: courses.join(',') } : {}),
       },
     });
   }
